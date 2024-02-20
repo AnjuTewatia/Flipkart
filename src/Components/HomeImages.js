@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   titleText: {
     marginTop: 8,
     fontSize: 18,
-    fontWeight: '700',
+    // fontWeight: '700',
     color: '#fff',
     fontFamily: 'CinzelDecorative-Bold',
   },

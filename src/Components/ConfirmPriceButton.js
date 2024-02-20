@@ -1,7 +1,9 @@
 import {StyleSheet, Text, TouchableHighlight} from 'react-native';
 import React from 'react';
 import LinearGradient from 'react-native-linear-gradient';
-const Button = ({title, onPress, style}) => {
+import {useAppContext} from './AppContext';
+const ConfirmPrice = ({title, onPress, style}) => {
+  const {windowWidth} = useAppContext();
   return (
     <TouchableHighlight
       style={[styles.linearGradient, style]}
@@ -10,30 +12,32 @@ const Button = ({title, onPress, style}) => {
         colors={['#371841', '#8C2457']}
         start={{x: 0, y: 0}}
         end={{x: 1, y: 0}}
-        style={[styles.linearGradient, style]}>
+        style={[styles.linearGradient, style, {width: windowWidth - 280}]}>
         <Text style={styles.buttonText}>{title}</Text>
       </LinearGradient>
     </TouchableHighlight>
   );
 };
 
-export default Button;
+export default ConfirmPrice;
 
 const styles = StyleSheet.create({
   linearGradient: {
-    marginVertical: 20,
-    borderRadius: 7,
-    height: 48,
-    width: '99%',
+    borderRadius: 17,
+    // padding: 5,
+    height: 28,
+    marginTop: 10,
+    marginRight: 2,
     alignItems: 'center',
     justifyContent: 'center',
-    alignSelf: 'center',
+    // alignSelf: 'center',
+    minWidth: 81,
   },
   buttonText: {
-    fontSize: 18,
+    fontSize: 12,
     fontFamily: 'DM Sans',
     color: '#ffffff',
-    fontWeight: '800',
+    fontWeight: '500',
     backgroundColor: 'transparent',
   },
 });

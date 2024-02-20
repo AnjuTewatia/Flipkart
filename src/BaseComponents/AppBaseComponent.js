@@ -9,20 +9,20 @@ import {
 import React from 'react';
 import {COLORS, Height, WIDTH} from '../utils/styleConst';
 import {Typography} from '../Components/Typography';
-import {BackButton} from '../Icons';
+import {WhiteBackButton} from '../Icons';
 import Common from '../utils/common';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 const AppBaseComponent = ({
   title,
   renderChild,
-  topPaddingZero,
   backButton,
   navigation,
+  rightButton,
+  height,
 }) => {
   const insets = useSafeAreaInsets();
   const statusBarHeight = insets.top;
-
   return (
     <>
       {Platform.OS === 'ios' && (
@@ -39,22 +39,28 @@ const AppBaseComponent = ({
         barStyle={'light-content'}></StatusBar>
       <View style={Common.container}>
         <View style={[styles.safeAreaView]}>
-          {backButton && (
-            <Pressable
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}>
-              <BackButton />
-            </Pressable>
-          )}
-
           <View style={styles.header}>
+            {backButton && (
+              <Pressable
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}>
+                <WhiteBackButton />
+              </Pressable>
+            )}
+
             <Typography type="h2" style={styles.titleText}>
               {title}
             </Typography>
+            {rightButton && (
+              <View style={styles.rightButton}>{rightButton}</View>
+            )}
           </View>
           <View bounces showsVerticalScrollIndicator={false}>
             <View
-              style={[styles.content, {paddingTop: topPaddingZero ? 0 : 0}]}>
+              style={[
+                styles.content,
+                {paddingTop: 10, height: height ? height : '96%'},
+              ]}>
               {renderChild}
             </View>
           </View>
@@ -95,6 +101,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     backgroundColor: '#371841',
     height: 44,
+    justifyContent: 'center',
   },
   titleText: {
     fontSize: 20,
@@ -114,19 +121,22 @@ const styles = StyleSheet.create({
   content: {
     display: 'flex',
     alignItems: 'flex-start',
-    height: Height,
     width: WIDTH,
-    paddingHorizontal: 18,
+    paddingHorizontal: 10,
     paddingBottom: 5,
-    backgroundColor: '#F5F5F5',
+    // backgroundColor: '#fff',
   },
   backButton: {
-    top: 10,
-    left: 15,
+    position: 'absolute',
+    marginHorizontal: 10,
     width: 30,
-    height: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
+    zIndex: 999,
+  },
+  rightButton: {
+    position: 'absolute',
+    marginHorizontal: 10,
+    right: 0,
+    zIndex: 999,
   },
 });
 export default AppBaseComponent;

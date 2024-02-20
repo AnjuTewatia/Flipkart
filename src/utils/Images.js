@@ -13,6 +13,26 @@ const storebg = require('../assets/appImages/searchbg.png');
 const searchbg = require('../assets/appImages/storebg.png');
 const searchicon = require('../assets/icons/search.png');
 const storeicon = require('../assets/icons/store.png');
+const locationicon = require('../assets/icons/location.png');
+const deleteicon = require('../assets/icons/deleteIcon.png');
+const tagicon = require('../assets/icons/tag.png');
+const editicon = require('../assets/icons/editicon.png');
+const cameraIcon = require('../assets/icons/cameraicon.png');
+const scanIcon = require('../assets/icons/scan.png');
+const addIcon = require('../assets/icons/add.png');
+const sortby = require('../assets/icons/sortby.png');
+
+const notificationimg = require('../assets/appImages/notification.png');
+const favoriteimg = require('../assets/appImages/favorite.png');
+const arrowimg = require('../assets/appImages/arrowIcon.png');
+const profileImg = require('../assets/appImages/profile.png');
+const profiledelete = require('../assets/appImages/profiledelete.png');
+const changePassword = require('../assets/appImages/changePassword.png');
+const earnedPoints = require('../assets/appImages/earnedPoints.png');
+const bestOffer = require('../assets/appImages/bestOffer.png');
+
+const bell = require('../assets/appImages/bell.png');
+const beer = require('../assets/appImages/beer.png');
 
 const IMAGES = {
   googleLogo,
@@ -30,6 +50,24 @@ const IMAGES = {
   searchbg,
   searchicon,
   storeicon,
+  notificationimg,
+  favoriteimg,
+  locationicon,
+  deleteicon,
+  arrowimg,
+  tagicon,
+  profileImg,
+  editicon,
+  cameraIcon,
+  profiledelete,
+  changePassword,
+  earnedPoints,
+  bestOffer,
+  bell,
+  beer,
+  scanIcon,
+  addIcon,
+  sortby,
 };
 
 export default IMAGES;

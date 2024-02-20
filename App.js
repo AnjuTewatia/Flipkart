@@ -1,17 +1,11 @@
 import React from 'react';
-import AppProvider from './src/Components/AppContext';
-
-import {NavigationContainer} from '@react-navigation/native';
-import AuthStack from './src/navigation/AuthStack';
-import {Text} from 'react-native';
-import AppStack from './src/navigation/AppStack';
+import {View} from 'react-native';
+import Provider from './src/navigation/Provider';
 const App = () => {
   return (
-    <AppProvider>
-      <NavigationContainer>
-        <AppStack />
-      </NavigationContainer>
-    </AppProvider>
+    <View style={{flex: 1}}>
+      <Provider />
+    </View>
   );
 };
 

@@ -3,8 +3,9 @@ import {StyleSheet} from 'react-native';
 const Common = StyleSheet.create({
   container: {
     flex: 1,
-    height: '100%',
+    height: '60%',
     width: '100%',
+    // backgroundColor: '#000',
   },
   formWrapper: {
     gap: 24,

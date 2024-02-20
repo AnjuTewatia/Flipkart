@@ -9,6 +9,7 @@ import {loginValidationScheme} from '../../utils/validations';
 import IMAGES from '../../utils/Images';
 import RenderImages from '../../Components/RenderImages';
 import Common from '../../utils/common';
+import {useAppContext} from '../../Components/AppContext';
 
 const Login = ({navigation}) => {
   return (
@@ -21,6 +22,7 @@ const Login = ({navigation}) => {
   );
 };
 const Content = ({navigation}) => {
+  const {setUser} = useAppContext();
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -28,6 +30,7 @@ const Content = ({navigation}) => {
     },
     validationSchema: loginValidationScheme,
     onSubmit: values => {
+      setUser();
       console.log(values);
     },
   });

@@ -38,6 +38,22 @@ export const BackButton = props => {
     </Svg>
   );
 };
+export const WhiteBackButton = props => {
+  return (
+    <Svg
+      width={12}
+      height={20}
+      viewBox="0 0 12 20"
+      fill="none"
+      // xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M0 9.961c0 .393.146.73.46 1.022l8.738 8.558c.247.247.561.382.932.382.741 0 1.336-.584 1.336-1.337 0-.37-.157-.696-.404-.954l-7.873-7.67 7.873-7.671c.247-.258.404-.595.404-.955C11.466.584 10.871 0 10.13 0c-.37 0-.685.135-.932.382L.46 8.928c-.314.303-.46.64-.46 1.033z"
+        fill="#ffffff"
+      />
+    </Svg>
+  );
+};
 
 export const ArrowIcon = props => {
   return (
@@ -50,6 +66,55 @@ export const ArrowIcon = props => {
       {...props}>
       <Path
         d="M8.05 6.36l-5.656 5.658L.98 10.603l5.657-5.656-4.95-4.95H13V11.31L8.05 6.36z"
+        fill="#fff"
+      />
+    </Svg>
+  );
+};
+export const RightArrow = props => {
+  return (
+    <Svg
+      width={12}
+      height={12}
+      viewBox="0 0 12 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M6 5.334V.667l5.333 5.334L6 11.334V6.667H.667V5.334H6z"
+        fill="#8C2457"
+      />
+    </Svg>
+  );
+};
+export const EmptyHeart = props => {
+  return (
+    <Svg
+      width={20}
+      height={19}
+      viewBox="0 0 20 19"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M8.887 16.66h-.001C6.3 14.316 4.196 12.403 2.73 10.61 1.27 8.826.5 7.221.5 5.5c0-2.813 2.196-5 5-5 1.589 0 3.122.742 4.12 1.906l.38.442.38-.442C11.377 1.242 12.91.5 14.5.5c2.805 0 5 2.187 5 5 0 1.72-.771 3.326-2.23 5.111-1.466 1.792-3.571 3.705-6.156 6.049h0L10 17.674 8.887 16.66z"
+        stroke="#99999E"
+      />
+    </Svg>
+  );
+};
+
+export const Tick = props => {
+  return (
+    <Svg
+      width={16}
+      height={16}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M6.667 10.115l6.128-6.129.943.943L6.667 12 2.424 7.758l.943-.943 3.3 3.3z"
         fill="#fff"
       />
     </Svg>

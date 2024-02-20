@@ -67,3 +67,26 @@ export const resetPasswordScheme = yup.object().shape({
   password: passwordSchema(),
   confirmPassword: confirmPasswordSchema('password'),
 });
+
+export const oldPassSchema = (message, maxMessage) =>
+  yup.string().trim().required(message).max(20, maxMessage);
+export const changePasswordScheme = yup.object().shape({
+  oldPassword: oldPassSchema('Old password is required.'),
+  newPassword: passwordSchema(),
+  confirmPassword: confirmPasswordSchema('newPassword'),
+});
+
+export const editnameSchema = (message, maxMessage) =>
+  yup.string().trim().max(20, maxMessage);
+
+export const editemailSchema = yup
+  .string()
+  .trim()
+  .email('Please enter valid email address.')
+  .matches(emailRegExp, 'Please enter valid email id.');
+
+export const editProfileScheme = yup.object().shape({
+  name: editnameSchema('First name should maximum 20 characters.'),
+  surname: editnameSchema('Last name should maximum 20 characters.'),
+  email: editemailSchema,
+});

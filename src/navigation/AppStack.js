@@ -6,20 +6,55 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Notification from '../screens/AppScreens/Notification';
 import Favourites from '../screens/AppScreens/Favourite';
 import Profile from '../screens/AppScreens/Profile';
+import ManageNotification from '../screens/AppScreens/ManageNotification';
+import ChangePassword from '../screens/AppScreens/ChangePassword';
 import {Typography} from '../Components/Typography';
-import {HomeActive} from '../Icons';
 import RenderImages from '../Components/RenderImages';
 import IMAGES from '../utils/Images';
 import {COLORS} from '../utils/styleConst';
+import EditProfile from '../screens/AppScreens/EditProfile';
+import StoreListing from '../screens/AppScreens/StoreListing';
+import StoreItems from '../screens/AppScreens/StoreItems';
+import Compare from '../screens/AppScreens/Compare';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const AppStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{animation: 'slide_from_right'}}>
       <Stack.Screen
         component={BottomTabs}
         name="bottomTabs"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={ManageNotification}
+        name="manageNotification"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={ChangePassword}
+        name="changePassword"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={EditProfile}
+        name="editProfile"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={StoreListing}
+        name="storeListing"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={StoreItems}
+        name="storeItems"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={Compare}
+        name="compare"
         options={{headerShown: false}}
       />
     </Stack.Navigator>

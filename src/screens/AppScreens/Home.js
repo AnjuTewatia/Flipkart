@@ -25,7 +25,7 @@ const Content = ({navigation}) => {
       <Typography type="h1" style={styles.welcomeText}>
         Welcome to the{' '}
         <Typography type="h1" style={styles.LogoText}>
-          Drink   mate!
+          Drink mate!
         </Typography>
       </Typography>
       <View
@@ -40,14 +40,14 @@ const Content = ({navigation}) => {
           title={'Search'}
           instruction={'With this option, you can search for the store name'}
           btnImg={IMAGES.searchicon}
-          onPress={() => console.log('search')}
+          onPress={() => navigation.navigate('storeListing', {type: 'search'})}
         />
         <HomeImages
           image={IMAGES.searchbg}
           title={'I’m In The Store'}
           instruction={'With this option, you can go to for the store screen'}
           btnImg={IMAGES.storeicon}
-          onPress={() => console.log('store')}
+          onPress={() => navigation.navigate('storeListing', {type: 'store'})}
         />
       </View>
     </View>

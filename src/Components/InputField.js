@@ -12,6 +12,7 @@ const InputField = ({
   bgWhite,
   name,
   error,
+  style,
   ...rest
 }) => {
   const isPassword = type === 'password';
@@ -30,6 +31,7 @@ const InputField = ({
       <View
         style={[
           styles.textInput,
+          style,
           formik?.errors[name] &&
             formik?.touched[name] && {
               borderWidth: 1,
