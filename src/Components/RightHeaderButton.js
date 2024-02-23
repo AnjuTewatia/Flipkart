@@ -4,7 +4,7 @@ import RenderImages from './RenderImages';
 
 import {Typography} from './Typography';
 
-const RightHeaderButton = (onPress, icon, title) => {
+const RightHeaderButton = ({onPress, icon, title}) => {
   return (
     <Pressable style={styles.rightbtnContainer} onPress={onPress}>
       <RenderImages source={icon} style={styles.icon} />

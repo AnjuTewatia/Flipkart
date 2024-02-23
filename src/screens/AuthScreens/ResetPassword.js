@@ -6,19 +6,23 @@ import {useFormik} from 'formik';
 import InputField from '../../Components/InputField';
 import Button from '../../Components/Button';
 import {resetPasswordScheme} from '../../utils/validations';
+import useFetch from '../../utils/useFetch';
+import Toast from 'react-native-toast-message';
+import {CommonActions} from '@react-navigation/native';
 
-const ResetPassword = () => {
+const ResetPassword = ({navigation, route}) => {
+  const data = route?.params;
   return (
     <AuthBaseComponent
       title={'Reset Password '}
       instruction={'Please reset your password by entering a new password.'}
       navigation={navigation}
-      renderChild={Content({})}
+      renderChild={Content({navigation, data})}
     />
   );
 };
 
-const Content = () => {
+const Content = ({navigation, data}) => {
   const formik = useFormik({
     initialValues: {
       password: '',
@@ -27,9 +31,33 @@ const Content = () => {
     validationSchema: resetPasswordScheme,
 
     onSubmit: values => {
-      console.log(values);
+      handleResetPassword(values);
     },
   });
+
+  const [resetPassword, {response, loading, error}] = useFetch(
+    'reset-password',
+    {method: 'POST'},
+  );
+
+  const handleResetPassword = async values => {
+    const res = await resetPassword({
+      uuid: data?.uuid,
+      ...values,
+    });
+    if (res) {
+      Toast.show({
+        type: 'success',
+        text1: res?.message,
+      });
+      navigation.dispatch(
+        CommonActions.reset({
+          index: 0, // Reset to the initial route
+          routes: [{name: 'login'}], // Replace the navigation stack with the initial route
+        }),
+      );
+    }
+  };
   return (
     <View style={Common.container}>
       <InputField
@@ -46,7 +74,11 @@ const Content = () => {
         label={'Confirm Password'}
         placeholder="Enter Confirm Password"
       />
-      <Button title="Submit" onPress={() => formik.handleSubmit()} />
+      <Button
+        title="Submit"
+        onPress={() => formik.handleSubmit()}
+        loading={loading}
+      />
     </View>
   );
 };

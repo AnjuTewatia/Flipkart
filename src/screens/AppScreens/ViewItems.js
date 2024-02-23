@@ -9,23 +9,22 @@ import {EmptyHeart, RightArrow} from '../../Icons';
 import BottomSheet from '../../Components/BottomSheet';
 import Common from '../../utils/common';
 import RightHeaderButton from '../../Components/RightHeaderButton';
+import RenderStoreItems from '../../Components/RenderStoreItems';
 
-const StoreListing = ({navigation, route}) => {
+const ViewItems = ({navigation, route}) => {
   const type = route?.params?.type;
   return (
     <AppBaseComponent
-      title={'Store Listing'}
+      title={'ViewItems'}
       navigation={navigation}
       backButton
       renderChild={Content({navigation, type})}
       rightButton={
-        type === 'store' ? (
-          <RightHeaderButton
-            icon={IMAGES.addIcon}
-            title="Store"
-            onPress={() => navigation.navigate('AddStore')}
-          />
-        ) : null
+        <RightHeaderButton
+          icon={IMAGES.addIcon}
+          title="Item"
+          onPress={() => navigation.navigate('AddItem')}
+        />
       }
     />
   );
@@ -50,49 +49,7 @@ const Content = ({navigation, type}) => {
             placeholder="Search store by name"
             placeholderTextColor={'#99999E'}></TextInput>
         </View>
-
-        <Pressable
-          style={styles.favoriteView}
-          onPress={() => {
-            type === 'search'
-              ? navigation.navigate('storeItems')
-              : toggleBottomSheet();
-          }}>
-          {type === 'search' && (
-            <Pressable style={styles.deleteIcon}>
-              <View style={styles.rightarrow}>
-                <RightArrow />
-              </View>
-            </Pressable>
-          )}
-          <Pressable style={styles.EmptyHeart}>
-            <View style={styles.emptyHeart}>
-              <EmptyHeart />
-            </View>
-          </Pressable>
-          <RenderImages
-            source={IMAGES.favoriteimg}
-            style={{width: '18%', minHeight: '85%'}}
-          />
-          <View style={{marginHorizontal: 15}}>
-            <Typography
-              type="h3"
-              style={[styles.title, {width: windowWidth - 140}]}>
-              Violet Crumb-Ball
-            </Typography>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <RenderImages
-                source={IMAGES.locationicon}
-                style={{width: 16, height: 18}}
-              />
-              <Typography
-                type="h5"
-                style={[styles.text, {width: windowWidth - 155}]}>
-                Akshya Nagar 1st Block 1st Cross Rammurthy nagar
-              </Typography>
-            </View>
-          </View>
-        </Pressable>
+        <RenderStoreItems heartIcon />
         <BottomSheet
           navigation={navigation}
           isVisible={bottomSheetVisible}
@@ -103,7 +60,7 @@ const Content = ({navigation, type}) => {
     </>
   );
 };
-export default StoreListing;
+export default ViewItems;
 
 const styles = StyleSheet.create({
   storeContainer: {

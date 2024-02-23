@@ -5,23 +5,30 @@ import {
   SafeAreaView,
   Platform,
   ImageBackground,
+  ScrollView,
 } from 'react-native';
 import React from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import {Typography} from '../../Components/Typography';
 import Common from '../../utils/common';
-import HomeImages from '../../Components/HomeImages';
+import HomeImages, {BrandImage} from '../../Components/HomeImages';
 import IMAGES from '../../utils/Images';
 
 const Home = ({navigation}) => {
   return (
-    <AppBaseComponent title={'Home'} renderChild={Content({navigation})} />
+    <AppBaseComponent
+      title={'Home'}
+      renderChild={Content({navigation})}
+      topPadding={0}
+    />
   );
 };
 
 const Content = ({navigation}) => {
   return (
-    <View style={Common.container}>
+    <ScrollView
+      style={[Common.container, styles.container]}
+      showsVerticalScrollIndicator={false}>
       <Typography type="h1" style={styles.welcomeText}>
         Welcome to the{' '}
         <Typography type="h1" style={styles.LogoText}>
@@ -49,14 +56,24 @@ const Content = ({navigation}) => {
           btnImg={IMAGES.storeicon}
           onPress={() => navigation.navigate('storeListing', {type: 'store'})}
         />
+        <BrandImage
+          image={IMAGES.brandbg}
+          title={'Alcohol Brands'}
+          instruction={'With this option, you can explore alcohol brand names'}
+          btnImg={IMAGES.storeicon}
+          onPress={() => navigation.navigate('AlcoholBrands')}
+        />
       </View>
-    </View>
+    </ScrollView>
   );
 };
 
 export default Home;
 
 const styles = StyleSheet.create({
+  container: {
+    marginBottom: 20,
+  },
   welcomeText: {
     fontSize: 24,
     marginTop: 12,

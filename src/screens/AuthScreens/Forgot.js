@@ -6,6 +6,8 @@ import InputField from '../../Components/InputField';
 import {useFormik} from 'formik';
 import Button from '../../Components/Button';
 import {forgotEmailScheme} from '../../utils/validations';
+import useFetch from '../../utils/useFetch';
+import Toast from 'react-native-toast-message';
 
 const Forgot = ({navigation}) => {
   return (
@@ -28,9 +30,28 @@ const Content = ({navigation}) => {
     },
     validationSchema: forgotEmailScheme,
     onSubmit: values => {
-      navigation.navigate('otpScreen', {email: values?.email});
+      handleForgotPassword(values);
     },
   });
+  const [forgotPassword, {response, loading, error}] = useFetch(
+    'forgot-password',
+    {method: 'POST'},
+  );
+  const handleForgotPassword = async values => {
+    const res = await forgotPassword(values);
+    const resData = res?.data;
+    if (res) {
+      Toast.show({
+        type: 'success',
+        text1: res?.message,
+      });
+      navigation.navigate('otpScreen', {
+        email: resData?.email,
+        uuid: resData?.uuid,
+        type: 'forgot',
+      });
+    }
+  };
   return (
     <View style={Common.container}>
       <InputField
@@ -40,7 +61,11 @@ const Content = ({navigation}) => {
         label={'Email Address'}
         placeholder="Enter Email Address"
       />
-      <Button title="Send" onPress={() => formik.handleSubmit()} />
+      <Button
+        title="Send"
+        onPress={() => formik.handleSubmit()}
+        loading={loading}
+      />
     </View>
   );
 };

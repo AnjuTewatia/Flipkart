@@ -16,6 +16,13 @@ import EditProfile from '../screens/AppScreens/EditProfile';
 import StoreListing from '../screens/AppScreens/StoreListing';
 import StoreItems from '../screens/AppScreens/StoreItems';
 import Compare from '../screens/AppScreens/Compare';
+import FavouriteList from '../screens/AppScreens/FavoriteList';
+import ViewItems from '../screens/AppScreens/ViewItems';
+import AddItem from '../screens/AppScreens/AddItem';
+import AddStore from '../screens/AppScreens/AddStore';
+import AlcoholBrands from '../screens/AppScreens/AlcoholBrands';
+import AddBrand from '../screens/AppScreens/AddBrand';
+import SubScription from '../screens/AppScreens/SubsScription';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -55,6 +62,41 @@ const AppStack = () => {
       <Stack.Screen
         component={Compare}
         name="compare"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={FavouriteList}
+        name="FavouriteList"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={ViewItems}
+        name="ViewItems"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={AddItem}
+        name="AddItem"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={AddStore}
+        name="AddStore"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={AlcoholBrands}
+        name="AlcoholBrands"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={AddBrand}
+        name="AddBrand"
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        component={SubScription}
+        name="SubScription"
         options={{headerShown: false}}
       />
     </Stack.Navigator>

@@ -1,16 +1,19 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import RenderImages from './RenderImages';
 import {Typography} from './Typography';
 import IMAGES from '../utils/Images';
 import {useAppContext} from './AppContext';
+import ConfirmModal from './ConfirmModal';
 
 const RenderStores = () => {
   const {windowWidth} = useAppContext();
+  const [isOpen, setIsOpen] = useState(false);
+  const [loader, setLoader] = useState(false);
 
   return (
     <View style={styles.favoriteView}>
-      <Pressable style={styles.deleteIcon}>
+      <Pressable style={styles.deleteIcon} onPress={() => setIsOpen(true)}>
         <RenderImages
           source={IMAGES.deleteicon}
           style={{width: 18, height: 18}}
@@ -38,6 +41,17 @@ const RenderStores = () => {
           </Typography>
         </View>
       </View>
+      <ConfirmModal
+        isOpen={isOpen}
+        loading={loader}
+        handleClose={() => setIsOpen(false)}
+        title="Delete"
+        description="Are you sure you want to delete the store?"
+        onYesClick={() => removeUser()}
+        onNoClick={() => setIsOpen(false)}
+        cancelText="No"
+        confirmText="Yes"
+      />
     </View>
   );
 };

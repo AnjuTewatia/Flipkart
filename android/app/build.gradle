@@ -73,12 +73,12 @@ android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
-
     namespace "com.drinkmate"
     defaultConfig {
         applicationId "com.drinkmate"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
+  missingDimensionStrategy 'react-native-camera', 'general' 
         versionCode 1
         versionName "1.0"
     }

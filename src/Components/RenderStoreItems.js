@@ -1,14 +1,17 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import RenderImages from './RenderImages';
 import {Typography} from './Typography';
 import IMAGES from '../utils/Images';
 import {useAppContext} from './AppContext';
 import ConfirmPrice from './ConfirmPriceButton';
+import {EmptyHeart} from '../Icons';
+import ConfirmModal from './ConfirmModal';
 
-const RenderStoreItems = () => {
+const RenderStoreItems = ({heartIcon}) => {
   const {windowWidth} = useAppContext();
-
+  const [isOpen, setIsOpen] = useState(false);
+  const [loader, setLoader] = useState(false);
   return (
     <View style={[styles.favoriteView]}>
       <RenderImages
@@ -21,11 +24,17 @@ const RenderStoreItems = () => {
           zindex: 999,
         }}
       />
-      <Pressable style={styles.deleteIcon}>
-        <RenderImages
-          source={IMAGES.deleteicon}
-          style={{width: 18, height: 18}}
-        />
+      <Pressable
+        style={styles.deleteIcon}
+        onPress={() => !heartIcon && setIsOpen(true)}>
+        {heartIcon ? (
+          <EmptyHeart />
+        ) : (
+          <RenderImages
+            source={IMAGES.deleteicon}
+            style={{width: 18, height: 18}}
+          />
+        )}
       </Pressable>
       <RenderImages
         source={IMAGES.arrowimg}
@@ -65,6 +74,9 @@ const RenderStoreItems = () => {
             alignItems: 'center',
             marginVertical: 5,
           }}>
+          <Typography type="sm" style={styles.brandname}>
+            Bacardi
+          </Typography>
           <RenderImages
             source={IMAGES.tagicon}
             style={{width: 18, height: 18}}
@@ -77,11 +89,22 @@ const RenderStoreItems = () => {
             ]}>
             $43
           </Typography>
-          <View style={{position: 'absolute', right: 0, bottom: -2}}>
+          <View style={{position: 'absolute', right: 50, bottom: -2}}>
             <ConfirmPrice title={'Confirm Price'} />
           </View>
         </View>
       </View>
+      <ConfirmModal
+        isOpen={isOpen}
+        loading={loader}
+        handleClose={() => setIsOpen(false)}
+        title="Delete"
+        description="Are you sure you want to delete the item?"
+        onYesClick={() => removeUser()}
+        onNoClick={() => setIsOpen(false)}
+        cancelText="No"
+        confirmText="Yes"
+      />
     </View>
   );
 };
@@ -91,7 +114,7 @@ export default RenderStoreItems;
 const styles = StyleSheet.create({
   favoriteView: {
     width: '99%',
-    maxHeight: 120,
+    maxHeight: 130,
     backgroundColor: '#fff',
     elevation: 4,
     borderRadius: 8,
@@ -119,5 +142,10 @@ const styles = StyleSheet.create({
     color: '#6E6F76',
     fontSize: 13,
     marginHorizontal: 5,
+  },
+  brandname: {
+    fontSize: 14,
+    color: '#99999E',
+    marginRight: 10,
   },
 });

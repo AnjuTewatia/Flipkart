@@ -5,8 +5,9 @@ import {
   ScrollView,
   Pressable,
   FlatList,
+  Platform,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import {Typography} from '../../Components/Typography';
 import Common from '../../utils/common';
@@ -15,15 +16,23 @@ import IMAGES from '../../utils/Images';
 import {useAppContext} from '../../Components/AppContext';
 import {RightArrow} from '../../Icons';
 import Button from '../../Components/Button';
+import LinearGradient from 'react-native-linear-gradient';
+import ConfirmModal from '../../Components/ConfirmModal';
+import useFetch from '../../utils/useFetch';
 
 const Profile = ({navigation}) => {
   return (
-    <AppBaseComponent title={'Profile'} renderChild={Content({navigation})} />
+    <AppBaseComponent
+      title={'Profile'}
+      height={'94%'}
+      renderChild={Content({navigation})}
+    />
   );
 };
 
 const Content = ({navigation}) => {
-  const {windowWidth, removeUser} = useAppContext();
+  const {windowWidth, removeUser, device_id} = useAppContext();
+  const [isOpen, setIsOpen] = useState(false);
 
   const Options = [
     {
@@ -91,8 +100,25 @@ const Content = ({navigation}) => {
       </Pressable>
     );
   };
+
+  const [logout, {response, loading, error}] = useFetch('logout', {
+    method: 'POST',
+  });
+
+  const handlelogout = async () => {
+    const res = await logout({
+      device_id: device_id,
+      device_token: '2222',
+      device_type: Platform.OS,
+    });
+    if (res) {
+      setIsOpen(false);
+      removeUser();
+    }
+  };
+
   return (
-    <View style={Common.container}>
+    <ScrollView style={Common.container} showsVerticalScrollIndicator={false}>
       <View style={styles.profilesection}>
         <Pressable
           style={styles.editIcon}
@@ -129,23 +155,78 @@ const Content = ({navigation}) => {
           </Typography>
         </View>
       </View>
+
+      <LinearGradient
+        colors={['#8C2457', '#F87E7D']}
+        start={{x: 0, y: 0}}
+        end={{x: 1, y: 0}}
+        style={[styles.linearGradient]}>
+        <Typography type="h2" style={styles.subscriptiontitle}>
+          Subscription Plan
+        </Typography>
+        <View
+          style={{
+            flexDirection: 'row',
+            width: '100%',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}>
+          <Typography type="h2" style={styles.price}>
+            $9.99{' '}
+            <Typography type="h4" style={{color: '#fff'}}>
+              {' '}
+              / month.
+            </Typography>
+          </Typography>
+          <Pressable
+            style={styles.viewBtn}
+            onPress={() => navigation.navigate('SubScription')}>
+            <Typography type="h6" style={{color: '#fff'}}>
+              View Details
+            </Typography>
+          </Pressable>
+        </View>
+      </LinearGradient>
       <View style={styles.OtherOption}>
-        <Typography type="label">Other Options</Typography>
+        <Typography type="label" style={{fontWeight: '700', gap: 24}}>
+          Other Options
+        </Typography>
         <FlatList
           data={Options}
           keyExtractor={item => item?.title}
           renderItem={RenderItem}
         />
       </View>
-      <View
+      <Pressable
+        onPress={() => setIsOpen(true)}
         style={{
-          position: 'absolute',
-          width: '100%',
-          bottom: 20,
+          padding: 8,
+          marginVertical: 20,
+          left: 3,
+          alignSelf: 'flex-start',
+          flexDirection: 'row',
+          alignItems: 'center',
         }}>
-        <Button title={'Log Out'} onPress={removeUser} />
-      </View>
-    </View>
+        <RenderImages source={IMAGES.logout} style={{width: 18, height: 18}} />
+        <Typography
+          type="h5"
+          style={{color: '#8C2457', marginHorizontal: 8, fontSize: 18}}>
+          Log Out
+        </Typography>
+      </Pressable>
+
+      <ConfirmModal
+        isOpen={isOpen}
+        loading={loading}
+        handleClose={() => setIsOpen(false)}
+        title="Log Out"
+        description="Are you sure you want to logout your account?"
+        onYesClick={() => handlelogout()}
+        onNoClick={() => setIsOpen(false)}
+        cancelText="No"
+        confirmText="Yes"
+      />
+    </ScrollView>
   );
 };
 
@@ -256,5 +337,32 @@ const styles = StyleSheet.create({
   },
   OtherOption: {
     marginTop: 10,
+  },
+  linearGradient: {
+    width: '98%',
+    alignSelf: 'center',
+    height: 103,
+    borderRadius: 8,
+    padding: 10,
+    paddingHorizontal: 15,
+    marginVertical: 10,
+  },
+  subscriptiontitle: {
+    color: '#fff',
+    marginVertical: 5,
+    fontWeight: '600',
+    fontSize: 20,
+  },
+  price: {
+    color: '#fff',
+    marginVertical: 5,
+    fontWeight: '600',
+    fontSize: 34,
+  },
+  viewBtn: {
+    borderWidth: 1,
+    borderColor: '#fff',
+    padding: 10,
+    borderRadius: 6,
   },
 });

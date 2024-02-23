@@ -12,6 +12,7 @@ import {Typography} from '../Components/Typography';
 import {WhiteBackButton} from '../Icons';
 import Common from '../utils/common';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {log} from 'react-native-reanimated';
 
 const AppBaseComponent = ({
   title,
@@ -20,6 +21,8 @@ const AppBaseComponent = ({
   navigation,
   rightButton,
   height,
+  topPadding,
+  paddingHorizontal,
 }) => {
   const insets = useSafeAreaInsets();
   const statusBarHeight = insets.top;
@@ -36,7 +39,8 @@ const AppBaseComponent = ({
       <StatusBar
         backgroundColor={'#371841'}
         animated
-        barStyle={'light-content'}></StatusBar>
+        barStyle={'light-content'}
+      />
       <View style={Common.container}>
         <View style={[styles.safeAreaView]}>
           <View style={styles.header}>
@@ -47,7 +51,6 @@ const AppBaseComponent = ({
                 <WhiteBackButton />
               </Pressable>
             )}
-
             <Typography type="h2" style={styles.titleText}>
               {title}
             </Typography>
@@ -55,15 +58,19 @@ const AppBaseComponent = ({
               <View style={styles.rightButton}>{rightButton}</View>
             )}
           </View>
-          <View bounces showsVerticalScrollIndicator={false}>
-            <View
-              style={[
-                styles.content,
-                {paddingTop: 10, height: height ? height : '96%'},
-              ]}>
-              {renderChild}
-            </View>
-          </View>
+          <ScrollView
+            bounces
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={[
+              styles.content,
+              {
+                paddingTop: topPadding ?? 10,
+                height: height ? height : '95%',
+                paddingHorizontal: paddingHorizontal ?? 10,
+              },
+            ]}>
+            {renderChild}
+          </ScrollView>
         </View>
       </View>
     </>
@@ -100,7 +107,7 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 10,
     backgroundColor: '#371841',
-    height: 44,
+    height: 50,
     justifyContent: 'center',
   },
   titleText: {
@@ -122,8 +129,8 @@ const styles = StyleSheet.create({
     display: 'flex',
     alignItems: 'flex-start',
     width: WIDTH,
-    paddingHorizontal: 10,
-    paddingBottom: 5,
+    // : 10,
+    // paddingBottom: 5,
     // backgroundColor: '#fff',
   },
   backButton: {
@@ -136,7 +143,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     marginHorizontal: 10,
     right: 0,
-    zIndex: 999,
+    // zIndex: -999,
   },
 });
 export default AppBaseComponent;

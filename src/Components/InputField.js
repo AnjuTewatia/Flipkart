@@ -1,8 +1,8 @@
-import {Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {Pressable, StyleSheet, TextInput, View, Text} from 'react-native';
 import React, {useState} from 'react';
 import {COLORS} from '../utils/styleConst';
 import {Typography} from './Typography';
-import {EyeCloseIcon, EyeOpenIcon} from '../Icons';
+import {DropDownIcon, EyeCloseIcon, EyeOpenIcon} from '../Icons';
 
 const InputField = ({
   type,
@@ -13,25 +13,45 @@ const InputField = ({
   name,
   error,
   style,
+  bgcolor,
+  dropdown,
+  options,
+  setCategoryId,
   ...rest
 }) => {
   const isPassword = type === 'password';
   const [showPass, setShowPass] = useState(false);
 
+  const [showDropdown, setShowDropdown] = useState(false); // State to manage dropdown visibility
+
   const handleEyeToggle = e => {
     e.stopPropagation();
     setShowPass(!showPass);
   };
+  const handleDropdownToggle = () => {
+    setShowDropdown(!showDropdown);
+  };
 
+  const handleOptionSelect = (categoryName, categoryId) => {
+    setCategoryId(categoryId);
+    formik?.setFieldValue(name, categoryName);
+    setShowDropdown(false);
+  };
   return (
     <View style={styles.inputContainer}>
-      <Typography type="xs" style={styles.label}>
-        {label}
-      </Typography>
-      <View
+      {label && (
+        <Typography type="xs" style={styles.label}>
+          {label}
+        </Typography>
+      )}
+      <Pressable
+        onPress={() => {
+          dropdown ? handleDropdownToggle() : null;
+        }}
         style={[
           styles.textInput,
           style,
+
           formik?.errors[name] &&
             formik?.touched[name] && {
               borderWidth: 1,
@@ -41,9 +61,15 @@ const InputField = ({
               shadowRadius: 4,
               elevation: 4, // For Android
             },
+          {backgroundColor: bgcolor ? bgcolor : '#F5F5F5'},
         ]}>
+        {dropdown && (
+          <View style={{position: 'absolute', right: 20}}>
+            <DropDownIcon />
+          </View>
+        )}
         <TextInput
-          editable={isDateField ? false : true}
+          editable={!dropdown}
           cursorColor={COLORS.darkGrey}
           placeholderTextColor={COLORS.placeholder}
           onChangeText={formik?.handleChange(name)}
@@ -59,7 +85,19 @@ const InputField = ({
             {showPass ? <EyeOpenIcon /> : <EyeCloseIcon />}
           </Pressable>
         )}
-      </View>
+      </Pressable>
+      {showDropdown && dropdown && (
+        <View style={styles.dropdown}>
+          {options?.map((option, index) => (
+            <Pressable
+              key={index}
+              onPress={() => handleOptionSelect(option?.name, option?.id)}
+              style={styles.option}>
+              <Typography type="p">{option?.name}</Typography>
+            </Pressable>
+          ))}
+        </View>
+      )}
       {error ? (
         <Typography style={styles.error} type="error">
           {error}
@@ -95,7 +133,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     fontSize: 14,
-    backgroundColor: '#F5F5F5',
+
     height: 58,
     borderRadius: 8,
     padding: 10,
@@ -123,5 +161,28 @@ const styles = StyleSheet.create({
     // top: '100%',
     marginTop: 4,
     left: 6,
+  },
+  dropdown: {
+    position: 'absolute',
+    top: '100%',
+    left: 0,
+    right: 0,
+    backgroundColor: '#FFFFFF',
+    borderBottomLeftRadius: 8,
+    borderBottomRightRadius: 8,
+
+    // elevation: 3,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    zIndex: 999,
+  },
+  option: {
+    paddingVertical: 10,
+    paddingHorizontal: 16,
   },
 });

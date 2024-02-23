@@ -20,11 +20,11 @@ const BottomSheet = ({isVisible, onClose, navigation}) => {
     event.stopPropagation(); // Prevents the press event from propagating to the overlay Pressable
   };
 
-  const handleNavigation = (type, route) => {
+  const handleNavigation = (type, route, title) => {
     setType(type);
     setTimeout(() => {
       onClose();
-      navigation.navigate(route);
+      navigation.navigate(route, title);
     }, 100);
   };
   return (
@@ -79,7 +79,7 @@ const BottomSheet = ({isVisible, onClose, navigation}) => {
                 styles.option,
                 {backgroundColor: type === 1 ? '#8C2457' : '#E6E6E7'},
               ]}
-              onPress={() => handleNavigation(1, 'compare')}>
+              onPress={() => handleNavigation(1, 'compare', 'Compare')}>
               <Typography
                 type="h4"
                 style={[
@@ -94,7 +94,7 @@ const BottomSheet = ({isVisible, onClose, navigation}) => {
                 styles.option,
                 {backgroundColor: type === 2 ? '#8C2457' : '#E6E6E7'},
               ]}
-              onPress={() => setType(2)}>
+              onPress={() => handleNavigation(2, 'compare', 'Calculate')}>
               <Typography
                 type="h4"
                 style={[
@@ -109,7 +109,7 @@ const BottomSheet = ({isVisible, onClose, navigation}) => {
                 styles.option,
                 {backgroundColor: type === 3 ? '#8C2457' : '#E6E6E7'},
               ]}
-              onPress={() => setType(3)}>
+              onPress={() => handleNavigation(3, 'FavouriteList', '')}>
               <Typography
                 type="h4"
                 style={[
@@ -124,7 +124,7 @@ const BottomSheet = ({isVisible, onClose, navigation}) => {
                 styles.option,
                 {backgroundColor: type === 4 ? '#8C2457' : '#E6E6E7'},
               ]}
-              onPress={() => setType(4)}>
+              onPress={() => handleNavigation(4, 'ViewItems', 'Calculate')}>
               <Typography
                 type="h4"
                 style={[

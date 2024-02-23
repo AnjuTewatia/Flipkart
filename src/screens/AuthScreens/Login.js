@@ -1,4 +1,4 @@
-import {StyleSheet, View, Image, Pressable} from 'react-native';
+import {StyleSheet, View, Image, Pressable, Platform} from 'react-native';
 import React from 'react';
 import AuthBaseComponent from '../../BaseComponents/AuthBaseComponent';
 import InputField from '../../Components/InputField';
@@ -10,6 +10,9 @@ import IMAGES from '../../utils/Images';
 import RenderImages from '../../Components/RenderImages';
 import Common from '../../utils/common';
 import {useAppContext} from '../../Components/AppContext';
+import useFetch from '../../utils/useFetch';
+import Toast from 'react-native-toast-message';
+import {saveLocalLoginDetail} from '../../utils/functions';
 
 const Login = ({navigation}) => {
   return (
@@ -22,7 +25,7 @@ const Login = ({navigation}) => {
   );
 };
 const Content = ({navigation}) => {
-  const {setUser} = useAppContext();
+  const {setUserData, device_id} = useAppContext();
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -30,10 +33,42 @@ const Content = ({navigation}) => {
     },
     validationSchema: loginValidationScheme,
     onSubmit: values => {
-      setUser();
-      console.log(values);
+      handleloginUser(values);
     },
   });
+
+  const [loginuser, {response, loading, error}] = useFetch('login', {
+    method: 'POST',
+  });
+
+  const handleloginUser = async values => {
+    const payload = {
+      ...values,
+      device_type: Platform.OS,
+      device_id: device_id,
+      device_token: '1234',
+    };
+    const res = await loginuser(payload);
+    const resData = res?.data;
+    if (res?.data?.is_verified == 1) {
+      Toast.show({
+        type: 'success',
+        text1: res?.message,
+      });
+      setUserData(resData?.token);
+      saveLocalLoginDetail(resData?.token);
+    } else {
+      Toast.show({
+        type: 'info',
+        text1: res?.message,
+      });
+      navigation.navigate('otpScreen', {
+        email: resData?.email,
+        uuid: resData?.uuid,
+        type: 'login',
+      });
+    }
+  };
 
   return (
     <View style={Common.container}>
@@ -58,8 +93,11 @@ const Content = ({navigation}) => {
           Forgot Password
         </Typography>
       </Pressable>
-
-      <Button title="Log In" onPress={() => formik.handleSubmit()} />
+      <Button
+        title="Log In"
+        onPress={() => formik.handleSubmit()}
+        loading={loading}
+      />
 
       <Pressable
         style={[styles.Signup, {width: '60%'}]}

@@ -23,7 +23,7 @@ export const Typography: React.FC<IProps> = ({
   children,
   ...rest
 }) => {
-  const fontFamily = 'DMSans_18pt-Regular';
+  const fontFamily = 'DMSans-Thin';
   const styles = StyleSheet.create({
     h1: {
       fontSize: 30,
@@ -66,25 +66,25 @@ export const Typography: React.FC<IProps> = ({
       fontSize: 16,
       lineHeight: 16 * 1.25,
       color: COLORS.heading,
-      fontFamily: 'mont400',
+      fontFamily: fontFamily,
     },
     sm: {
       fontSize: 14,
       lineHeight: 14 * 1.45,
       color: white ? COLORS.lightWhite : COLORS.grey,
-      fontFamily: 'mont400',
+      fontFamily: fontFamily,
     },
     xs: {
       fontSize: 12,
       lineHeight: 12 * 1.35,
       color: white ? COLORS.lightWhite : COLORS.grey,
-      fontFamily: 'mont400',
+      fontFamily: fontFamily,
     },
     error: {
       fontSize: 11,
       lineHeight: 12,
       color: COLORS.error,
-      fontFamily: 'mont400',
+      fontFamily: fontFamily,
     },
   });
   return (

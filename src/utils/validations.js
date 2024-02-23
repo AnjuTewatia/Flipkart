@@ -46,11 +46,11 @@ export const confirmPasswordSchema = reference =>
     .required('Confirm password is required.');
 
 export const signUpValidationScheme = yup.object().shape({
-  name: nameSchema(
+  first_name: nameSchema(
     'First name is required.',
     'First name should maximum 20 characters.',
   ),
-  surname: nameSchema(
+  last_name: nameSchema(
     'Last name is required.',
     'Last name should maximum 20 characters.',
   ),
@@ -89,4 +89,27 @@ export const editProfileScheme = yup.object().shape({
   name: editnameSchema('First name should maximum 20 characters.'),
   surname: editnameSchema('Last name should maximum 20 characters.'),
   email: editemailSchema,
+});
+
+export const addItemValidation = yup.object().shape({
+  itenName: editnameSchema('First name should maximum 20 characters.'),
+  brandName: editnameSchema('First name should maximum 20 characters.'),
+});
+
+export const addBrandValidation = yup.object().shape({
+  name: yup
+    .string()
+    .trim()
+    .required('Brand name is required.')
+    .max(50, 'Brand name should maximum 50 characters.'),
+  category: nameSchema('Category is required.'),
+});
+
+export const addStoreValidation = yup.object().shape({
+  name: yup
+    .string()
+    .trim()
+    .required('Store name is required.')
+    .max(50, 'Store name should maximum 50 characters.'),
+  address: nameSchema('Address is required.'),
 });

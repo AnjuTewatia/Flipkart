@@ -1,4 +1,4 @@
-import {Pressable, StyleSheet, View} from 'react-native';
+import {Platform, Pressable, StyleSheet, View} from 'react-native';
 import React from 'react';
 import Common from '../../utils/common';
 import AuthBaseComponent from '../../BaseComponents/AuthBaseComponent';
@@ -7,6 +7,9 @@ import Button from '../../Components/Button';
 import {useFormik} from 'formik';
 import {signUpValidationScheme} from '../../utils/validations';
 import {Typography} from '../../Components/Typography';
+import useFetch from '../../utils/useFetch';
+import {useAppContext} from '../../Components/AppContext';
+import Toast from 'react-native-toast-message';
 
 const SignUp = ({navigation}) => {
   return (
@@ -19,26 +22,59 @@ const SignUp = ({navigation}) => {
   );
 };
 const Content = ({navigation}) => {
+  const {device_id} = useAppContext();
+
+  const [registerUser, {response, loading, error}] = useFetch('register', {
+    method: 'POST',
+  });
+
   const formik = useFormik({
     initialValues: {
-      name: '',
-      surname: '',
+      first_name: '',
+      last_name: '',
       email: '',
       password: '',
       confirmPassword: '',
     },
     validationSchema: signUpValidationScheme,
     onSubmit: values => {
-      navigation.navigate('otpScreen', {email: values?.email});
+      handleRegister(values);
     },
   });
+
+  const handleRegister = async values => {
+    const payload = {
+      ...values,
+      device_type: Platform.OS,
+      device_id: device_id,
+      device_token: '1234',
+    };
+    try {
+      const res = await registerUser(payload);
+      const resData = res?.data;
+      if (res) {
+        Toast.show({
+          type: 'success',
+          text1: res?.message,
+        });
+        navigation.navigate('otpScreen', {
+          email: resData?.email,
+          uuid: resData?.uuid,
+          type: 'register',
+        });
+      }
+    } catch (error) {
+      console.log('cathc', error);
+    }
+  };
+
   return (
     <View style={Common.container}>
       <InputField
         formik={formik}
         maxLength={20}
         type="name"
-        name="name"
+        name="first_name"
         label={'First Name'}
         placeholder="Enter Name"
       />
@@ -46,7 +82,7 @@ const Content = ({navigation}) => {
         formik={formik}
         maxLength={20}
         type="surname"
-        name="surname"
+        name="last_name"
         label={'Last name'}
         placeholder="Enter Last Name"
       />
@@ -71,7 +107,11 @@ const Content = ({navigation}) => {
         label={'Confirm Password'}
         placeholder="Enter Confirm Password"
       />
-      <Button title="Sign Up" onPress={() => formik.handleSubmit()} />
+      <Button
+        title="Sign Up"
+        loading={loading}
+        onPress={() => formik.handleSubmit()}
+      />
       <Pressable
         style={[styles.login, {width: '80%'}]}
         onPress={() => navigation.navigate('login')}>

@@ -11,6 +11,11 @@ const activeProfile = require('../assets/Bottonicons/activeProfile.png');
 const unActiveProfile = require('../assets/Bottonicons/unActiveProfile.png');
 const storebg = require('../assets/appImages/searchbg.png');
 const searchbg = require('../assets/appImages/storebg.png');
+const brandbg = require('../assets/appImages/brand.png');
+const logout = require('../assets/appImages/logout.png');
+const subPlanbg = require('../assets/appImages/subplan.png');
+const subs = require('../assets/appImages/subs.png');
+
 const searchicon = require('../assets/icons/search.png');
 const storeicon = require('../assets/icons/store.png');
 const locationicon = require('../assets/icons/location.png');
@@ -28,6 +33,8 @@ const arrowimg = require('../assets/appImages/arrowIcon.png');
 const profileImg = require('../assets/appImages/profile.png');
 const profiledelete = require('../assets/appImages/profiledelete.png');
 const changePassword = require('../assets/appImages/changePassword.png');
+const barCode = require('../assets/appImages/barcode.png');
+
 const earnedPoints = require('../assets/appImages/earnedPoints.png');
 const bestOffer = require('../assets/appImages/bestOffer.png');
 
@@ -68,6 +75,11 @@ const IMAGES = {
   scanIcon,
   addIcon,
   sortby,
+  barCode,
+  brandbg,
+  logout,
+  subPlanbg,
+  subs,
 };
 
 export default IMAGES;

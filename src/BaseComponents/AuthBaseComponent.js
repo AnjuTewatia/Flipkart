@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {BackButton} from '../Icons';
-import {COLORS} from '../utils/styleConst';
+import {COLORS, Height, WIDTH} from '../utils/styleConst';
 import {Typography} from '../Components/Typography';
 
 const AuthBaseComponent = ({
@@ -22,48 +22,58 @@ const AuthBaseComponent = ({
   navigation,
 }) => {
   return (
-    <ImageBackground
-      resizeMode="cover"
-      style={styles.bgContainer}
-      source={require('../assets/authImages/authbg.png')}>
-      <StatusBar
-        translucent
-        backgroundColor="transparent"
-        barStyle={'dark-content'}
+    <>
+      <Image
+        style={{
+          position: 'absolute',
+          width: WIDTH,
+          height: Height,
+        }}
+        resizeMode="cover"
+        source={require('../assets/authImages/authbg.png')}
       />
-      <SafeAreaView style={styles.safeAreaView}>
+      <View style={styles.bgContainer}>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle={'dark-content'}
+        />
         <KeyboardAwareScrollView
           keyboardDismissMode="interactive"
           extraHeight={180}
           keyboardShouldPersistTaps="handled">
-          {backButton && (
-            <Pressable
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}>
-              <BackButton />
-            </Pressable>
-          )}
-          <View style={styles.logoView}>
-            <Image
-              style={styles.logoimg}
-              source={require('../assets/authImages/Logo.png')}
-            />
-            <Typography type="h1" style={styles.logoText}>
-              DrinkMate
-            </Typography>
-          </View>
-          <View style={styles.formView}>
-            <Typography type="h2" style={styles.titleText}>
-              {title}
-            </Typography>
-            <Typography type="sm" style={styles.instructionText}>
-              {instruction}
-            </Typography>
-          </View>
-          <View style={styles.content}>{renderChild}</View>
+          <SafeAreaView style={styles.safeAreaView}>
+            {backButton && (
+              <Pressable
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}>
+                <BackButton />
+              </Pressable>
+            )}
+
+            <View style={styles.logoView}>
+              <Image
+                style={styles.logoimg}
+                source={require('../assets/authImages/Logo.png')}
+              />
+              <Typography type="h1" style={styles.logoText}>
+                DrinkMate
+              </Typography>
+            </View>
+            <View style={styles.formView}>
+              <Typography type="h2" style={styles.titleText}>
+                {title}
+              </Typography>
+              <Typography type="sm" style={styles.instructionText}>
+                {instruction}
+              </Typography>
+            </View>
+            <View style={styles.content}>{renderChild}</View>
+          </SafeAreaView>
         </KeyboardAwareScrollView>
-      </SafeAreaView>
-    </ImageBackground>
+        {/* </ImageBackground> */}
+      </View>
+    </>
   );
 };
 
@@ -71,6 +81,8 @@ const styles = StyleSheet.create({
   bgContainer: {
     flex: 1,
     position: 'relative',
+    width: '100%',
+    height: Height,
   },
   safeAreaView: {
     flex: 1,
@@ -80,6 +92,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flexDirection: 'row',
     marginVertical: 30,
+    marginTop: 60,
   },
   logoimg: {
     width: 47,
@@ -118,8 +131,8 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: StatusBar.currentHeight + 10,
-    left: 15,
+    top: StatusBar.currentHeight + 15,
+    left: 10,
     zIndex: 999,
     width: 30,
     height: 30,
