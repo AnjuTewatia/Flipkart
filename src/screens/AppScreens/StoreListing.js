@@ -1,14 +1,22 @@
-import {Pressable, StyleSheet, TextInput, View} from 'react-native';
-import React, {useState} from 'react';
+import {
+  ActivityIndicator,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import RenderImages from '../../Components/RenderImages';
 import IMAGES from '../../utils/Images';
-import {Typography} from '../../Components/Typography';
 import {useAppContext} from '../../Components/AppContext';
-import {EmptyHeart, RightArrow} from '../../Icons';
 import BottomSheet from '../../Components/BottomSheet';
 import Common from '../../utils/common';
 import RightHeaderButton from '../../Components/RightHeaderButton';
+import useFetch from '../../utils/useFetch';
+import RenderStoreListing from '../../Components/RenderStoreListing';
+import Shimmer from '../../Components/Shimmer';
 
 const StoreListing = ({navigation, route}) => {
   const type = route?.params?.type;
@@ -17,6 +25,7 @@ const StoreListing = ({navigation, route}) => {
       title={'Store Listing'}
       navigation={navigation}
       backButton
+      height={'97%'}
       renderChild={Content({navigation, type})}
       rightButton={
         type === 'store' ? (
@@ -32,14 +41,74 @@ const StoreListing = ({navigation, route}) => {
 };
 
 const Content = ({navigation, type}) => {
-  const {windowWidth} = useAppContext();
+  const [searchvalue, setSearchValue] = useState('');
+  const [paginationValue, setPaginationValue] = useState(10);
+  const [pageNo, setPageNo] = useState(1);
+  const [data, setdata] = useState([]);
+  const [bottomLoader, setBottomLoader] = useState(false);
 
-  const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
+  const [totalRecords, setTotalRecords] = useState('');
+  const [currentRecord, setCurrentRecord] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  const toggleBottomSheet = () => {
-    setBottomSheetVisible(!bottomSheetVisible);
+  const [storeListing, {response, error}] = useFetch('get-stores', {
+    method: 'POST',
+  });
+
+  const handleStoreListing = async () => {
+    try {
+      const res = await storeListing({
+        keywords: searchvalue,
+        pagination_value: paginationValue,
+        page: pageNo,
+      });
+
+      setdata(prevData => prevData.concat(res?.data?.data));
+      setTotalRecords(res?.data?.total);
+      setCurrentRecord(res?.data?.to);
+      setBottomLoader(false);
+    } catch (error) {
+      console.error('Error fetching store listing:', error);
+    }
   };
 
+  useEffect(() => {
+    handleStoreListing();
+    setTimeout(() => {
+      setLoading(false);
+    }, 1500);
+  }, [pageNo, searchvalue]);
+
+  const RenderItem = ({item}) => {
+    return (
+      <>
+        {loading ? (
+          <Shimmer />
+        ) : (
+          <RenderStoreListing item={item} type={type} navigation={navigation} />
+        )}
+      </>
+    );
+  };
+  const handleReachedEnd = async () => {
+    setBottomLoader(false);
+    if (!loading && data.length > 9 && data.length < totalRecords) {
+      if (currentRecord < totalRecords) {
+        setBottomLoader(true);
+        setPageNo(prev => prev + 1);
+      }
+    }
+  };
+
+  const handleSearchChange = text => {
+    setSearchValue(text);
+
+    const timeoutId = setTimeout(() => {
+      setdata([]);
+      handleStoreListing(); // Call API after a delay
+    }, 500); // Adjust delay as needed (e.g., 300ms, 500ms)
+    return () => clearTimeout(timeoutId); // Cleanup function for unmounting
+  };
   return (
     <>
       <View style={[Common.container, styles.storeContainer]}>
@@ -48,56 +117,28 @@ const Content = ({navigation, type}) => {
           <TextInput
             style={styles.input}
             placeholder="Search store by name"
+            value={searchvalue}
+            onChangeText={text => handleSearchChange(text)}
             placeholderTextColor={'#99999E'}></TextInput>
         </View>
 
-        <Pressable
-          style={styles.favoriteView}
-          onPress={() => {
-            type === 'search'
-              ? navigation.navigate('storeItems')
-              : toggleBottomSheet();
-          }}>
-          {type === 'search' && (
-            <Pressable style={styles.deleteIcon}>
-              <View style={styles.rightarrow}>
-                <RightArrow />
+        <FlatList
+          contentContainerStyle={{paddingBottom: 10}}
+          data={data}
+          extraData={data}
+          keyExtractor={item => item?.id}
+          showsVerticalScrollIndicator={false}
+          renderItem={RenderItem}
+          onEndReached={handleReachedEnd}
+          ListFooterComponent={
+            bottomLoader ? (
+              <View style={{marginBottom: 40}}>
+                <ActivityIndicator size="large" color={'#000'} />
               </View>
-            </Pressable>
-          )}
-          <Pressable style={styles.EmptyHeart}>
-            <View style={styles.emptyHeart}>
-              <EmptyHeart />
-            </View>
-          </Pressable>
-          <RenderImages
-            source={IMAGES.favoriteimg}
-            style={{width: '18%', minHeight: '85%'}}
-          />
-          <View style={{marginHorizontal: 15}}>
-            <Typography
-              type="h3"
-              style={[styles.title, {width: windowWidth - 140}]}>
-              Violet Crumb-Ball
-            </Typography>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <RenderImages
-                source={IMAGES.locationicon}
-                style={{width: 16, height: 18}}
-              />
-              <Typography
-                type="h5"
-                style={[styles.text, {width: windowWidth - 155}]}>
-                Akshya Nagar 1st Block 1st Cross Rammurthy nagar
-              </Typography>
-            </View>
-          </View>
-        </Pressable>
-        <BottomSheet
-          navigation={navigation}
-          isVisible={bottomSheetVisible}
-          onClose={toggleBottomSheet}
-          onRequestClose={toggleBottomSheet}
+            ) : (
+              <></>
+            )
+          }
         />
       </View>
     </>
@@ -106,7 +147,7 @@ const Content = ({navigation, type}) => {
 export default StoreListing;
 
 const styles = StyleSheet.create({
-  storeContainer: {
+  container: {
     flex: 1,
   },
 
@@ -137,54 +178,5 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 15,
     padding: 2,
-  },
-  favoriteView: {
-    width: '99%',
-    maxHeight: 100,
-    backgroundColor: '#fff',
-    elevation: 4,
-    borderRadius: 8,
-    alignSelf: 'center',
-    flexDirection: 'row',
-    paddingHorizontal: 6,
-    alignItems: 'center',
-    marginVertical: 12,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.3,
-    shadowRadius: 4,
-    elevation: 4,
-  },
-
-  title: {
-    fontWeight: '700',
-    color: '#371841',
-    fontSize: 16,
-  },
-  deleteIcon: {
-    position: 'absolute',
-    top: 6,
-    right: 10,
-  },
-  EmptyHeart: {
-    position: 'absolute',
-    bottom: 6,
-    right: 6,
-  },
-  text: {
-    color: '#6E6F76',
-    fontSize: 13,
-    marginHorizontal: 5,
-  },
-  rightarrow: {
-    width: 25,
-    height: 25,
-    backgroundColor: '#EBE8EC',
-    borderRadius: 20,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  emptyHeart: {
-    width: 25,
-    height: 25,
   },
 });

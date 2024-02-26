@@ -33,6 +33,7 @@
     "react-native-reanimated": "^3.7.1",
     "react-native-safe-area-context": "4.6.3",
     "react-native-screens": "^3.29.0",
+    "react-native-shimmer-placeholder": "^2.0.9",
     "react-native-skeleton-content": "^1.0.28",
     "react-native-svg": "^14.1.0",
     "react-native-toast-message": "^2.2.0",

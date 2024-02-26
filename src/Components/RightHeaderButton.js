@@ -4,11 +4,13 @@ import RenderImages from './RenderImages';
 
 import {Typography} from './Typography';
 
-const RightHeaderButton = ({onPress, icon, title}) => {
+const RightHeaderButton = ({onPress, icon, title, color}) => {
   return (
     <Pressable style={styles.rightbtnContainer} onPress={onPress}>
-      <RenderImages source={icon} style={styles.icon} />
-      <Typography type="sm" style={styles.title}>
+      {icon && <RenderImages source={icon} style={styles.icon} />}
+      <Typography
+        type="sm"
+        style={[styles.title, {color: color ? color : '#F87E7D'}]}>
         {title}
       </Typography>
     </Pressable>
@@ -22,7 +24,7 @@ const styles = StyleSheet.create({
   icon: {width: 17, height: 17, marginHorizontal: 2},
   title: {
     marginHorizontal: 2,
-    color: '#F87E7D',
+
     fontWeight: '500',
     fontSize: 14,
   },

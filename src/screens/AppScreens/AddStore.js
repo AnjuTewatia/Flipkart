@@ -1,16 +1,17 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {FlatList, StyleSheet, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
-import MapView, {Marker} from 'react-native-maps';
-import {WIDTH} from '../../utils/styleConst';
-import InputField from '../../Components/InputField';
+
 import {useFormik} from 'formik';
-import Button from '../../Components/Button';
-import Geolocation from '@react-native-community/geolocation';
-import {LocationMarker} from '../../Icons';
+
 import useFetch from '../../utils/useFetch';
-import {log} from 'react-native-reanimated';
 import {addStoreValidation} from '../../utils/validations';
+
+import {useAppContext} from '../../Components/AppContext';
+import RenderStoreListing from '../../Components/RenderStoreListing';
+import Common from '../../utils/common';
+import RenderImages from '../../Components/RenderImages';
+import IMAGES from '../../utils/Images';
 const AddStore = ({navigation}) => {
   return (
     <AppBaseComponent
@@ -18,101 +19,61 @@ const AddStore = ({navigation}) => {
       backButton
       navigation={navigation}
       height={'97%'}
-      topPadding={0}
-      paddingHorizontal={0}
       renderChild={Content({navigation})}
     />
   );
 };
 
 const Content = ({navigation}) => {
-  const [currentRegion, setCurrentRegion] = useState(null);
+  const {initialRegion} = useAppContext();
 
-  const formik = useFormik({
-    initialValues: {
-      name: '',
-      address: '',
-    },
-    validationSchema: addStoreValidation,
-    onSubmit: values => {
-      handleAddStore(values);
-    },
-  });
+  const [places, setPlaces] = useState([]);
 
-  const [addStore, {response, loading, error}] = useFetch('create-store', {
-    method: 'POST',
-  });
+  const {latitude, longitude} = initialRegion;
 
-  const handleAddStore = async values => {
-    const res = await addStore({
-      ...values,
-      latitude: currentRegion?.latitude,
-      longitude: currentRegion?.longitude,
-    });
+  const getStore = async () => {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522%2C151.1957362&radius=1500&type=liquor_store%7Cbar&key=AIzaSyBYNsU2aU0_SpFhAeQQxKA1744aDM1Gs2I&type=restaurant`,
+      );
+      const data = await response.json();
+
+      // Set the data to the state
+      setPlaces(data?.results);
+    } catch (error) {}
+    // console.log(error);
   };
 
   useEffect(() => {
-    const watchId = Geolocation.watchPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
-        setCurrentRegion({
-          latitude,
-          longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-      },
-      error => console.error(error),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
-
-    return () => Geolocation.clearWatch(watchId);
+    getStore();
   }, []);
 
-  const handleMarkerDragEnd = event => {
-    const {latitude, longitude} = event.nativeEvent.coordinate;
-    setCurrentRegion({
-      latitude,
-      longitude,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    });
+  const RenderItem = ({item}) => {
+    return (
+      <RenderStoreListing
+        item={item}
+        type={'addstore'}
+        navigation={navigation}
+      />
+    );
   };
   return (
     <>
-      <View style={styles.container}>
-        {currentRegion && (
-          <MapView style={styles.map} initialRegion={currentRegion}>
-            <Marker
-              draggable
-              onDragEnd={handleMarkerDragEnd}
-              coordinate={{
-                latitude: currentRegion.latitude,
-                longitude: currentRegion.longitude,
-              }}
-              title="Your Location"
-              description="This is your current location">
-              <LocationMarker />
-            </Marker>
-          </MapView>
-        )}
-        <View style={styles.storeformView}>
-          <InputField
-            maxLength={50}
-            formik={formik}
-            // bgcolor={'#fff'}
-            name="name"
-            label={'Store Name'}
-            placeholder="Enter Store Name"
-          />
-          <InputField
-            formik={formik}
-            name="address"
-            label={'Address'}
-            placeholder="Enter Address"
-          />
-          <Button title={'Save'} onPress={() => formik.handleSubmit()} />
+      <View style={[Common.container, styles.storeContainer]}>
+        <View style={styles.searchContainer}>
+          <RenderImages source={IMAGES.searchicon} style={styles.searchicon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Search store by name"
+            placeholderTextColor={'#99999E'}></TextInput>
         </View>
+        <FlatList
+          contentContainerStyle={{paddingBottom: 10}}
+          data={places}
+          keyExtractor={item => item?.name}
+          showsVerticalScrollIndicator={false}
+          renderItem={RenderItem}
+        />
       </View>
     </>
   );
@@ -120,27 +81,36 @@ const Content = ({navigation}) => {
 export default AddStore;
 
 const styles = StyleSheet.create({
-  container: {
+  storeContainer: {
     flex: 1,
-    width: '100%',
   },
-  map: {
-    flex: 1,
-    ...StyleSheet.absoluteFillObject,
-  },
-  storeformView: {
-    // height: 200,
-    width: WIDTH,
-    alignSelf: 'center',
+
+  searchContainer: {
+    height: 50,
     backgroundColor: '#fff',
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    elevation: 4, // For
-    position: 'absolute',
+    elevation: 4,
+    marginVertical: 8,
+    borderRadius: 8,
+    width: '99%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
     padding: 10,
-    bottom: 0,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+  },
+  searchicon: {
+    width: 16,
+    height: 16,
+    zIndex: 999,
+    marginHorizontal: 2,
+  },
+  input: {
+    width: '94%',
+    marginHorizontal: 4,
+    color: '#000',
+    fontSize: 15,
+    padding: 2,
   },
 });

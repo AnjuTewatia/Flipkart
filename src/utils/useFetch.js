@@ -37,6 +37,7 @@ const useFetch = (url, config) => {
         ...rest,
       })
         .then(response => {
+          console.log(data);
           if (response.data.status === 200) {
             setError(undefined);
             setResponse(response.data);
@@ -55,8 +56,9 @@ const useFetch = (url, config) => {
         })
         .catch(e => {
           const resData = e.response.data;
-
+          console.log('error ==>', resData);
           if (resData?.status === 400) {
+            setError(e?.response);
             Toast.show({
               type: 'error',
               text1: resData?.message ?? resData?.error,
