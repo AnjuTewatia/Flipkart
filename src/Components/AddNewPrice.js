@@ -114,18 +114,11 @@ const AddNewPrice = ({
   onYesClick,
   onNoClick,
   onCrossClick,
-  price,
+  name,
   confirmText,
   cancelText,
+  formik,
 }) => {
-  const formik = useFormik({
-    initialValues: {
-      newPrice: '',
-    },
-    onSubmit: values => {
-      console.log(values);
-    },
-  });
   return (
     <Modal
       visible={isOpen}
@@ -142,7 +135,7 @@ const AddNewPrice = ({
             <View style={styles.modalContent}>
               <Typography type="sm" style={styles.modalPara}>
                 <Typography type="h3" style={styles.price}>
-                  Archie Rose
+                  {name}
                 </Typography>
                 {''} price is not correct kindly update the price.
               </Typography>
@@ -150,8 +143,9 @@ const AddNewPrice = ({
             <InputField
               bgcolor={'#fff'}
               style={styles.input}
+              keyboardType={'number-pad'}
               formik={formik}
-              name="newPrice"
+              name="updated_price"
               placeholder="Enter New Price"
             />
 
@@ -190,7 +184,7 @@ const AddNewPrice = ({
             </View>
 
             <Pressable
-              style={{position: 'absolute', top: 4, right: 4}}
+              style={{position: 'absolute', top: 7, right: 14, zIndex: 999}}
               onPress={onCrossClick}>
               <CrossIcon />
             </Pressable>

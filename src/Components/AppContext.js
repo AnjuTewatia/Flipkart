@@ -3,7 +3,7 @@ import React, {createContext, useContext, useEffect, useState} from 'react';
 import {Dimensions} from 'react-native';
 import {getDeviceId} from 'react-native-device-info';
 import Geolocation from '@react-native-community/geolocation';
-import {check, PERMISSIONS, RESULTS} from 'react-native-permissions';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
 const AppContext = createContext(null);
 
@@ -20,26 +20,9 @@ const AppProvider = ({children}) => {
 
   const [initialRegion, setInitialRegion] = useState(null);
 
-  useEffect(() => {
-    // Fetch current location
-    Geolocation.getCurrentPosition(
-      position => {
-        const {latitude, longitude} = position.coords;
-        setInitialRegion({
-          latitude,
-          longitude,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        });
-      },
-      error => console.error(error),
-      {enableHighAccuracy: true, timeout: 20000, maximumAge: 1000},
-    );
-  }, []);
-
-  const removeUser = async () => {
+  const removeUser = () => {
     setUserData(null);
-    AsyncStorage.clear();
+    AsyncStorage.removeItem('login_user');
   };
   const getUser = async () => {
     try {
@@ -51,6 +34,57 @@ const AppProvider = ({children}) => {
     } catch (error) {
       // Error retrieving data
     }
+  };
+
+  const checkAndRequestLocationPermission = async () => {
+    try {
+      let permission;
+      if (Platform.OS === 'ios') {
+        permission = PERMISSIONS.IOS.LOCATION_WHEN_IN_USE;
+      } else {
+        permission = PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+      }
+      const result = await check(permission);
+
+      if (result !== RESULTS.GRANTED) {
+        const requestResult = await request(permission);
+        if (requestResult == RESULTS.BLOCKED) {
+          console.log('Location permission blocked');
+          return;
+        }
+      }
+      getCurrentLocation();
+    } catch (error) {
+      console.error('Error checking or requesting location permission:', error);
+    }
+  };
+
+  const getCurrentLocation = () => {
+    Geolocation.getCurrentPosition(
+      position => {
+        const {latitude, longitude} = position.coords;
+        setInitialRegion({latitude, longitude});
+        // Do something with latitude and longitude
+      },
+      error => {
+        console.error('Error getting current location:', error);
+        switch (error.code) {
+          case error.PERMISSION_DENIED:
+            console.error('Location permission denied');
+            break;
+          case error.POSITION_UNAVAILABLE:
+            console.error('Position unavailable');
+            break;
+          case error.TIMEOUT:
+            console.error('Location request timed out');
+            break;
+          default:
+            console.error('An unknown error occurred');
+            break;
+        }
+      },
+      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+    );
   };
 
   useEffect(() => {
@@ -70,6 +104,7 @@ const AppProvider = ({children}) => {
         setApiMsg,
         device_id,
         initialRegion,
+        checkAndRequestLocationPermission,
       }}>
       {children}
     </AppContext.Provider>

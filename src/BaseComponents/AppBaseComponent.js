@@ -13,6 +13,7 @@ import {WhiteBackButton} from '../Icons';
 import Common from '../utils/common';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {log} from 'react-native-reanimated';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const AppBaseComponent = ({
   title,
@@ -58,8 +59,11 @@ const AppBaseComponent = ({
               <View style={styles.rightButton}>{rightButton}</View>
             )}
           </View>
-          <ScrollView
+          <KeyboardAwareScrollView
             bounces
+            keyboardDismissMode="interactive"
+            extraHeight={180}
+            keyboardShouldPersistTaps="handled"
             showsVerticalScrollIndicator={false}
             contentContainerStyle={[
               styles.content,
@@ -70,7 +74,7 @@ const AppBaseComponent = ({
               },
             ]}>
             {renderChild}
-          </ScrollView>
+          </KeyboardAwareScrollView>
         </View>
       </View>
     </>

@@ -1,11 +1,11 @@
 // Shimmer.js
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {FlatList, StyleSheet, View} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import {createShimmerPlaceholder} from 'react-native-shimmer-placeholder';
 
 const ShimmerPlaceholder = createShimmerPlaceholder(LinearGradient);
-const Shimmer = ({style, duration, shimmerColors, width}) => {
+const RenderItem = ({style, duration, shimmerColors, width}) => {
   return (
     <View style={[styles.shimmer, {width: width ? width : '100%'}]}>
       <ShimmerPlaceholder
@@ -26,6 +26,15 @@ const Shimmer = ({style, duration, shimmerColors, width}) => {
   );
 };
 
+const Shimmer = ({style, duration, shimmerColors, width}) => {
+  return (
+    <FlatList
+      data={[1, 1, 1, 1, 1, 1, 1]}
+      keyExtractor={item => item}
+      renderItem={RenderItem}
+    />
+  );
+};
 export default Shimmer;
 
 const styles = StyleSheet.create({

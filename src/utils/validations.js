@@ -92,8 +92,26 @@ export const editProfileScheme = yup.object().shape({
 });
 
 export const addItemValidation = yup.object().shape({
-  itenName: editnameSchema('First name should maximum 20 characters.'),
-  brandName: editnameSchema('First name should maximum 20 characters.'),
+  name: nameSchema(
+    'Item name is required.',
+    'Item name should maximum 20 characters.',
+  ),
+  brandName: nameSchema('Brand Category is required.'),
+  alcohol_percentage: yup
+    .number()
+
+    .required('Alcohol percentage is required.')
+    .max(100, 'Percentage must be less than or equal to 100.'),
+  quantity: yup
+    .number()
+    .required('quantity is required')
+    .max(9999, 'quantity must be less than or equal to 9999.'),
+  pack_size: yup
+    .string()
+    .trim()
+    .required('Pack size is required')
+    .max(2, 'quantity should maximum 2 characters.'),
+  price: yup.string().trim().required('Price is required.'),
 });
 
 export const addBrandValidation = yup.object().shape({

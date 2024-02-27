@@ -2,16 +2,13 @@ import {FlatList, StyleSheet, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 
-import {useFormik} from 'formik';
-
-import useFetch from '../../utils/useFetch';
-import {addStoreValidation} from '../../utils/validations';
-
 import {useAppContext} from '../../Components/AppContext';
 import RenderStoreListing from '../../Components/RenderStoreListing';
 import Common from '../../utils/common';
 import RenderImages from '../../Components/RenderImages';
 import IMAGES from '../../utils/Images';
+import Shimmer from '../../Components/Shimmer';
+import NoFound from '../../Components/NoFound';
 const AddStore = ({navigation}) => {
   return (
     <AppBaseComponent
@@ -28,20 +25,21 @@ const Content = ({navigation}) => {
   const {initialRegion} = useAppContext();
 
   const [places, setPlaces] = useState([]);
+  const [loading, setLoading] = useState(false);
 
-  const {latitude, longitude} = initialRegion;
+  // const {latitude, longitude} = initialRegion;
 
   const getStore = async () => {
+    setLoading(true);
     try {
       const response = await fetch(
         `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=-33.8670522%2C151.1957362&radius=1500&type=liquor_store%7Cbar&key=AIzaSyBYNsU2aU0_SpFhAeQQxKA1744aDM1Gs2I&type=restaurant`,
       );
       const data = await response.json();
-
       // Set the data to the state
       setPlaces(data?.results);
     } catch (error) {}
-    // console.log(error);
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -50,11 +48,13 @@ const Content = ({navigation}) => {
 
   const RenderItem = ({item}) => {
     return (
-      <RenderStoreListing
-        item={item}
-        type={'addstore'}
-        navigation={navigation}
-      />
+      <>
+        <RenderStoreListing
+          item={item}
+          type={'addstore'}
+          navigation={navigation}
+        />
+      </>
     );
   };
   return (
@@ -67,13 +67,23 @@ const Content = ({navigation}) => {
             placeholder="Search store by name"
             placeholderTextColor={'#99999E'}></TextInput>
         </View>
-        <FlatList
-          contentContainerStyle={{paddingBottom: 10}}
-          data={places}
-          keyExtractor={item => item?.name}
-          showsVerticalScrollIndicator={false}
-          renderItem={RenderItem}
-        />
+        {loading ? (
+          <Shimmer />
+        ) : (
+          <>
+            {places?.length > 0 ? (
+              <FlatList
+                contentContainerStyle={{paddingBottom: 10}}
+                data={places}
+                keyExtractor={item => item?.name}
+                showsVerticalScrollIndicator={false}
+                renderItem={RenderItem}
+              />
+            ) : (
+              <NoFound title={'No store found at this location'} />
+            )}
+          </>
+        )}
       </View>
     </>
   );

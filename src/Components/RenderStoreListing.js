@@ -47,6 +47,7 @@ const RenderStoreListing = ({item, type, navigation}) => {
   useEffect(() => {
     setIsOpen(false);
   }, [error]);
+
   return (
     <>
       <Pressable
@@ -131,6 +132,7 @@ const RenderStoreListing = ({item, type, navigation}) => {
         confirmText="Yes"
       />
       <BottomSheet
+        item={item}
         navigation={navigation}
         isVisible={bottomSheetVisible}
         onClose={toggleBottomSheet}
@@ -185,7 +187,7 @@ const styles = StyleSheet.create({
   addicon: {
     position: 'absolute',
     top: 10,
-    right: 10,
+    right: 4,
     backgroundColor: '#8C2457',
     margin: 5,
     padding: 5,

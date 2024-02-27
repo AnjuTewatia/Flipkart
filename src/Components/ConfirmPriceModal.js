@@ -93,6 +93,7 @@ const styles = StyleSheet.create({
   },
 });
 const ConfirmPriceModal = ({
+  name,
   loading,
   isOpen,
   handleClose,
@@ -120,9 +121,9 @@ const ConfirmPriceModal = ({
           <View style={styles.modaldialog}>
             <View style={styles.modalContent}>
               <Typography type="sm" style={styles.modalPara}>
-                Archie Rose price is{' '}
+                {name} price is{' '}
                 <Typography type="h3" style={styles.price}>
-                  ${price}
+                  ${parseFloat(price)}
                 </Typography>{' '}
                 please confirm if its correct.
               </Typography>
@@ -161,7 +162,7 @@ const ConfirmPriceModal = ({
             </View>
 
             <Pressable
-              style={{position: 'absolute', top: 4, right: 4}}
+              style={{position: 'absolute', top: 7, right: 14, zIndex: 999}}
               onPress={onCrossClick}>
               <CrossIcon />
             </Pressable>

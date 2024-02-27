@@ -5,11 +5,10 @@ import RenderImages from './RenderImages';
 import IMAGES from '../utils/Images';
 import {useAppContext} from './AppContext';
 
-const BottomSheet = ({isVisible, onClose, navigation}) => {
+const BottomSheet = ({item, isVisible, onClose, navigation}) => {
   if (!isVisible) {
     return null;
   }
-
   const [type, setType] = useState(1);
   const handleOverlayPress = () => {
     onClose();
@@ -57,8 +56,8 @@ const BottomSheet = ({isVisible, onClose, navigation}) => {
               <View style={{marginHorizontal: 15}}>
                 <Typography
                   type="h3"
-                  style={[styles.title, {width: windowWidth - 140}]}>
-                  Violet Crumb-Ball
+                  style={[styles.title, {width: windowWidth - 220}]}>
+                  {item?.name}
                 </Typography>
                 <View style={{flexDirection: 'row', alignItems: 'center'}}>
                   <RenderImages
@@ -68,7 +67,7 @@ const BottomSheet = ({isVisible, onClose, navigation}) => {
                   <Typography
                     type="h5"
                     style={[styles.text, {width: windowWidth - 155}]}>
-                    Akshya Nagar 1st Block 1st Cross Rammurthy nagar
+                    {item?.address}
                   </Typography>
                 </View>
               </View>
@@ -124,7 +123,7 @@ const BottomSheet = ({isVisible, onClose, navigation}) => {
                 styles.option,
                 {backgroundColor: type === 4 ? '#8C2457' : '#E6E6E7'},
               ]}
-              onPress={() => handleNavigation(4, 'ViewItems', 'Calculate')}>
+              onPress={() => handleNavigation(4, 'ViewItems', item)}>
               <Typography
                 type="h4"
                 style={[
@@ -189,12 +188,14 @@ const styles = StyleSheet.create({
   title: {
     fontWeight: '700',
     color: '#371841',
-    fontSize: 16,
+    fontSize: 18,
+    marginTop: -10,
   },
   text: {
     color: '#6E6F76',
-    fontSize: 13,
+    fontSize: 12,
     marginHorizontal: 5,
+    marginVertical: 8,
   },
 });
 

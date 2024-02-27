@@ -1,5 +1,5 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Text, Alert, Modal, Pressable} from 'react-native';
+import {View, StyleSheet, Modal, Pressable} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {WhiteBackButton} from '../Icons';
 import {useAppContext} from './AppContext';
@@ -9,17 +9,10 @@ const Scanner = ({onScan, isOpen, handleClose}) => {
   const {windowWidth} = useAppContext();
   const [scannedData, setScannedData] = useState(null);
 
-  useEffect(() => {
-    if (scannedData) {
-      onScan(scannedData);
-    }
-  }, [scannedData, onScan]);
+  // const handleScan = ({data}) => {
+  //   setScannedData(data);
 
-  const handleScan = ({data}) => {
-    // Display an alert with the scanned QR code data
-    Alert.alert('Scanned QR Code', data, [{text: 'OK', onPress: () => {}}]);
-    setScannedData(data);
-  };
+  // };
 
   return (
     <Modal transparent visible={isOpen} onRequestClose={handleClose}>
@@ -35,7 +28,7 @@ const Scanner = ({onScan, isOpen, handleClose}) => {
           <View style={styles.bottomRightCorner} />
           {/* QR Code Scanner */}
           <QRCodeScanner
-            onRead={handleScan}
+            onRead={onScan}
             containerStyle={styles.scannerContainer}
             cameraStyle={{flex: 1}}
           />

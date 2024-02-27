@@ -12,6 +12,8 @@ import useFetch from '../../utils/useFetch';
 import ConfirmModal from '../../Components/ConfirmModal';
 import Toast from 'react-native-toast-message';
 import {useIsFocused} from '@react-navigation/native';
+import NoFound from '../../Components/NoFound';
+import Shimmer from '../../Components/Shimmer';
 
 const AlcoholBrands = ({navigation}) => {
   return (
@@ -139,11 +141,21 @@ const Content = ({navigation}) => {
   return (
     <>
       <View style={Common.container}>
-        <FlatList
-          data={data}
-          keyExtractor={item => item?.id}
-          renderItem={RenderBrands}
-        />
+        {loading ? (
+          <Shimmer />
+        ) : (
+          <>
+            {data?.length > 0 ? (
+              <FlatList
+                data={data}
+                keyExtractor={item => item?.id}
+                renderItem={RenderBrands}
+              />
+            ) : (
+              <NoFound title={' No brands added'} />
+            )}
+          </>
+        )}
       </View>
       <ConfirmModal
         isOpen={modal}

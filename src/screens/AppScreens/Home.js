@@ -32,7 +32,7 @@ const Content = ({navigation}) => {
       <Typography type="h1" style={styles.welcomeText}>
         Welcome to the{' '}
         <Typography type="h1" style={styles.LogoText}>
-          Drink mate!
+          Drinkmate!
         </Typography>
       </Typography>
       <View

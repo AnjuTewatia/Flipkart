@@ -17,6 +17,8 @@ import RightHeaderButton from '../../Components/RightHeaderButton';
 import useFetch from '../../utils/useFetch';
 import RenderStoreListing from '../../Components/RenderStoreListing';
 import Shimmer from '../../Components/Shimmer';
+import NoFound from '../../Components/NoFound';
+import {useIsFocused} from '@react-navigation/native';
 
 const StoreListing = ({navigation, route}) => {
   const type = route?.params?.type;
@@ -46,47 +48,41 @@ const Content = ({navigation, type}) => {
   const [pageNo, setPageNo] = useState(1);
   const [data, setdata] = useState([]);
   const [bottomLoader, setBottomLoader] = useState(false);
-
   const [totalRecords, setTotalRecords] = useState('');
   const [currentRecord, setCurrentRecord] = useState('');
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const {checkAndRequestLocationPermission} = useAppContext();
+  const isFocused = useIsFocused();
 
   const [storeListing, {response, error}] = useFetch('get-stores', {
     method: 'POST',
   });
 
-  const handleStoreListing = async () => {
+  const handleStoreListing = async updatePage => {
     try {
       const res = await storeListing({
         keywords: searchvalue,
         pagination_value: paginationValue,
         page: pageNo,
       });
-
-      setdata(prevData => prevData.concat(res?.data?.data));
+      if (updatePage) {
+        setdata(prevData => prevData.concat(res?.data?.data));
+      } else {
+        setdata(res?.data?.data);
+      }
       setTotalRecords(res?.data?.total);
       setCurrentRecord(res?.data?.to);
-      setBottomLoader(false);
     } catch (error) {
       console.error('Error fetching store listing:', error);
     }
+    setLoading(false);
+    setBottomLoader(false);
   };
-
-  useEffect(() => {
-    handleStoreListing();
-    setTimeout(() => {
-      setLoading(false);
-    }, 1500);
-  }, [pageNo, searchvalue]);
 
   const RenderItem = ({item}) => {
     return (
       <>
-        {loading ? (
-          <Shimmer />
-        ) : (
-          <RenderStoreListing item={item} type={type} navigation={navigation} />
-        )}
+        <RenderStoreListing item={item} type={type} navigation={navigation} />
       </>
     );
   };
@@ -102,13 +98,31 @@ const Content = ({navigation, type}) => {
 
   const handleSearchChange = text => {
     setSearchValue(text);
-
-    const timeoutId = setTimeout(() => {
-      setdata([]);
-      handleStoreListing(); // Call API after a delay
-    }, 500); // Adjust delay as needed (e.g., 300ms, 500ms)
-    return () => clearTimeout(timeoutId); // Cleanup function for unmounting
+    setdata([]);
+    setPageNo(1);
   };
+
+  useEffect(() => {
+    checkAndRequestLocationPermission();
+    setLoading(true);
+    if (searchvalue) {
+      const timer = setTimeout(() => {
+        console.log('hello');
+        handleStoreListing();
+      }, 800);
+      return () => clearTimeout(timer);
+    } else {
+      handleStoreListing();
+    }
+  }, [searchvalue, isFocused]);
+
+  useEffect(() => {
+    if (pageNo > 1) {
+      setBottomLoader(true);
+      handleStoreListing(true);
+    }
+  }, [pageNo]);
+
   return (
     <>
       <View style={[Common.container, styles.storeContainer]}>
@@ -118,28 +132,38 @@ const Content = ({navigation, type}) => {
             style={styles.input}
             placeholder="Search store by name"
             value={searchvalue}
-            onChangeText={text => handleSearchChange(text)}
+            onChangeText={handleSearchChange}
             placeholderTextColor={'#99999E'}></TextInput>
         </View>
 
-        <FlatList
-          contentContainerStyle={{paddingBottom: 10}}
-          data={data}
-          extraData={data}
-          keyExtractor={item => item?.id}
-          showsVerticalScrollIndicator={false}
-          renderItem={RenderItem}
-          onEndReached={handleReachedEnd}
-          ListFooterComponent={
-            bottomLoader ? (
-              <View style={{marginBottom: 40}}>
-                <ActivityIndicator size="large" color={'#000'} />
-              </View>
+        {loading ? (
+          <Shimmer />
+        ) : (
+          <>
+            {data?.length > 0 ? (
+              <FlatList
+                contentContainerStyle={{paddingBottom: 10}}
+                data={data}
+                extraData={data}
+                keyExtractor={item => item?.uuid}
+                showsVerticalScrollIndicator={false}
+                renderItem={RenderItem}
+                onEndReached={handleReachedEnd}
+                ListFooterComponent={
+                  bottomLoader ? (
+                    <View style={{marginBottom: 40}}>
+                      <ActivityIndicator size="large" color={'#000'} />
+                    </View>
+                  ) : (
+                    <></>
+                  )
+                }
+              />
             ) : (
-              <></>
-            )
-          }
-        />
+              <NoFound title={'No store found'} />
+            )}
+          </>
+        )}
       </View>
     </>
   );

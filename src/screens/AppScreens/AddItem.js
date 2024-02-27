@@ -1,5 +1,5 @@
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import Common from '../../utils/common';
 import RenderImages from '../../Components/RenderImages';
@@ -9,33 +9,70 @@ import InputField from '../../Components/InputField';
 import Button from '../../Components/Button';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {addItemValidation} from '../../utils/validations';
+import useFetch from '../../utils/useFetch';
+import {Typography} from '../../Components/Typography';
+import Toast from 'react-native-toast-message';
 
-const AddItem = ({navigation}) => {
+const AddItem = ({navigation, route}) => {
+  const qrcode = route?.params?.data;
+  const store_id = route?.params?.id;
+
   return (
     <AppBaseComponent
       backButton
       title={'Add Item'}
       navigation={navigation}
-      renderChild={Content({navigation})}
+      renderChild={Content({navigation, qrcode, store_id})}
     />
   );
 };
-const Content = ({navigation}) => {
+const Content = ({navigation, qrcode, store_id}) => {
+  const [data, setData] = useState([]);
+  const [brandId, setBrandId] = useState(null);
   const formik = useFormik({
     initialValues: {
-      itenName: '',
+      name: '',
       brandName: '',
-      alcoholpercentage: '',
-      mlCan: '',
-      packSize: '',
+      alcohol_percentage: '',
+      quantity: '',
+      pack_size: '',
       price: '',
     },
     validationSchema: addItemValidation,
     onSubmit: values => {
-      console.log(values);
+      handleAddItem(values);
     },
   });
 
+  const [getBrands] = useFetch('all-alcohol-brands', {method: 'GET'});
+
+  const [addItems, {response, loading, error}] = useFetch('create-item', {
+    method: 'POST',
+  });
+
+  const handleAddItem = async values => {
+    const res = await addItems({
+      ...values,
+      store_id: store_id,
+      bar_code: qrcode,
+      alcohol_brand_id: brandId,
+    });
+    if (res?.status === 200) {
+      Toast.show({
+        type: 'success',
+        text1: res?.message,
+      });
+      navigation.goBack();
+    }
+  };
+  const handleGetBrands = async () => {
+    const res = await getBrands();
+    setData(res?.data);
+  };
+
+  useEffect(() => {
+    handleGetBrands();
+  }, []);
   return (
     <>
       <KeyboardAwareScrollView
@@ -47,21 +84,24 @@ const Content = ({navigation}) => {
           <View style={styles.barCode}>
             <RenderImages
               source={IMAGES.barCode}
-              style={{width: '100%', height: 95, alignSelf: 'center'}}
+              style={{width: '100%', height: 75, alignSelf: 'center'}}
             />
+            <Typography style={styles.qrtext}>{qrcode}</Typography>
           </View>
           <View style={{marginVertical: 6}} />
 
           <InputField
             formik={formik}
             bgcolor={'#fff'}
-            name="itenName"
+            name="name"
             label={'Item Name'}
             placeholder="Enter Item Name"
           />
           <InputField
             formik={formik}
             dropdown={true}
+            options={data}
+            setCategoryId={setBrandId}
             bgcolor={'#fff'}
             name="brandName"
             label={'Alcohol Brand Name'}
@@ -69,25 +109,28 @@ const Content = ({navigation}) => {
           />
           <InputField
             formik={formik}
+            maxLength={3}
             bgcolor={'#fff'}
             keyboardType={'number-pad'}
-            name="alcoholpercentage"
+            name="alcohol_percentage"
             label={'Alcohol %'}
             placeholder="Enter Alcoho %"
           />
           <InputField
             formik={formik}
             bgcolor={'#fff'}
+            maxLength={4}
             keyboardType={'number-pad'}
-            name="mlCan"
+            name="quantity"
             label={'ml / Can'}
             placeholder="Enter ml / Can"
           />
           <InputField
             formik={formik}
             bgcolor={'#fff'}
+            maxLength={2}
             keyboardType={'number-pad'}
-            name="packSize"
+            name="pack_size"
             label={'Pack Size'}
             placeholder="Enter Pack Size"
           />
@@ -101,7 +144,11 @@ const Content = ({navigation}) => {
           />
         </View>
 
-        <Button title={'Save'} onPress={() => formik.handleSubmit()} />
+        <Button
+          title={'Save'}
+          onPress={() => formik.handleSubmit()}
+          loading={loading}
+        />
       </KeyboardAwareScrollView>
     </>
   );
@@ -123,5 +170,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     alignSelf: 'center',
     justifyContent: 'center',
+  },
+  qrtext: {
+    textAlign: 'center',
+    fontSize: 12,
+    fontWeight: '400',
+    lineHeight: 16,
+    color: '#050713',
   },
 });
