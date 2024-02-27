@@ -8,5 +8,5 @@ export const formatNumberWithLeadingZero = number => {
   }
 };
 export const saveLocalLoginDetail = token => {
-  AsyncStorage.setItem('login_user', JSON.stringify({token: token}));
+  AsyncStorage.setItem('login_user', JSON.stringify(token));
 };

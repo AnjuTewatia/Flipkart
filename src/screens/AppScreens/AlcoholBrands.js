@@ -33,7 +33,8 @@ const AlcoholBrands = ({navigation}) => {
   );
 };
 const Content = ({navigation}) => {
-  const {windowWidth} = useAppContext();
+  const {windowWidth, userData} = useAppContext();
+  console.log('useRdat==>', userData);
   const isFocused = useIsFocused();
 
   const [data, setData] = useState(null);

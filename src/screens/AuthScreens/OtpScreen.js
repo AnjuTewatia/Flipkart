@@ -25,7 +25,7 @@ const OtpScreen = ({navigation, route}) => {
 const Content = ({navigation, data}) => {
   const [value, setValue] = useState('');
   const [optTimer, setOptTimer] = useState(59);
-  const {setUser} = useAppContext();
+  const {setUserData} = useAppContext();
   const handleSubmit = async () => {
     if (value.length > 3) {
       handleVerifyOtp(value);
@@ -55,7 +55,7 @@ const Content = ({navigation, data}) => {
       if (data?.type === 'forgot') {
         navigation.navigate('resetPassword', {uuid: data?.uuid});
       } else {
-        setUser(resData?.token);
+        setUserData(JSON.stringify({token:resData?.token}));
         saveLocalLoginDetail(resData?.token);
       }
     }

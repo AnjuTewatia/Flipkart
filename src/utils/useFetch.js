@@ -20,7 +20,7 @@ const useFetch = (url, config) => {
 
   const loadQuery = async (data, rest) => {
     setLoading(true);
-    const userToken = userData?.token;
+    const userToken = userData;
     const headers = !userToken
       ? {}
       : {
