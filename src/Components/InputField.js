@@ -1,4 +1,11 @@
-import {Pressable, StyleSheet, TextInput, View, Text} from 'react-native';
+import {
+  Pressable,
+  StyleSheet,
+  TextInput,
+  View,
+  Text,
+  FlatList,
+} from 'react-native';
 import React, {useState} from 'react';
 import {COLORS} from '../utils/styleConst';
 import {Typography} from './Typography';
@@ -37,6 +44,16 @@ const InputField = ({
     formik?.setFieldValue(name, categoryName);
     setShowDropdown(false);
   };
+  const RendetItem = ({item}) => {
+    return (
+      <Pressable
+        onPress={() => handleOptionSelect(item?.name, item?.id)}
+        style={styles.option}>
+        <Typography type="p">{item?.name}</Typography>
+      </Pressable>
+    );
+  };
+
   return (
     <View style={styles.inputContainer}>
       {label && (
@@ -88,14 +105,11 @@ const InputField = ({
       </Pressable>
       {showDropdown && dropdown && (
         <View style={styles.dropdown}>
-          {options?.map((option, index) => (
-            <Pressable
-              key={index}
-              onPress={() => handleOptionSelect(option?.name, option?.id)}
-              style={styles.option}>
-              <Typography type="p">{option?.name}</Typography>
-            </Pressable>
-          ))}
+          <FlatList
+            data={options}
+            keyExtractor={item => item?.id}
+            renderItem={RendetItem}
+          />
         </View>
       )}
       {error ? (

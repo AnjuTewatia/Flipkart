@@ -22,7 +22,7 @@ const AddBrand = ({navigation, route}) => {
 };
 
 const Content = ({navigation, route}) => {
-  const [data, setdata] = useState(null);
+  const [data, setdata] = useState([]);
   const [categoryId, setCategoryId] = useState(null);
   const [getCategory, {}] = useFetch('get-alcohol-category', {method: 'GET'});
 
@@ -56,8 +56,8 @@ const Content = ({navigation, route}) => {
 
   const handleGetCategory = async () => {
     const res = await getCategory();
-    if (res) {
-      setdata(res?.data);
+    if (res?.status === 200) {
+      setdata(res?.data?.alcohol_categories);
     }
   };
 

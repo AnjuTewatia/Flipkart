@@ -133,6 +133,7 @@ const Content = ({navigation}) => {
 };
 export default Login;
 
+
 const styles = StyleSheet.create({
   forgotText: {
     textAlign: 'right',
