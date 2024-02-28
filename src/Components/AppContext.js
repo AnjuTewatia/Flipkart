@@ -4,7 +4,7 @@ import {Dimensions} from 'react-native';
 import {getDeviceId} from 'react-native-device-info';
 import Geolocation from '@react-native-community/geolocation';
 import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
-
+import messaging from '@react-native-firebase/messaging';
 const AppContext = createContext(null);
 
 export const useAppContext = () => useContext(AppContext);
@@ -15,6 +15,8 @@ const AppProvider = ({children}) => {
   const [userData, setUserData] = useState(null);
   const [isUserLogin, setIsUserLogin] = useState(null);
   const [apiMsg, setApiMsg] = useState('');
+  const [userProfile, setUserProfile] = useState(null);
+  const [fcmToken, setFcmToken] = useState(null);
 
   const device_id = getDeviceId();
 
@@ -22,7 +24,7 @@ const AppProvider = ({children}) => {
 
   const removeUser = () => {
     setUserData(null);
-    AsyncStorage.removeItem('login_user');
+    AsyncStorage.clear();
   };
   const getUser = async () => {
     try {
@@ -34,6 +36,41 @@ const AppProvider = ({children}) => {
     } catch (error) {
       // Error retrieving data
     }
+  };
+
+  const requestNotificationPermission = async () => {
+    try {
+      const permission = PERMISSIONS.ANDROID.POST_NOTIFICATIONS;
+      const result = await check(permission);
+      if (result !== RESULTS.GRANTED) {
+        const requestResult = await request(permission);
+        if (requestResult == RESULTS.BLOCKED) {
+          console.log('Notification permission blocked');
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const requestUserPermission = async () => {
+    const authStatus = await messaging().requestPermission();
+
+    const enabled =
+      authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
+      authStatus === messaging.AuthorizationStatus.PROVISIONAL;
+
+    if (enabled) {
+      getFcmToken();
+    }
+  };
+
+  const getFcmToken = async () => {
+    try {
+      const Token = await messaging().getToken();
+      setFcmToken(Token);
+    } catch (error) {}
   };
 
   const checkAndRequestLocationPermission = async () => {
@@ -83,11 +120,13 @@ const AppProvider = ({children}) => {
             break;
         }
       },
-      {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      // {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
     );
   };
 
   useEffect(() => {
+    requestNotificationPermission();
+    requestUserPermission();
     getUser();
   }, []);
   return (
@@ -105,6 +144,10 @@ const AppProvider = ({children}) => {
         device_id,
         initialRegion,
         checkAndRequestLocationPermission,
+        fcmToken,
+        setFcmToken,
+        userProfile,
+        setUserProfile,
       }}>
       {children}
     </AppContext.Provider>

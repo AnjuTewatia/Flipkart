@@ -8,6 +8,7 @@ import AddNewPrice from './AddNewPrice';
 import useFetch from '../utils/useFetch';
 import Toast from 'react-native-toast-message';
 import {useFormik} from 'formik';
+import {PriceSchema} from '../utils/validations';
 const ConfirmPrice = ({title, onPress, style, item, store_id}) => {
   const {windowWidth, initialRegion} = useAppContext();
   const [isOpen, setIsOpen] = useState(false);
@@ -51,6 +52,7 @@ const ConfirmPrice = ({title, onPress, style, item, store_id}) => {
     initialValues: {
       updated_price: '',
     },
+    validationSchema: PriceSchema,
     onSubmit: values => {
       handleConfirmPrice(values, '2');
     },

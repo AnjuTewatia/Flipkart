@@ -8,6 +8,9 @@ import InputField from '../../Components/InputField';
 import {useFormik} from 'formik';
 import {editProfileScheme} from '../../utils/validations';
 import Button from '../../Components/Button';
+import useFetch from '../../utils/useFetch';
+import {useAppContext} from '../../Components/AppContext';
+import Toast from 'react-native-toast-message';
 
 const EditProfile = ({navigation}) => {
   return (
@@ -15,21 +18,47 @@ const EditProfile = ({navigation}) => {
       navigation={navigation}
       title={'Edit Profile'}
       backButton
+      height={'97%'}
       renderChild={Content({navigation})}
     />
   );
 };
 
 const Content = ({navigation}) => {
+  const {userProfile, setUserProfile} = useAppContext();
+  const {first_name, last_name, email, points} = userProfile;
+  const [getProfile, {}] = useFetch('profile', {mehtod: 'GET'});
+
+  const [editprofile, {response, loading, error}] = useFetch('edit-profile', {
+    method: 'POST',
+  });
+  const handleEditProfile = async values => {
+    const res = await editprofile({...values});
+    if (res?.status === 200) {
+      Toast.show({
+        type: 'success',
+        text1: res?.message,
+      });
+      handlegetProfile();
+    }
+  };
+
+  const handlegetProfile = async () => {
+    const res = await getProfile();
+    if (res?.status === 200) {
+      setUserProfile(res?.data);
+      navigation.goBack();
+    }
+  };
   const formik = useFormik({
     initialValues: {
-      name: '',
-      surname: '',
-      email: '',
+      first_name: first_name ?? '',
+      last_name: last_name ?? '',
+      email: email ?? '',
     },
     validationSchema: editProfileScheme,
     onSubmit: values => {
-      console.log(values);
+      handleEditProfile(values);
     },
   });
 
@@ -39,23 +68,29 @@ const Content = ({navigation}) => {
         <InputField
           formik={formik}
           label={'Name'}
-          name="name"
+          name="first_name"
           placeholder="Enter  Name"
         />
         <InputField
           formik={formik}
           label={'Last Name'}
-          name="surname"
+          name="last_name"
           placeholder="Enter Last Name"
         />
-        <InputField
+        {/* <InputField
           formik={formik}
           label={'Email Address'}
           type="email"
           name="email"
           placeholder="Enter Email Address"
-        />
-        <Button title={'Save'} onPress={() => formik.handleSubmit()} />
+        /> */}
+        <View style={{position: 'absolute', bottom: 0}}>
+          <Button
+            title={'Save'}
+            onPress={() => formik.handleSubmit()}
+            loading={loading}
+          />
+        </View>
       </View>
     </>
   );

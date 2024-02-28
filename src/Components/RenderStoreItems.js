@@ -6,122 +6,309 @@ import IMAGES from '../utils/Images';
 import {useAppContext} from './AppContext';
 import ConfirmPrice from './ConfirmPriceButton';
 import {EmptyHeart} from '../Icons';
-import ConfirmModal from './ConfirmModal';
-import Shimmer from './Shimmer';
 
-const RenderStoreItems = ({item, store_id, heartIcon}) => {
+const RenderStoreItems = ({
+  item,
+  store_id,
+  heartIcon,
+  editIcon,
+  ondeletePress,
+  onEditPress,
+  type,
+}) => {
   const {windowWidth} = useAppContext();
-  const [isOpen, setIsOpen] = useState(false);
-  const [loader, setLoader] = useState(false);
   return (
     <>
-      <View style={[styles.favoriteView]}>
-        <RenderImages
-          source={IMAGES.beer}
-          style={{
-            width: '30%',
-            height: '100%',
-            position: 'absolute',
-            right: 0,
-            zindex: 999,
-          }}
-        />
-        <Pressable
-          style={styles.deleteIcon}
-          onPress={() => !heartIcon && setIsOpen(true)}>
-          {heartIcon ? (
-            <EmptyHeart />
+      {type === 'Calculate' && item?.result ? (
+        <View style={[styles.calculateView, {height: 200}]}>
+          <View
+            style={{
+              position: 'absolute',
+              top: 6,
+              right: 10,
+              flexDirection: 'row',
+              zIndex: 999,
+            }}>
+            <Pressable
+              style={styles.deleteIcon}
+              onPress={() => !heartIcon && ondeletePress()}>
+              {heartIcon ? (
+                <EmptyHeart />
+              ) : (
+                <RenderImages
+                  source={IMAGES.deleteicon}
+                  style={{width: 18, height: 18}}
+                />
+              )}
+            </Pressable>
+            {editIcon && (
+              <Pressable style={styles.deleteIcon} onPress={onEditPress}>
+                <RenderImages
+                  source={IMAGES.editicon}
+                  style={{width: 18, height: 18}}
+                />
+              </Pressable>
+            )}
+          </View>
+          <View style={[styles.calculatestoreView]}>
+            <RenderImages
+              source={IMAGES.beer}
+              style={{
+                width: '30%',
+                height: '100%',
+                position: 'absolute',
+                right: 0,
+                zindex: 999,
+              }}
+            />
+            <RenderImages
+              source={IMAGES.arrowimg}
+              style={{width: 65, minHeight: 65}}
+            />
+            <View style={{marginHorizontal: 12}}>
+              <Typography
+                type="h3"
+                style={[styles.title, {width: windowWidth - 140}]}>
+                {item?.name?.length > 30
+                  ? `${item?.name?.slice(0, 30)}...`
+                  : item?.name}
+              </Typography>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginVertical: 2,
+                }}>
+                <Typography type="h5" style={[styles.text]}>
+                  {parseFloat(item?.alcohol_percentage)}% alcohol
+                </Typography>
+                <Typography type="h5" style={[styles.text]}>
+                  |
+                </Typography>
+                <Typography type="h5" style={[styles.text]}>
+                  {parseFloat(item?.quantity)} ml
+                </Typography>
+                <Typography type="h5" style={[styles.text]}>
+                  |
+                </Typography>
+                <Typography type="h5" style={[styles.text]}>
+                  {item?.pack_size} cans
+                </Typography>
+              </View>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  marginVertical: 5,
+                  width: '60%',
+                  justifyContent: 'space-between',
+                }}>
+                <Typography type="sm" style={[styles.brandname, {}]}>
+                  {item?.brand?.name?.length > 8
+                    ? `${item?.brand?.name?.slice(0, 10)}..`
+                    : item?.brand?.name ?? 'Static'}
+                </Typography>
+                <RenderImages
+                  source={IMAGES.tagicon}
+                  style={{width: 19, height: 19}}
+                />
+                <Typography
+                  type="h5"
+                  style={[
+                    styles.text,
+                    {
+                      width: '50%',
+                      fontWeight: '800',
+                      color: '#F87E7D',
+                      fontSize: 18,
+                    },
+                  ]}>
+                  ${parseFloat(item?.price)}
+                </Typography>
+              </View>
+            </View>
+            <View style={{position: 'absolute', right: 0, bottom: 18}}>
+              <ConfirmPrice
+                title={'Confirm Price'}
+                item={item}
+                store_id={store_id}
+              />
+            </View>
+          </View>
+          <View
+            style={{
+              height: 54,
+              width: '99%',
+              backgroundColor: '#F5F5F5',
+              marginBottom: 12,
+              alignSelf: 'center',
+              borderRadius: 6,
+              borderWidth: 1,
+              borderColor: '#EBE8EC',
+              justifyContent: 'center',
+              paddingHorizontal: 12,
+            }}>
+            <Typography type="h3" style={styles.itemprice}>
+              {item?.result.toFixed(2)}mL of alcohol / $1
+            </Typography>
+          </View>
+        </View>
+      ) : (
+        <View
+          style={[
+            [
+              styles.favoriteView,
+              item?.best_choice && {
+                borderRightWidth: 3,
+                borderBottomWidth: 3,
+                borderColor: '#8C2457',
+              },
+            ],
+          ]}>
+          <RenderImages
+            source={IMAGES.beer}
+            style={{
+              width: '30%',
+              height: '100%',
+              position: 'absolute',
+              right: 0,
+              zindex: 999,
+            }}
+          />
+          <View
+            style={{
+              position: 'absolute',
+              top: 6,
+              right: 10,
+              flexDirection: 'row',
+              zIndex: 999,
+            }}>
+            <Pressable
+              style={styles.deleteIcon}
+              onPress={() => !heartIcon && ondeletePress()}>
+              {heartIcon ? (
+                <EmptyHeart />
+              ) : (
+                <RenderImages
+                  source={IMAGES.deleteicon}
+                  style={{width: 18, height: 18}}
+                />
+              )}
+            </Pressable>
+            {editIcon && (
+              <Pressable style={styles.deleteIcon} onPress={onEditPress}>
+                <RenderImages
+                  source={IMAGES.editicon}
+                  style={{width: 18, height: 18}}
+                />
+              </Pressable>
+            )}
+          </View>
+
+          {item?.best_choice ? (
+            <View
+              style={{
+                width: 60,
+                height: 60,
+                justifyContent: 'center',
+                alignItems: 'center',
+                flexDirection: 'row',
+
+                // position: 'relative', // Ensure the parent container has relative positioning
+              }}>
+              <RenderImages
+                source={IMAGES.bestOffer}
+                style={{
+                  width: 60,
+                  height: 60,
+                  zIndex: 999,
+                  left: 28,
+                  top: 22,
+                }}
+              />
+              <RenderImages
+                source={IMAGES.arrowimg}
+                style={{width: 60, height: 60, left: -30}} // Set higher zIndex for arrow image
+              />
+            </View>
           ) : (
             <RenderImages
-              source={IMAGES.deleteicon}
-              style={{width: 18, height: 18}}
+              source={IMAGES.arrowimg}
+              style={{width: 60, minHeight: 60}}
             />
           )}
-        </Pressable>
-        <RenderImages
-          source={IMAGES.arrowimg}
-          style={{width: 65, minHeight: 65}}
-        />
-        <View style={{marginHorizontal: 15}}>
-          <Typography
-            type="h3"
-            style={[styles.title, {width: windowWidth - 140}]}>
-            {item?.name?.length > 30
-              ? `${item?.name?.slice(0, 30)}...`
-              : item?.name}
-          </Typography>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginVertical: 2,
-            }}>
-            <Typography type="h5" style={[styles.text]}>
-              {parseFloat(item?.alcohol_percentage)}% alcohol
-            </Typography>
-            <Typography type="h5" style={[styles.text]}>
-              |
-            </Typography>
-            <Typography type="h5" style={[styles.text]}>
-              {parseFloat(item?.quantity)} ml
-            </Typography>
-            <Typography type="h5" style={[styles.text]}>
-              |
-            </Typography>
-            <Typography type="h5" style={[styles.text]}>
-              {item?.pack_size} cans
-            </Typography>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginVertical: 5,
-              width: '60%',
-              marginHorizontal: 20,
-              justifyContent: 'center',
-            }}>
-            <Typography type="sm" style={[styles.brandname, {}]}>
-              {item?.brand?.name}
-            </Typography>
-            <RenderImages
-              source={IMAGES.tagicon}
-              style={{width: 19, height: 19}}
-            />
+
+          <View style={{marginHorizontal: 12}}>
             <Typography
-              type="h5"
-              style={[
-                styles.text,
-                {
-                  width: '50%',
-                  fontWeight: '800',
-                  color: '#F87E7D',
-                  fontSize: 18,
-                },
-              ]}>
-              $ {parseFloat(item?.price.slice(0, 2))}
+              type="h3"
+              style={[styles.title, {width: windowWidth - 140}]}>
+              {item?.name?.length > 30
+                ? `${item?.name?.slice(0, 30)}...`
+                : item?.name}
             </Typography>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginVertical: 2,
+              }}>
+              <Typography type="h5" style={[styles.text]}>
+                {parseFloat(item?.alcohol_percentage)}% alcohol
+              </Typography>
+              <Typography type="h5" style={[styles.text]}>
+                |
+              </Typography>
+              <Typography type="h5" style={[styles.text]}>
+                {parseFloat(item?.quantity)} ml
+              </Typography>
+              <Typography type="h5" style={[styles.text]}>
+                |
+              </Typography>
+              <Typography type="h5" style={[styles.text]}>
+                {item?.pack_size} cans
+              </Typography>
+            </View>
+            <View
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                marginVertical: 5,
+                width: '60%',
+                justifyContent: 'space-between',
+              }}>
+              <Typography type="sm" style={[styles.brandname, {}]}>
+                {item?.brand?.name?.length > 8
+                  ? `${item?.brand?.name?.slice(0, 10)}..`
+                  : item?.brand?.name ?? 'Static'}
+              </Typography>
+              <RenderImages
+                source={IMAGES.tagicon}
+                style={{width: 19, height: 19}}
+              />
+              <Typography
+                type="h5"
+                style={[
+                  styles.text,
+                  {
+                    width: '50%',
+                    fontWeight: '800',
+                    color: '#F87E7D',
+                    fontSize: 18,
+                  },
+                ]}>
+                ${parseFloat(item?.price)}
+              </Typography>
+            </View>
+          </View>
+          <View style={{position: 'absolute', right: 0, bottom: 18}}>
+            <ConfirmPrice
+              title={'Confirm Price'}
+              item={item}
+              store_id={store_id}
+            />
           </View>
         </View>
-        <View style={{position: 'absolute', right: 0, bottom: 18}}>
-          <ConfirmPrice
-            title={'Confirm Price'}
-            item={item}
-            store_id={store_id}
-          />
-        </View>
-        <ConfirmModal
-          isOpen={isOpen}
-          loading={loader}
-          handleClose={() => setIsOpen(false)}
-          title="Delete"
-          description="Are you sure you want to delete the item?"
-          onYesClick={() => removeUser()}
-          onNoClick={() => setIsOpen(false)}
-          cancelText="No"
-          confirmText="Yes"
-        />
-      </View>
+      )}
     </>
   );
 };
@@ -143,7 +330,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.3,
     shadowRadius: 4,
-    padding: 15,
+    padding: 10,
   },
 
   title: {
@@ -152,9 +339,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
   deleteIcon: {
-    position: 'absolute',
-    top: 6,
-    right: 10,
+    marginHorizontal: 6,
   },
   text: {
     color: '#6E6F76',
@@ -166,5 +351,41 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: '#99999E',
     marginHorizontal: 5,
+  },
+  calculateView: {
+    width: '99%',
+    height: 120,
+    backgroundColor: '#fff',
+    elevation: 4,
+    borderRadius: 8,
+    paddingHorizontal: 6,
+    marginVertical: 12,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    padding: 10,
+  },
+  topIcon: {
+    position: 'absolute',
+    top: 6,
+    right: 10,
+    flexDirection: 'row',
+  },
+  calculatestoreView: {
+    width: '99%',
+    maxHeight: 120,
+    flexDirection: 'row',
+    paddingHorizontal: 6,
+    marginTop: 12,
+
+    paddingVertical: 10,
+  },
+  icon: {
+    marginHorizontal: 10,
+  },
+  itemprice: {
+    color: '#8C2457',
+    fontWeight: '600',
+    fontSize: 18,
   },
 });

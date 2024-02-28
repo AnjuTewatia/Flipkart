@@ -9,12 +9,11 @@ const BottomSheet = ({item, isVisible, onClose, navigation}) => {
   if (!isVisible) {
     return null;
   }
-  const [type, setType] = useState(1);
   const handleOverlayPress = () => {
     onClose();
   };
   const {windowWidth} = useAppContext();
-
+  const [type, setType] = useState('');
   const handleContentViewPress = event => {
     event.stopPropagation(); // Prevents the press event from propagating to the overlay Pressable
   };
@@ -23,7 +22,7 @@ const BottomSheet = ({item, isVisible, onClose, navigation}) => {
     setType(type);
     setTimeout(() => {
       onClose();
-      navigation.navigate(route, title);
+      navigation.navigate(route, {title: title, item: item});
     }, 100);
   };
   return (
@@ -123,7 +122,7 @@ const BottomSheet = ({item, isVisible, onClose, navigation}) => {
                 styles.option,
                 {backgroundColor: type === 4 ? '#8C2457' : '#E6E6E7'},
               ]}
-              onPress={() => handleNavigation(4, 'ViewItems', item)}>
+              onPress={() => handleNavigation(4, 'ViewItems', 'View Items')}>
               <Typography
                 type="h4"
                 style={[

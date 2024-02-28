@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1008076396840",
+    "project_id": "drinkmate-dev",
+    "storage_bucket": "drinkmate-dev.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1008076396840:android:19f4ece3a4e5be7762181d",
+        "android_client_info": {
+          "package_name": "com.softradix.drinkmate"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBegYK5N-OSdtYSbAh-djxfQYBUorErsws"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

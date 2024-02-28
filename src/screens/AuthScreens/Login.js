@@ -25,7 +25,7 @@ const Login = ({navigation}) => {
   );
 };
 const Content = ({navigation}) => {
-  const {setUserData, device_id} = useAppContext();
+  const {setUserData, device_id, fcmToken} = useAppContext();
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -46,7 +46,7 @@ const Content = ({navigation}) => {
       ...values,
       device_type: Platform.OS,
       device_id: device_id,
-      device_token: '1234',
+      device_token: fcmToken,
     };
     const res = await loginuser(payload);
     const resData = res?.data;

@@ -22,7 +22,7 @@ const SignUp = ({navigation}) => {
   );
 };
 const Content = ({navigation}) => {
-  const {device_id} = useAppContext();
+  const {device_id, fcmToken} = useAppContext();
 
   const [registerUser, {response, loading, error}] = useFetch('register', {
     method: 'POST',
@@ -47,7 +47,7 @@ const Content = ({navigation}) => {
       ...values,
       device_type: Platform.OS,
       device_id: device_id,
-      device_token: '1234',
+      device_token: fcmToken,
     };
     try {
       const res = await registerUser(payload);

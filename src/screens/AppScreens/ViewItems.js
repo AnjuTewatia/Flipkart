@@ -17,8 +17,9 @@ import Shimmer from '../../Components/Shimmer';
 import NoFound from '../../Components/NoFound';
 
 const ViewItems = ({navigation, route}) => {
-  const store_id = route?.params?.id;
-  const store_uuid = route?.params?.uuid;
+  console.log(route);
+  const store_id = route?.params?.item?.id;
+  const store_uuid = route?.params?.item?.uuid;
   const [scannerVisible, setScannerVisible] = useState(false);
   const [scannedData, setScannedData] = useState(null);
   const handleScan = data => {
@@ -28,7 +29,7 @@ const ViewItems = ({navigation, route}) => {
   };
   return (
     <AppBaseComponent
-      title={'ViewItems'}
+      title={'View Items'}
       navigation={navigation}
       backButton
       renderChild={Content({

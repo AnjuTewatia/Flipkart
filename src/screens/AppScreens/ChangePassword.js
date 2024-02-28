@@ -8,6 +8,8 @@ import InputField from '../../Components/InputField';
 import {useFormik} from 'formik';
 import {changePasswordScheme} from '../../utils/validations';
 import Button from '../../Components/Button';
+import useFetch from '../../utils/useFetch';
+import Toast from 'react-native-toast-message';
 
 const ChangePassword = ({navigation}) => {
   return (
@@ -15,21 +17,36 @@ const ChangePassword = ({navigation}) => {
       navigation={navigation}
       title={'Change Password'}
       backButton
+      height={'97%'}
       renderChild={Content({navigation})}
     />
   );
 };
 
 const Content = ({navigation}) => {
+  const [changePassword, {loading}] = useFetch('change-password', {
+    method: 'POST',
+  });
+
+  const handleChangePassword = async values => {
+    const res = await changePassword({...values});
+    if (res?.status === 200) {
+      Toast.show({
+        type: 'success',
+        text1: res?.message,
+      });
+      navigation.goBack();
+    }
+  };
   const formik = useFormik({
     initialValues: {
-      oldPassword: '',
-      newPassword: '',
+      current_password: '',
+      password: '',
       confirmPassword: '',
     },
     validationSchema: changePasswordScheme,
     onSubmit: values => {
-      console.log(values);
+      handleChangePassword(values);
     },
   });
 
@@ -40,14 +57,14 @@ const Content = ({navigation}) => {
           formik={formik}
           label={'Old Password'}
           type="password"
-          name="oldPassword"
+          name="current_password"
           placeholder="Enter Old Password"
         />
         <InputField
           formik={formik}
           label={'New Password'}
           type="password"
-          name="newPassword"
+          name="password"
           placeholder="Enter New Password"
         />
         <InputField
@@ -57,7 +74,13 @@ const Content = ({navigation}) => {
           name="confirmPassword"
           placeholder="Enter Confirm Password"
         />
-        <Button title={'Change'} onPress={() => formik.handleSubmit()} />
+        <View style={{position: 'absolute', bottom: 0}}>
+          <Button
+            title={'Change'}
+            onPress={() => formik.handleSubmit()}
+            loading={loading}
+          />
+        </View>
       </View>
     </>
   );

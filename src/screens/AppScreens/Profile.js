@@ -31,13 +31,15 @@ const Profile = ({navigation}) => {
 };
 
 const Content = ({navigation}) => {
-  const {windowWidth, removeUser, device_id} = useAppContext();
+  const {windowWidth, removeUser, device_id, fcmToken, userProfile} =
+    useAppContext();
   const [isOpen, setIsOpen] = useState(false);
+  const {first_name, last_name, email, points} = userProfile;
 
   const Options = [
     {
       title: 'Earned Points',
-      desc: '75',
+      desc: points,
       image: IMAGES.earnedPoints,
       onPress: () => {
         console.log('HHJHJ');
@@ -108,7 +110,7 @@ const Content = ({navigation}) => {
   const handlelogout = async () => {
     const res = await logout({
       device_id: device_id,
-      device_token: '2222',
+      device_token: fcmToken,
       device_type: Platform.OS,
     });
     if (res) {
@@ -116,7 +118,6 @@ const Content = ({navigation}) => {
       removeUser();
     }
   };
-
   return (
     <ScrollView style={Common.container} showsVerticalScrollIndicator={false}>
       <View style={styles.profilesection}>
@@ -146,12 +147,12 @@ const Content = ({navigation}) => {
           <Typography
             type="h2"
             style={[styles.name, {width: windowWidth - 170}]}>
-            John Doe
+            {first_name} {last_name}
           </Typography>
           <Typography
             type="h4"
             style={[styles.email, {width: windowWidth - 170}]}>
-            xyz001@gmail.com
+            {email}
           </Typography>
         </View>
       </View>

@@ -71,13 +71,13 @@ export const resetPasswordScheme = yup.object().shape({
 export const oldPassSchema = (message, maxMessage) =>
   yup.string().trim().required(message).max(20, maxMessage);
 export const changePasswordScheme = yup.object().shape({
-  oldPassword: oldPassSchema('Old password is required.'),
-  newPassword: passwordSchema(),
-  confirmPassword: confirmPasswordSchema('newPassword'),
+  current_password: oldPassSchema('Old password is required.'),
+  password: passwordSchema(),
+  confirmPassword: confirmPasswordSchema('password'),
 });
 
 export const editnameSchema = (message, maxMessage) =>
-  yup.string().trim().max(20, maxMessage);
+  yup.string().trim().required(message).max(20, maxMessage);
 
 export const editemailSchema = yup
   .string()
@@ -86,9 +86,15 @@ export const editemailSchema = yup
   .matches(emailRegExp, 'Please enter valid email id.');
 
 export const editProfileScheme = yup.object().shape({
-  name: editnameSchema('First name should maximum 20 characters.'),
-  surname: editnameSchema('Last name should maximum 20 characters.'),
-  email: editemailSchema,
+  first_name: editnameSchema(
+    'First name is required .',
+    'First name should maximum 20 characters.',
+  ),
+  last_name: editnameSchema(
+    'Last name is required .',
+    'Last name should maximum 20 characters.',
+  ),
+  // email: editemailSchema,
 });
 
 export const addItemValidation = yup.object().shape({
@@ -102,16 +108,17 @@ export const addItemValidation = yup.object().shape({
 
     .required('Alcohol percentage is required.')
     .max(100, 'Percentage must be less than or equal to 100.'),
-  quantity: yup
-    .number()
-    .required('quantity is required')
-    .max(9999, 'quantity must be less than or equal to 9999.'),
+  quantity: yup.number().required('Quantity is required').max(9999, '9999'),
   pack_size: yup
     .string()
     .trim()
     .required('Pack size is required')
     .max(2, 'quantity should maximum 2 characters.'),
-  price: yup.string().trim().required('Price is required.'),
+  price: yup
+    .string()
+    .trim()
+    .required('Price is required.')
+    .max(6, 'Price must be less than or equal to 999999.'),
 });
 
 export const addBrandValidation = yup.object().shape({
@@ -130,4 +137,11 @@ export const addStoreValidation = yup.object().shape({
     .required('Store name is required.')
     .max(50, 'Store name should maximum 50 characters.'),
   address: nameSchema('Address is required.'),
+});
+export const PriceSchema = yup.object().shape({
+  updated_price: yup
+    .string()
+    .trim()
+    .required('Price is required.')
+    .max(6, 'Price must be less than or equal to 999999.'),
 });

@@ -37,7 +37,6 @@ const useFetch = (url, config) => {
         ...rest,
       })
         .then(response => {
-          console.log('headers', headers);
           if (response.data.status === 200) {
             setError(undefined);
             setResponse(response.data);

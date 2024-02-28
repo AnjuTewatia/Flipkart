@@ -57,7 +57,8 @@ end
 
 target 'DrinkMate' do
   config = use_native_modules!
-
+  $RNFirebaseAsStaticFramework = true
+  use_frameworks! :linkage => :static
   use_react_native!(
     :path => config[:reactNativePath],
     # Enables Flipper.

@@ -7,12 +7,14 @@ import {
   ImageBackground,
   ScrollView,
 } from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import {Typography} from '../../Components/Typography';
 import Common from '../../utils/common';
 import HomeImages, {BrandImage} from '../../Components/HomeImages';
 import IMAGES from '../../utils/Images';
+import {useAppContext} from '../../Components/AppContext';
+import useFetch from '../../utils/useFetch';
 
 const Home = ({navigation}) => {
   return (
@@ -25,6 +27,20 @@ const Home = ({navigation}) => {
 };
 
 const Content = ({navigation}) => {
+  const {setUserProfile} = useAppContext();
+
+  const [getProfile, {response}] = useFetch('profile', {mehtod: 'GET'});
+
+  const handlegetProfile = async () => {
+    const res = await getProfile();
+    if (res?.status === 200) {
+      setUserProfile(res?.data);
+    }
+  };
+  useEffect(() => {
+    handlegetProfile();
+  }, []);
+
   return (
     <ScrollView
       style={[Common.container, styles.container]}

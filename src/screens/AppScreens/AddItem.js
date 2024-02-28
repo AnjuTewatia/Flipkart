@@ -21,6 +21,7 @@ const AddItem = ({navigation, route}) => {
     <AppBaseComponent
       backButton
       title={'Add Item'}
+      height={'97%'}
       navigation={navigation}
       renderChild={Content({navigation, qrcode, store_id})}
     />
@@ -137,6 +138,7 @@ const Content = ({navigation, qrcode, store_id}) => {
           <InputField
             formik={formik}
             bgcolor={'#fff'}
+            maxLength={6}
             keyboardType={'number-pad'}
             name="price"
             label={'Price'}
