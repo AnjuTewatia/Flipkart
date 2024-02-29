@@ -1,20 +1,24 @@
-import {Pressable, StyleSheet, Text, TouchableHighlight} from 'react-native';
+import {Pressable, StyleSheet, Text} from 'react-native';
 import React, {useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {useAppContext} from './AppContext';
-import ConfirmModal from './ConfirmModal';
 import ConfirmPriceModal from './ConfirmPriceModal';
 import AddNewPrice from './AddNewPrice';
 import useFetch from '../utils/useFetch';
 import Toast from 'react-native-toast-message';
 import {useFormik} from 'formik';
 import {PriceSchema} from '../utils/validations';
-const ConfirmPrice = ({title, onPress, style, item, store_id}) => {
-  const {windowWidth, initialRegion} = useAppContext();
+import ConfirmModal from './ConfirmModal';
+const ConfirmPrice = ({title, style, item, store_id}) => {
+  const {
+    initialRegion,
+    locationpermission,
+    goToSettings,
+    checkAndRequestLocationPermission,
+  } = useAppContext();
+  const [modal, setModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [priceModal, setPriceModal] = useState(false);
-  const [updatedPrice, setUpdatedPrice] = useState(null);
-  const [loader, setLoader] = useState(false);
 
   const openModal = async () => {
     setIsOpen(false);
@@ -23,9 +27,24 @@ const ConfirmPrice = ({title, onPress, style, item, store_id}) => {
     }, 100);
   };
 
-  const [confirmPrice, {response, loading, error}] = useFetch('confirm-price', {
+  const [confirmPrice, {loading}] = useFetch('confirm-price', {
     method: 'POST',
   });
+
+  const checkPermission = () => {
+    if (locationpermission === 'blocked') {
+      setModal(true);
+      return;
+    } else if (locationpermission === 'granted') {
+      setIsOpen(true);
+      return;
+    } else {
+      // checkAndRequestLocationPermission();
+      return;
+
+      //
+    }
+  };
 
   const handleConfirmPrice = async values => {
     try {
@@ -61,7 +80,7 @@ const ConfirmPrice = ({title, onPress, style, item, store_id}) => {
     <>
       <Pressable
         style={[styles.linearGradient, style]}
-        onPress={() => setIsOpen(true)}>
+        onPress={checkPermission}>
         <LinearGradient
           colors={['#371841', '#8C2457']}
           start={{x: 0, y: 0}}
@@ -92,6 +111,17 @@ const ConfirmPrice = ({title, onPress, style, item, store_id}) => {
         onNoClick={() => setPriceModal(false)}
         cancelText="Cancel"
         confirmText="Save"
+      />
+      <ConfirmModal
+        isOpen={modal}
+        // loading={loader}
+        handleClose={() => setModal(false)}
+        title="Permission Denied"
+        description="Access was previously denied, Please grant location access from the Settings."
+        onYesClick={() => goToSettings()}
+        onNoClick={() => setModal(false)}
+        cancelText="Cancel"
+        confirmText="Go to Settings."
       />
     </>
   );

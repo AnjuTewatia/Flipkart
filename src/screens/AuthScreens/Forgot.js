@@ -53,7 +53,7 @@ const Content = ({navigation}) => {
     }
   };
   return (
-    <View style={Common.container}>
+    <View style={[Common.container, styles.container]}>
       <InputField
         formik={formik}
         type="email"
@@ -77,5 +77,10 @@ const styles = StyleSheet.create({
     bottom: 0,
     width: '100%',
     alignSelf: 'center',
+  },
+  container: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
 });

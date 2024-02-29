@@ -11,11 +11,15 @@ import ConfirmModal from './ConfirmModal';
 import Toast from 'react-native-toast-message';
 import BottomSheet from './BottomSheet';
 
-const RenderStoreListing = ({item, type, navigation}) => {
+const RenderStoreListing = ({item, type, navigation, onheartPress}) => {
   const {windowWidth} = useAppContext();
   const [isOpen, setIsOpen] = useState(false);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
   const [addStore, {response, loading, error}] = useFetch('create-store', {
+    method: 'POST',
+  });
+
+  const [addtoFavorite] = useFetch('add-to-favourite', {
     method: 'POST',
   });
 
@@ -43,6 +47,13 @@ const RenderStoreListing = ({item, type, navigation}) => {
     } catch (error) {
       setIsOpen(false);
     }
+  };
+
+  const handleAddToFavorite = async () => {
+    const res = await addtoFavorite({
+      store_id: item?.id,
+      type: 1,
+    });
   };
   useEffect(() => {
     setIsOpen(false);
@@ -78,7 +89,11 @@ const RenderStoreListing = ({item, type, navigation}) => {
           </Pressable>
         )}
         {type !== 'addstore' && (
-          <Pressable style={styles.EmptyHeart}>
+          <Pressable
+            style={styles.EmptyHeart}
+            onPress={() => {
+              onheartPress(), handleAddToFavorite();
+            }}>
             <View style={styles.emptyHeart}>
               <EmptyHeart />
             </View>

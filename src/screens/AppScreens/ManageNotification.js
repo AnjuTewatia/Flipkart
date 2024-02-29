@@ -4,6 +4,9 @@ import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import Common from '../../utils/common';
 import {Typography} from '../../Components/Typography';
 import {COLORS} from '../../utils/styleConst';
+import {useAppContext} from '../../Components/AppContext';
+import useFetch from '../../utils/useFetch';
+import Toast from 'react-native-toast-message';
 
 const ManageNotification = ({navigation}) => {
   return (
@@ -17,7 +20,31 @@ const ManageNotification = ({navigation}) => {
 };
 
 const Content = ({navigation}) => {
-  const [checked, setChecked] = useState(false);
+  const {userProfile, setUserProfile} = useAppContext();
+
+  const [notification_status, setNotificationStatus] = useState(
+    userProfile?.notification_status,
+  );
+  const [checked, setChecked] = useState(
+    notification_status == 0 ? false : true,
+  );
+
+  const [getnotification] = useFetch('notification-status', {method: 'GET'});
+
+  const handleNotification = async () => {
+    setChecked(notification_status == 0 ? true : false);
+    const res = await getnotification();
+    console.log('res ==>', res);
+    if (res?.status === 200) {
+      setUserProfile(res?.data);
+      setNotificationStatus(res?.data?.notification_status);
+      Toast.show({
+        type: 'success',
+        text1: res?.message,
+      });
+    }
+  };
+
   return (
     <>
       <View style={Common.container}>
@@ -36,7 +63,7 @@ const Content = ({navigation}) => {
               true: '#F87E7D',
             }}
             value={checked}
-            onValueChange={() => setChecked(!checked)}
+            onValueChange={() => handleNotification()}
           />
         </View>
       </View>

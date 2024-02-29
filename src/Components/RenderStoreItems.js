@@ -6,17 +6,33 @@ import IMAGES from '../utils/Images';
 import {useAppContext} from './AppContext';
 import ConfirmPrice from './ConfirmPriceButton';
 import {EmptyHeart} from '../Icons';
+import useFetch from '../utils/useFetch';
 
 const RenderStoreItems = ({
   item,
   store_id,
   heartIcon,
   editIcon,
-  ondeletePress,
+
   onEditPress,
   type,
+  onPress,
 }) => {
   const {windowWidth} = useAppContext();
+
+  const [addtoFavorite] = useFetch('add-to-favourite', {
+    method: 'POST',
+  });
+
+  const handleAddToFavorite = async () => {
+    const res = await addtoFavorite({
+      store_id: store_id,
+      item_id: item?.id,
+      type: 2,
+    });
+    console.log('res ==>', res);
+  };
+
   return (
     <>
       {type === 'Calculate' && item?.result ? (
@@ -31,7 +47,10 @@ const RenderStoreItems = ({
             }}>
             <Pressable
               style={styles.deleteIcon}
-              onPress={() => !heartIcon && ondeletePress()}>
+              onPress={() => {
+                onPress();
+                handleAddToFavorite();
+              }}>
               {heartIcon ? (
                 <EmptyHeart />
               ) : (
@@ -185,7 +204,10 @@ const RenderStoreItems = ({
             }}>
             <Pressable
               style={styles.deleteIcon}
-              onPress={() => !heartIcon && ondeletePress()}>
+              onPress={() => {
+                onPress();
+                handleAddToFavorite();
+              }}>
               {heartIcon ? (
                 <EmptyHeart />
               ) : (

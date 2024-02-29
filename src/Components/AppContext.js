@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import React, {createContext, useContext, useEffect, useState} from 'react';
-import {Dimensions} from 'react-native';
+import {Dimensions, Linking} from 'react-native';
 import {getDeviceId} from 'react-native-device-info';
 import Geolocation from '@react-native-community/geolocation';
 import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
@@ -17,10 +17,14 @@ const AppProvider = ({children}) => {
   const [apiMsg, setApiMsg] = useState('');
   const [userProfile, setUserProfile] = useState(null);
   const [fcmToken, setFcmToken] = useState(null);
-
+  const [locationpermission, setLocationPermission] = useState(null);
   const device_id = getDeviceId();
 
   const [initialRegion, setInitialRegion] = useState(null);
+
+  const goToSettings = () => {
+    Linking.openSettings();
+  };
 
   const removeUser = () => {
     setUserData(null);
@@ -38,6 +42,17 @@ const AppProvider = ({children}) => {
     }
   };
 
+  const getUserProfile = async () => {
+    try {
+      const value = await AsyncStorage.getItem('userProfile');
+      if (value !== null) {
+        // We have data!!
+        setUserProfile(JSON.parse(value));
+      }
+    } catch (error) {
+      // Error retrieving data
+    }
+  };
   const requestNotificationPermission = async () => {
     try {
       const permission = PERMISSIONS.ANDROID.POST_NOTIFICATIONS;
@@ -86,6 +101,7 @@ const AppProvider = ({children}) => {
       if (result !== RESULTS.GRANTED) {
         const requestResult = await request(permission);
         if (requestResult == RESULTS.BLOCKED) {
+          setLocationPermission(requestResult);
           console.log('Location permission blocked');
           return;
         }
@@ -128,6 +144,7 @@ const AppProvider = ({children}) => {
     requestNotificationPermission();
     requestUserPermission();
     getUser();
+    getUserProfile();
   }, []);
   return (
     <AppContext.Provider
@@ -148,6 +165,8 @@ const AppProvider = ({children}) => {
         setFcmToken,
         userProfile,
         setUserProfile,
+        locationpermission,
+        goToSettings,
       }}>
       {children}
     </AppContext.Provider>

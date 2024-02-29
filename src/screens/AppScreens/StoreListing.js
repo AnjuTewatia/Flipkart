@@ -1,7 +1,6 @@
 import {
   ActivityIndicator,
   FlatList,
-  Pressable,
   StyleSheet,
   TextInput,
   View,
@@ -11,7 +10,6 @@ import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import RenderImages from '../../Components/RenderImages';
 import IMAGES from '../../utils/Images';
 import {useAppContext} from '../../Components/AppContext';
-import BottomSheet from '../../Components/BottomSheet';
 import Common from '../../utils/common';
 import RightHeaderButton from '../../Components/RightHeaderButton';
 import useFetch from '../../utils/useFetch';
@@ -19,22 +17,32 @@ import RenderStoreListing from '../../Components/RenderStoreListing';
 import Shimmer from '../../Components/Shimmer';
 import NoFound from '../../Components/NoFound';
 import {useIsFocused} from '@react-navigation/native';
+import ConfirmModal from '../../Components/ConfirmModal';
 
 const StoreListing = ({navigation, route}) => {
   const type = route?.params?.type;
+  const [isOpen, setIsOpen] = useState(false);
+  const {locationpermission} = useAppContext();
+  const addStore = () => {
+    if (locationpermission === 'blocked') {
+      setIsOpen(true);
+    } else {
+      navigation.navigate('AddStore');
+    }
+  };
   return (
     <AppBaseComponent
       title={'Store Listing'}
       navigation={navigation}
       backButton
       height={'97%'}
-      renderChild={Content({navigation, type})}
+      renderChild={Content({navigation, type, isOpen, setIsOpen})}
       rightButton={
         type === 'store' ? (
           <RightHeaderButton
             icon={IMAGES.addIcon}
             title="Store"
-            onPress={() => navigation.navigate('AddStore')}
+            onPress={addStore}
           />
         ) : null
       }
@@ -42,7 +50,7 @@ const StoreListing = ({navigation, route}) => {
   );
 };
 
-const Content = ({navigation, type}) => {
+const Content = ({navigation, type, isOpen, setIsOpen}) => {
   const [searchvalue, setSearchValue] = useState('');
   const [paginationValue, setPaginationValue] = useState(10);
   const [pageNo, setPageNo] = useState(1);
@@ -51,10 +59,11 @@ const Content = ({navigation, type}) => {
   const [totalRecords, setTotalRecords] = useState('');
   const [currentRecord, setCurrentRecord] = useState('');
   const [loading, setLoading] = useState(false);
-  const {checkAndRequestLocationPermission} = useAppContext();
+
+  const {checkAndRequestLocationPermission, goToSettings} = useAppContext();
   const isFocused = useIsFocused();
 
-  const [storeListing, {response, error}] = useFetch('get-stores', {
+  const [storeListing] = useFetch('get-stores', {
     method: 'POST',
   });
 
@@ -82,7 +91,12 @@ const Content = ({navigation, type}) => {
   const RenderItem = ({item}) => {
     return (
       <>
-        <RenderStoreListing item={item} type={type} navigation={navigation} />
+        <RenderStoreListing
+          item={item}
+          type={type}
+          navigation={navigation}
+          onheartPress={() => console.log('jejej')}
+        />
       </>
     );
   };
@@ -165,6 +179,18 @@ const Content = ({navigation, type}) => {
           </>
         )}
       </View>
+
+      <ConfirmModal
+        isOpen={isOpen}
+        // loading={loader}
+        handleClose={() => setIsOpen(false)}
+        title="Permission Denied"
+        description="Access was previously denied, Please grant location access from the Settings."
+        onYesClick={() => goToSettings()}
+        onNoClick={() => setIsOpen(false)}
+        cancelText="Cancel"
+        confirmText="Go to Settings."
+      />
     </>
   );
 };

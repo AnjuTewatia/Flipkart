@@ -82,7 +82,7 @@ const styles = StyleSheet.create({
     flex: 1,
     position: 'relative',
     width: '100%',
-    height: Height,
+    height: '100%',
   },
   safeAreaView: {
     flex: 1,

@@ -1,11 +1,11 @@
-import {FlatList, Pressable, StyleSheet, TextInput, View} from 'react-native';
+import {FlatList, Platform, StyleSheet, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import RenderImages from '../../Components/RenderImages';
 import IMAGES from '../../utils/Images';
-import {Typography} from '../../Components/Typography';
+
 import {useAppContext} from '../../Components/AppContext';
-import {EmptyHeart, RightArrow} from '../../Icons';
+
 import BottomSheet from '../../Components/BottomSheet';
 import Common from '../../utils/common';
 import RightHeaderButton from '../../Components/RightHeaderButton';
@@ -15,17 +15,45 @@ import useFetch from '../../utils/useFetch';
 import {useIsFocused} from '@react-navigation/native';
 import Shimmer from '../../Components/Shimmer';
 import NoFound from '../../Components/NoFound';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import ConfirmModal from '../../Components/ConfirmModal';
 
 const ViewItems = ({navigation, route}) => {
-  console.log(route);
   const store_id = route?.params?.item?.id;
   const store_uuid = route?.params?.item?.uuid;
   const [scannerVisible, setScannerVisible] = useState(false);
   const [scannedData, setScannedData] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
   const handleScan = data => {
     setScannedData(data);
     setScannerVisible(false);
     navigation.navigate('AddItem', {data: data?.data, id: store_id});
+  };
+
+  const requestCameraPermission = async () => {
+    try {
+      let permission;
+      if (Platform.OS === 'ios') {
+        permission = PERMISSIONS.IOS.CAMERA;
+      } else {
+        permission = PERMISSIONS.ANDROID.CAMERA;
+      }
+      const result = await check(permission);
+
+      if (result !== RESULTS.GRANTED) {
+        const requestResult = await request(permission);
+
+        if (requestResult == RESULTS.BLOCKED) {
+          setIsOpen(true);
+          return;
+        } else if (requestResult == RESULTS.GRANTED) {
+          setScannerVisible(true);
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn(err);
+    }
   };
   return (
     <AppBaseComponent
@@ -39,12 +67,14 @@ const ViewItems = ({navigation, route}) => {
         scannerVisible,
         store_id,
         setScannerVisible,
+        isOpen,
+        setIsOpen,
       })}
       rightButton={
         <RightHeaderButton
           icon={IMAGES.addIcon}
           title="Item"
-          onPress={() => setScannerVisible(true)}
+          onPress={() => requestCameraPermission()}
         />
       }
     />
@@ -58,8 +88,10 @@ const Content = ({
   setScannerVisible,
   store_uuid,
   store_id,
+  isOpen,
+  setIsOpen,
 }) => {
-  const {windowWidth, initialRegion} = useAppContext();
+  const {goToSettings} = useAppContext();
   const [searchvalue, setSearchValue] = useState('');
   const [paginationValue, setPaginationValue] = useState(10);
   const [pageNo, setPageNo] = useState(1);
@@ -101,7 +133,12 @@ const Content = ({
   const RenderItem = ({item}) => {
     return (
       <>
-        <RenderStoreItems item={item} store_id={store_id} heartIcon />
+        <RenderStoreItems
+          item={item}
+          store_id={store_id}
+          heartIcon
+          onPress={() => console.log('hello')}
+        />
       </>
     );
   };
@@ -144,6 +181,17 @@ const Content = ({
         onScan={handleScan}
         isOpen={scannerVisible}
         handleClose={() => setScannerVisible(false)}
+      />
+      <ConfirmModal
+        isOpen={isOpen}
+        // loading={loader}
+        handleClose={() => setIsOpen(false)}
+        title="Permission Denied"
+        description="Access was previously denied, Please grant Camera access from the Settings"
+        onYesClick={() => goToSettings()}
+        onNoClick={() => setIsOpen(false)}
+        cancelText="Cancel"
+        confirmText="Go to Settings."
       />
     </>
   );

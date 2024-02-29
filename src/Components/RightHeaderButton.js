@@ -20,7 +20,11 @@ const RightHeaderButton = ({onPress, icon, title, color}) => {
 export default RightHeaderButton;
 
 const styles = StyleSheet.create({
-  rightbtnContainer: {flexDirection: 'row', alignItems: 'center'},
+  rightbtnContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   icon: {width: 17, height: 17, marginHorizontal: 2},
   title: {
     marginHorizontal: 2,

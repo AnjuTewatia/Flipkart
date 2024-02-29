@@ -1,12 +1,4 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  Platform,
-  ImageBackground,
-  ScrollView,
-} from 'react-native';
+import {StyleSheet, View, Platform, ScrollView} from 'react-native';
 import React, {useEffect} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import {Typography} from '../../Components/Typography';
@@ -15,6 +7,7 @@ import HomeImages, {BrandImage} from '../../Components/HomeImages';
 import IMAGES from '../../utils/Images';
 import {useAppContext} from '../../Components/AppContext';
 import useFetch from '../../utils/useFetch';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Home = ({navigation}) => {
   return (
@@ -29,12 +22,13 @@ const Home = ({navigation}) => {
 const Content = ({navigation}) => {
   const {setUserProfile} = useAppContext();
 
-  const [getProfile, {response}] = useFetch('profile', {mehtod: 'GET'});
+  const [getProfile] = useFetch('profile', {mehtod: 'GET'});
 
   const handlegetProfile = async () => {
     const res = await getProfile();
     if (res?.status === 200) {
       setUserProfile(res?.data);
+      AsyncStorage.setItem('userProfile', JSON.stringify(res?.data));
     }
   };
   useEffect(() => {
@@ -98,7 +92,6 @@ const styles = StyleSheet.create({
     marginBottom: 6,
   },
   LogoText: {
-    // fontSize: 26,
     color: '#8C2457',
     fontWeight: Platform.OS === 'android' ? '900' : '700',
   },

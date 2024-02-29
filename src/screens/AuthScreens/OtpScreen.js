@@ -55,7 +55,7 @@ const Content = ({navigation, data}) => {
       if (data?.type === 'forgot') {
         navigation.navigate('resetPassword', {uuid: data?.uuid});
       } else {
-        setUserData(JSON.stringify({token:resData?.token}));
+        setUserData(JSON.stringify({token: resData?.token}));
         saveLocalLoginDetail(resData?.token);
       }
     }
@@ -66,9 +66,10 @@ const Content = ({navigation, data}) => {
   });
 
   const handleResend = async () => {
+    setOptTimer(59);
+
     const res = await resendOtp({uuid: data?.uuid});
     if (res) {
-      setOptTimer(59);
       Toast.show({
         type: 'success',
         text1: res?.message,

@@ -21,7 +21,7 @@ setup_permissions([
   # 'Bluetooth',
   # 'Calendars',
   # 'CalendarsWriteOnly',
-  # 'Camera',
+  'Camera',
   # 'Contacts',
   # 'FaceID',
   'LocationAccuracy',
@@ -47,7 +47,7 @@ setup_permissions([
 #   dependencies: {
 #     ...(process.env.NO_FLIPPER ? { 'react-native-flipper': { platforms: { ios: null } } } : {}),
 # ```
-flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.enabled
+flipper_config = ENV['NO_FLIPPER'] == "1" ? FlipperConfiguration.disabled : FlipperConfiguration.disabled
 
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil

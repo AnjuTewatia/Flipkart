@@ -77,13 +77,14 @@ const Content = ({navigation}) => {
           name="last_name"
           placeholder="Enter Last Name"
         />
-        {/* <InputField
+        <InputField
+          editable={false}
           formik={formik}
           label={'Email Address'}
           type="email"
           name="email"
           placeholder="Enter Email Address"
-        /> */}
+        />
         <View style={{position: 'absolute', bottom: 0}}>
           <Button
             title={'Save'}

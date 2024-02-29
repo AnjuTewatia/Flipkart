@@ -120,6 +120,22 @@ export const Tick = props => {
     </Svg>
   );
 };
+export const ColorTick = props => {
+  return (
+    <Svg
+      width={14}
+      height={10}
+      viewBox="0 0 14 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M5.5 7.38L12.394.483l1.061 1.06L5.5 9.5.727 4.727l1.06-1.06L5.5 7.379z"
+        fill="#F87E7D"
+      />
+    </Svg>
+  );
+};
 export const CrossIcon = props => {
   return (
     <Svg

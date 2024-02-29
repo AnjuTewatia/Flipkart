@@ -1,39 +1,78 @@
-import {
-  StyleSheet,
-  Text,
-  View,
-  SafeAreaView,
-  ScrollView,
-  Pressable,
-} from 'react-native';
-import React from 'react';
+import {StyleSheet, ScrollView, FlatList} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
-
 import Common from '../../utils/common';
-
-import IMAGES from '../../utils/Images';
 import {useAppContext} from '../../Components/AppContext';
-
-import RenderStores from '../../Components/RenderStores';
 import RenderStoreItems from '../../Components/RenderStoreItems';
-import RightHeaderButton from '../../Components/RightHeaderButton';
+import useFetch from '../../utils/useFetch';
+import NoFound from '../../Components/NoFound';
+import Shimmer from '../../Components/Shimmer';
 
-const FavouriteList = ({navigation}) => {
+const FavouriteList = ({navigation, route}) => {
+  const store_id = route?.params?.item?.id;
   return (
     <AppBaseComponent
       title={'Favorites'}
       navigation={navigation}
       backButton
-      renderChild={Content({navigation})}
+      renderChild={Content({navigation, store_id})}
     />
   );
 };
 
-const Content = ({navigation}) => {
+const Content = ({navigation, store_id}) => {
   const {windowWidth} = useAppContext();
+  const [data, setData] = useState(null);
+
+  const [getItems, {response, loading, error}] = useFetch(
+    'get-favourite-items-by-store',
+    {method: 'POST'},
+  );
+  console.log(store_id);
+  const handleGetStores = async () => {
+    const res = await getItems({
+      store_id: store_id,
+    });
+    if (res?.status === 200) {
+      setData(res?.data);
+    }
+  };
+
+  useEffect(() => {
+    handleGetStores();
+  }, []);
+
+  const RenderItem = ({item}) => {
+    return (
+      <>
+        <RenderStoreItems
+          item={item}
+          store_id={store_id}
+          onPress={() => console.log('hello')}
+        />
+      </>
+    );
+  };
+
   return (
     <ScrollView style={[Common.container, [styles.favoriteContainer]]}>
-      <RenderStoreItems />
+      <>
+        {loading ? (
+          <Shimmer />
+        ) : (
+          <>
+            {data?.items?.length === 0 ? (
+              <NoFound title={'No Favorite item added'} />
+            ) : (
+              <FlatList
+                data={data}
+                keyExtractor={item => item?.id}
+                renderItem={RenderItem}
+              />
+            )}
+          </>
+        )}
+      </>
     </ScrollView>
   );
 };
