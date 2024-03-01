@@ -9,6 +9,8 @@ import Toast from 'react-native-toast-message';
 import {useFormik} from 'formik';
 import {PriceSchema} from '../utils/validations';
 import ConfirmModal from './ConfirmModal';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+
 const ConfirmPrice = ({title, style, item, store_id}) => {
   const {
     initialRegion,
@@ -31,18 +33,49 @@ const ConfirmPrice = ({title, style, item, store_id}) => {
     method: 'POST',
   });
 
-  const checkPermission = () => {
-    if (locationpermission === 'blocked') {
-      setModal(true);
-      return;
-    } else if (locationpermission === 'granted') {
-      setIsOpen(true);
-      return;
-    } else {
-      // checkAndRequestLocationPermission();
-      return;
+  const requestLocationPermisson = async () => {
+    try {
+      let permission;
+      if (Platform.OS === 'ios') {
+        permission = PERMISSIONS.IOS.LOCATION_WHEN_IN_USE;
+      } else {
+        permission = PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+      }
+      const result = await check(permission);
 
-      //
+      // if(result === RESULTS.DENIED){
+      //   const requestResult = await request(permission);
+
+      // }
+      switch (result) {
+        case RESULTS.UNAVAILABLE:
+          console.log(
+            'This feature is not available (on this device / in this context)',
+          );
+          break;
+        case RESULTS.DENIED:
+          // setIsOpen(true);
+          const requestResult = await request(permission);
+          if (requestResult === RESULTS.BLOCKED && Platform.OS === 'android') {
+            setModal(true);
+          } else if (requestResult === RESULTS.GRANTED) {
+            setIsOpen(true);
+          }
+          break;
+        case RESULTS.LIMITED:
+          console.log('The permission is limited: some actions are possible');
+          break;
+        case RESULTS.GRANTED:
+          setIsOpen(true);
+
+          // navigation.navigate('AddStore');
+          break;
+        case RESULTS.BLOCKED:
+          setModal(true);
+          break;
+      }
+    } catch (err) {
+      console.warn(err);
     }
   };
 
@@ -58,14 +91,12 @@ const ConfirmPrice = ({title, style, item, store_id}) => {
       });
       console.log('res ==>', res);
       if (res?.status === 200) {
-        Toast.show({
-          type: 'success',
-          text1: res?.message,
-        });
       }
-    } catch (error) {}
-    setIsOpen(false);
-    setPriceModal(false);
+    } catch (error) {
+    } finally {
+      setIsOpen(false);
+      setPriceModal(false);
+    }
   };
   const formik = useFormik({
     initialValues: {
@@ -80,7 +111,7 @@ const ConfirmPrice = ({title, style, item, store_id}) => {
     <>
       <Pressable
         style={[styles.linearGradient, style]}
-        onPress={checkPermission}>
+        onPress={requestLocationPermisson}>
         <LinearGradient
           colors={['#371841', '#8C2457']}
           start={{x: 0, y: 0}}
@@ -121,7 +152,7 @@ const ConfirmPrice = ({title, style, item, store_id}) => {
         onYesClick={() => goToSettings()}
         onNoClick={() => setModal(false)}
         cancelText="Cancel"
-        confirmText="Go to Settings."
+        confirmText="Go to Settings"
       />
     </>
   );

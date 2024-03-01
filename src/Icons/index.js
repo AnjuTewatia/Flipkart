@@ -104,6 +104,22 @@ export const EmptyHeart = props => {
   );
 };
 
+export const FilledHeart = props => {
+  return (
+    <Svg
+      width={20}
+      height={19}
+      viewBox="0 0 20 19"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M10 18.35l-1.45-1.32C3.4 12.36 0 9.27 0 5.5 0 2.41 2.42 0 5.5 0 7.24 0 8.91.81 10 2.08 11.09.81 12.76 0 14.5 0 17.58 0 20 2.41 20 5.5c0 3.77-3.4 6.86-8.55 11.53L10 18.35z"
+        fill="#E82C2A"
+      />
+    </Svg>
+  );
+};
 export const Tick = props => {
   return (
     <Svg

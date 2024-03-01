@@ -1,100 +1,186 @@
-import {Pressable, StyleSheet, Text, View} from 'react-native';
-import React from 'react';
+import {
+  Pressable,
+  StyleSheet,
+  Text,
+  TextInput,
+  FlatList,
+  View,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import RenderImages from '../../Components/RenderImages';
 import IMAGES from '../../utils/Images';
 import {Typography} from '../../Components/Typography';
 import {useAppContext} from '../../Components/AppContext';
 import {EmptyHeart, RightArrow} from '../../Icons';
+import {useIsFocused} from '@react-navigation/native';
+import useFetch from '../../utils/useFetch';
+import Common from '../../utils/common';
+import BottomSheet from '../../Components/BottomSheet';
+import Scanner from '../../Components/Scanner';
+import ConfirmModal from '../../Components/ConfirmModal';
+import NoFound from '../../Components/NoFound';
+import Shimmer from '../../Components/Shimmer';
+import RenderStoreItems from '../../Components/RenderStoreItems';
 
-const StoreItems = ({navigation}) => {
+const StoreItems = ({navigation, route}) => {
   return (
     <AppBaseComponent
-      title={'Violet Crumb-Ball'}
+      title={route?.params?.name}
       navigation={navigation}
       backButton
-      renderChild={Content({navigation})}
+      renderChild={Content({navigation, route})}
     />
   );
 };
 
-const Content = ({navigation}) => {
+const Content = ({navigation, route}) => {
   const {windowWidth} = useAppContext();
+  const [data, setdata] = useState([]);
+  const [storeListing, {response, loading, error}] = useFetch('get-items', {
+    method: 'POST',
+  });
+  const isFocused = useIsFocused();
+  const handleStoreListing = async () => {
+    try {
+      const res = await storeListing({
+        store_uuid: route?.params?.uuid,
+        keywords: '',
+        pagination_value: 10,
+        page: '',
+      });
+
+      setdata(res?.data[0]?.items);
+      // setdata(prevData => prevData.concat(res?.data?.data));
+      // setTotalRecords(res?.data?.total);
+      // setCurrentRecord(res?.data?.to);
+    } catch (error) {
+      console.error('Error fetching store listing:', error);
+    }
+  };
+
+  const toggleFavorite = id => {
+    const updatedData = data.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          is_favourite: item.is_favourite === 0 ? 1 : 0,
+        };
+      }
+      return item;
+    });
+    const newData = [...updatedData];
+    // Update component state or props with the updated data
+    setdata(newData); // Assuming you have a setData function to update the state
+  };
+  const RenderItem = ({item}) => {
+    return (
+      <>
+        <RenderStoreItems
+          item={item}
+          store_id={route?.params?.id}
+          heartIcon
+          type={'search'}
+          onPress={() => toggleFavorite(item?.id)}
+        />
+      </>
+    );
+  };
+  useEffect(() => {
+    handleStoreListing();
+  }, []);
   return (
     <>
-      <View style={[styles.favoriteView]}>
-        <RenderImages
-          source={IMAGES.beer}
-          style={{
-            width: '30%',
-            height: '100%',
-            position: 'absolute',
-            right: 0,
-            zindex: 999,
-          }}
-        />
-        <Pressable style={styles.deleteIcon}>
-          <EmptyHeart />
-        </Pressable>
-        <RenderImages
-          source={IMAGES.arrowimg}
-          style={{width: '18%', minHeight: '85%'}}
-        />
-        <View style={{marginHorizontal: 15}}>
-          <Typography
-            type="h3"
-            style={[styles.title, {width: windowWidth - 140}]}>
-            Violet Crumb-Ball
-          </Typography>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginVertical: 2,
-            }}>
-            <Typography type="h5" style={[styles.text]}>
-              10% alcohol
-            </Typography>
-            <Typography type="h5" style={[styles.text]}>
-              |
-            </Typography>
-            <Typography type="h5" style={[styles.text]}>
-              200ml
-            </Typography>
-            <Typography type="h5" style={[styles.text]}>
-              |
-            </Typography>
-            <Typography type="h5" style={[styles.text]}>
-              10 cans
-            </Typography>
-          </View>
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-              marginVertical: 5,
-            }}>
-            <RenderImages
-              source={IMAGES.tagicon}
-              style={{width: 18, height: 18}}
-            />
-            <Typography
-              type="h5"
-              style={[
-                styles.text,
-                {width: windowWidth - 155, fontWeight: '800', color: '#F87E7D'},
-              ]}>
-              $43
-            </Typography>
-          </View>
+      <View style={[Common.container, styles.storeContainer]}>
+        <View style={styles.searchContainer}>
+          <RenderImages source={IMAGES.searchicon} style={styles.searchicon} />
+          <TextInput
+            style={styles.input}
+            placeholder="Search Item by Name"
+            placeholderTextColor={'#99999E'}></TextInput>
         </View>
+        <>
+          {loading ? (
+            <Shimmer />
+          ) : (
+            <>
+              {data?.length === 0 ? (
+                <View style={{flex: 1, justifyContent: 'center'}}>
+                  <NoFound title={'No items added'} />
+                </View>
+              ) : (
+                <FlatList
+                  bounces={false}
+                  data={data}
+                  keyExtractor={item => item?.id}
+                  renderItem={RenderItem}
+                  showsVerticalScrollIndicator={false}
+                />
+              )}
+            </>
+          )}
+        </>
       </View>
+      {/* <BottomSheet
+        navigation={navigation}
+        isVisible={bottomSheetVisible}
+        onClose={toggleBottomSheet}
+        onRequestClose={toggleBottomSheet}
+      /> */}
+      {/* <Scanner
+        onScan={handleScan}
+        isOpen={scannerVisible}
+        handleClose={() => setScannerVisible(false)}
+      /> */}
+      {/* <ConfirmModal
+        isOpen={isOpen}
+        // loading={loader}
+        handleClose={() => setIsOpen(false)}
+        title="Permission Denied"
+        description="Access was previously denied, Please grant Camera access from the Settings"
+        onYesClick={() => goToSettings()}
+        onNoClick={() => setIsOpen(false)}
+        cancelText="Cancel"
+        confirmText="Go to Settings"
+      /> */}
     </>
   );
 };
 export default StoreItems;
 
 const styles = StyleSheet.create({
+  storeContainer: {
+    flex: 1,
+  },
+
+  searchContainer: {
+    height: 50,
+    backgroundColor: '#fff',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 4,
+    marginVertical: 8,
+    borderRadius: 8,
+    width: '99%',
+    alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+  },
+  searchicon: {
+    width: 16,
+    height: 16,
+    zIndex: 999,
+    marginHorizontal: 2,
+  },
+  input: {
+    width: '94%',
+    marginHorizontal: 4,
+    color: '#000',
+    fontSize: 15,
+    padding: 2,
+  },
   favoriteView: {
     width: '99%',
     maxHeight: 100,
@@ -109,6 +195,7 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.3,
     shadowRadius: 4,
+    elevation: 4,
   },
 
   title: {

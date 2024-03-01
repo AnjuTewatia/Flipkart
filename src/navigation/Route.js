@@ -1,11 +1,10 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useAppContext} from '../Components/AppContext';
 import AppStack from './AppStack';
 import AuthStack from './AuthStack';
 import {NavigationContainer} from '@react-navigation/native';
 import Splash from '../screens/AuthScreens/Splash';
-import {getLocalLoginDetail} from '../utils/functions';
 
 const Route = () => {
   const {userData} = useAppContext();

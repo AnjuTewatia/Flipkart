@@ -31,10 +31,6 @@ const Content = ({navigation}) => {
   const handleChangePassword = async values => {
     const res = await changePassword({...values});
     if (res?.status === 200) {
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
-      });
       navigation.goBack();
     }
   };
@@ -55,6 +51,7 @@ const Content = ({navigation}) => {
       <View style={Common.container}>
         <InputField
           formik={formik}
+          style={Common.field}
           label={'Old Password'}
           type="password"
           name="current_password"
@@ -62,6 +59,7 @@ const Content = ({navigation}) => {
         />
         <InputField
           formik={formik}
+          style={Common.field}
           label={'New Password'}
           type="password"
           name="password"
@@ -69,6 +67,7 @@ const Content = ({navigation}) => {
         />
         <InputField
           formik={formik}
+          style={Common.field}
           label={'Confirm Password'}
           type="password"
           name="confirmPassword"

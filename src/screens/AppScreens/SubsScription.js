@@ -84,7 +84,7 @@ const Content = ({navigation}) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <Button title={'Buy Plan'} />
+            <Button title={'Buy Plan'} onPress={() => null} />
             <Typography style={styles.substext}>
               You can manage your subscription and turn off auto-renewal by
               going to your account settings after purchase.

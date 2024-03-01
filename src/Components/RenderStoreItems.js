@@ -5,7 +5,7 @@ import {Typography} from './Typography';
 import IMAGES from '../utils/Images';
 import {useAppContext} from './AppContext';
 import ConfirmPrice from './ConfirmPriceButton';
-import {EmptyHeart} from '../Icons';
+import {EmptyHeart, FilledHeart} from '../Icons';
 import useFetch from '../utils/useFetch';
 
 const RenderStoreItems = ({
@@ -13,7 +13,7 @@ const RenderStoreItems = ({
   store_id,
   heartIcon,
   editIcon,
-
+  ondeletePress,
   onEditPress,
   type,
   onPress,
@@ -25,6 +25,7 @@ const RenderStoreItems = ({
   });
 
   const handleAddToFavorite = async () => {
+    console.log(store_id, item?.id);
     const res = await addtoFavorite({
       store_id: store_id,
       item_id: item?.id,
@@ -45,21 +46,23 @@ const RenderStoreItems = ({
               flexDirection: 'row',
               zIndex: 999,
             }}>
-            <Pressable
-              style={styles.deleteIcon}
-              onPress={() => {
-                onPress();
-                handleAddToFavorite();
-              }}>
-              {heartIcon ? (
-                <EmptyHeart />
-              ) : (
+            {heartIcon ? (
+              <Pressable
+                style={styles.deleteIcon}
+                onPress={() => {
+                  onPress(), handleAddToFavorite();
+                }}>
+                {item?.is_favourite === 0 ? <EmptyHeart /> : <FilledHeart />}
+              </Pressable>
+            ) : (
+              <Pressable style={styles.deleteIcon} onPress={ondeletePress}>
                 <RenderImages
                   source={IMAGES.deleteicon}
                   style={{width: 18, height: 18}}
                 />
-              )}
-            </Pressable>
+              </Pressable>
+            )}
+
             {editIcon && (
               <Pressable style={styles.deleteIcon} onPress={onEditPress}>
                 <RenderImages
@@ -202,21 +205,23 @@ const RenderStoreItems = ({
               flexDirection: 'row',
               zIndex: 999,
             }}>
-            <Pressable
-              style={styles.deleteIcon}
-              onPress={() => {
-                onPress();
-                handleAddToFavorite();
-              }}>
-              {heartIcon ? (
-                <EmptyHeart />
-              ) : (
+            {heartIcon ? (
+              <Pressable
+                style={styles.deleteIcon}
+                onPress={() => {
+                  onPress(), handleAddToFavorite();
+                }}>
+                {item?.is_favourite === 0 ? <EmptyHeart /> : <FilledHeart />}
+              </Pressable>
+            ) : (
+              <Pressable style={styles.deleteIcon} onPress={ondeletePress}>
                 <RenderImages
                   source={IMAGES.deleteicon}
                   style={{width: 18, height: 18}}
                 />
-              )}
-            </Pressable>
+              </Pressable>
+            )}
+
             {editIcon && (
               <Pressable style={styles.deleteIcon} onPress={onEditPress}>
                 <RenderImages
@@ -323,11 +328,13 @@ const RenderStoreItems = ({
             </View>
           </View>
           <View style={{position: 'absolute', right: 0, bottom: 18}}>
-            <ConfirmPrice
-              title={'Confirm Price'}
-              item={item}
-              store_id={store_id}
-            />
+            {type != 'search' && (
+              <ConfirmPrice
+                title={'Confirm Price'}
+                item={item}
+                store_id={store_id}
+              />
+            )}
           </View>
         </View>
       )}

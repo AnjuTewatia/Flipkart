@@ -20,6 +20,8 @@
 	<string>$(MARKETING_VERSION)</string>
 	<key>CFBundleSignature</key>
 	<string>????</string>
+	<key>NSAppleMusicUsageDescription</key>
+	<string>????</string>
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>LSRequiresIPhoneOS</key>
@@ -33,10 +35,12 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string>$(PRODUCT_NAME) needs access to your Camera.</string>
+		<key>NSPhotoLibraryUsageDescription</key>
+	<string>$(PRODUCT_NAME) needs access to your Camera.</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string>YOUR TEXT</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string></string>
+	<string>DrinkMate requires access to your location to find nearby bars and restaurants for recommendations.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>CinzelDecorative-Regular.ttf</string>

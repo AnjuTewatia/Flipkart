@@ -119,7 +119,10 @@ const Content = ({navigation}) => {
     }
   };
   return (
-    <ScrollView style={Common.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={Common.container}
+      showsVerticalScrollIndicator={false}
+      bounces={false}>
       <View style={styles.profilesection}>
         <Pressable
           style={styles.editIcon}
@@ -193,6 +196,7 @@ const Content = ({navigation}) => {
           Other Options
         </Typography>
         <FlatList
+          bounces={false}
           data={Options}
           keyExtractor={item => item?.title}
           renderItem={RenderItem}
@@ -236,14 +240,14 @@ export default Profile;
 const styles = StyleSheet.create({
   profilesection: {
     marginVertical: 18,
-    maxHeight: 120,
+    height: 120,
     width: '98%',
     backgroundColor: '#fff',
     alignSelf: 'center',
     elevation: 4,
     borderRadius: 8,
-    shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.3,
+    shadowOffset: {width: 0, height: 1},
+    shadowOpacity: 0.11,
     shadowRadius: 4,
     flexDirection: 'row',
     padding: 20,
@@ -300,7 +304,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   OptionContainer: {
-    marginVertical: 12,
+    marginVertical: 6,
     maxHeight: 60,
     width: '98%',
     backgroundColor: '#fff',
@@ -308,7 +312,7 @@ const styles = StyleSheet.create({
     elevation: 4,
     borderRadius: 8,
     shadowOffset: {width: 0, height: 2},
-    shadowOpacity: 0.3,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
     flexDirection: 'row',
     padding: 10,

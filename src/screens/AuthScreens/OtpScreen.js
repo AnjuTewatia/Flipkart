@@ -14,7 +14,8 @@ const OtpScreen = ({navigation, route}) => {
   return (
     <AuthBaseComponent
       title={'OTP Verification'}
-      instruction={`Please enter one time password (OTP) that is sent to ${data?.email}`}
+      instruction={`Please enter one time password (OTP) that is sent to`}
+      email={data?.email}
       navigation={navigation}
       backButton
       renderChild={Content({navigation, data})}
@@ -30,7 +31,10 @@ const Content = ({navigation, data}) => {
     if (value.length > 3) {
       handleVerifyOtp(value);
     } else {
-      console.log('error');
+      Toast.show({
+        type: 'info',
+        text1: 'OTP is required',
+      });
     }
   };
 
@@ -46,16 +50,13 @@ const Content = ({navigation, data}) => {
       uuid: data?.uuid,
       otp: value,
     });
-    const resData = res?.data;
+    const resData = res?.user;
+    console.log(resData);
     if (res) {
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
-      });
       if (data?.type === 'forgot') {
         navigation.navigate('resetPassword', {uuid: data?.uuid});
       } else {
-        setUserData(JSON.stringify({token: resData?.token}));
+        setUserData(resData?.token);
         saveLocalLoginDetail(resData?.token);
       }
     }
@@ -70,10 +71,6 @@ const Content = ({navigation, data}) => {
 
     const res = await resendOtp({uuid: data?.uuid});
     if (res) {
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
-      });
     }
   };
   return (

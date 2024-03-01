@@ -4,23 +4,16 @@ import {Typography} from './Typography';
 
 const NoFound = ({title}) => {
   return (
-    <View
+    <Typography
       style={{
         alignSelf: 'center',
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
+        color: '#000',
+        textAlign: 'center',
+        textAlignVertical: 'center',
+        alignSelf: 'center',
       }}>
-      <Typography
-        style={{
-          alignSelf: 'center',
-          color: '#000',
-          textAlign: 'center',
-          textAlignVertical: 'center',
-        }}>
-        {title}
-      </Typography>
-    </View>
+      {title}
+    </Typography>
   );
 };
 

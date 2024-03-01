@@ -16,6 +16,7 @@ const AddBrand = ({navigation, route}) => {
       backButton
       title={'Add Brand'}
       navigation={navigation}
+      height={'97%'}
       renderChild={Content({navigation, route})}
     />
   );
@@ -67,10 +68,6 @@ const Content = ({navigation, route}) => {
       alcohol_category_id: categoryId,
     });
     if (res.status == 200) {
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
-      });
       navigation.goBack();
     }
   };
@@ -82,10 +79,6 @@ const Content = ({navigation, route}) => {
       alcohol_category_id: categoryId ?? editData?.alcohol_category?.id,
     });
     if (res.status == 200) {
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
-      });
       navigation.goBack();
     }
   };
@@ -94,13 +87,13 @@ const Content = ({navigation, route}) => {
   }, []);
   return (
     <>
-      <View style={Common.container}>
+      <View style={[Common.container, styles.container]}>
         <InputField
           maxLength={50}
           formik={formik}
           bgcolor={'#fff'}
           name="name"
-          label={'Alcohol Brand'}
+          label={'Alcohol Brand Name'}
           placeholder="Enter Alcohol Brand Name"
         />
         <InputField
@@ -113,12 +106,13 @@ const Content = ({navigation, route}) => {
           options={data}
           placeholder="Select Category"
         />
-        <View style={{marginVertical: 15}} />
-        <Button
-          title={'Submit'}
-          onPress={() => formik.handleSubmit()}
-          loading={loading || loader}
-        />
+        <View style={{position: 'absolute', bottom: 0}}>
+          <Button
+            title={'Submit'}
+            onPress={() => formik.handleSubmit()}
+            loading={loading || loader}
+          />
+        </View>
       </View>
     </>
   );

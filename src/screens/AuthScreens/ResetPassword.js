@@ -46,10 +46,6 @@ const Content = ({navigation, data}) => {
       ...values,
     });
     if (res) {
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
-      });
       navigation.dispatch(
         CommonActions.reset({
           index: 0, // Reset to the initial route

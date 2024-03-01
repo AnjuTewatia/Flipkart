@@ -1,7 +1,7 @@
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useAppContext} from './AppContext';
-import {EmptyHeart, RightArrow} from '../Icons';
+import {EmptyHeart, FilledHeart, RightArrow} from '../Icons';
 import RenderImages from './RenderImages';
 import IMAGES from '../utils/Images';
 import {Typography} from './Typography';
@@ -11,7 +11,13 @@ import ConfirmModal from './ConfirmModal';
 import Toast from 'react-native-toast-message';
 import BottomSheet from './BottomSheet';
 
-const RenderStoreListing = ({item, type, navigation, onheartPress}) => {
+const RenderStoreListing = ({
+  item,
+  type,
+  navigation,
+  onheartPress,
+  disabled,
+}) => {
   const {windowWidth} = useAppContext();
   const [isOpen, setIsOpen] = useState(false);
   const [bottomSheetVisible, setBottomSheetVisible] = useState(false);
@@ -39,14 +45,12 @@ const RenderStoreListing = ({item, type, navigation, onheartPress}) => {
         longitude: longitude,
       });
       if (res?.status === 200) {
-        Toast.show({
-          text1: res?.message,
-        });
         navigation.goBack();
       }
     } catch (error) {
-      setIsOpen(false);
+      // setIsOpen(false);
     }
+    // setIsOpen(false);
   };
 
   const handleAddToFavorite = async () => {
@@ -54,6 +58,7 @@ const RenderStoreListing = ({item, type, navigation, onheartPress}) => {
       store_id: item?.id,
       type: 1,
     });
+    console.log('res==>', res);
   };
   useEffect(() => {
     setIsOpen(false);
@@ -66,7 +71,7 @@ const RenderStoreListing = ({item, type, navigation, onheartPress}) => {
         style={styles.favoriteView}
         onPress={() => {
           type === 'search'
-            ? navigation.navigate('storeItems')
+            ? navigation.navigate('storeItems', item)
             : type === 'addstore'
             ? console.log('add store', item)
             : toggleBottomSheet();
@@ -95,7 +100,7 @@ const RenderStoreListing = ({item, type, navigation, onheartPress}) => {
               onheartPress(), handleAddToFavorite();
             }}>
             <View style={styles.emptyHeart}>
-              <EmptyHeart />
+              {item?.is_favourite === 0 ? <EmptyHeart /> : <FilledHeart />}
             </View>
           </Pressable>
         )}
@@ -114,15 +119,15 @@ const RenderStoreListing = ({item, type, navigation, onheartPress}) => {
           <View
             style={{
               flexDirection: 'row',
-              alignItems: 'center',
-              // justifyContent: 'center',
+              alignItems: 'flex-start',
+              justifyContent: 'flex-start',
             }}>
             <RenderImages
               source={IMAGES.locationicon}
               style={{
                 width: 15,
                 height: 19,
-                marginHorizontal: 5,
+
                 alignSelf: 'center',
               }}
             />
@@ -162,13 +167,13 @@ export default RenderStoreListing;
 const styles = StyleSheet.create({
   favoriteView: {
     width: '99%',
-    height: 99,
+    height: 104,
     backgroundColor: '#fff',
     elevation: 4,
     borderRadius: 8,
     alignSelf: 'center',
     flexDirection: 'row',
-    paddingHorizontal: 6,
+    // paddingHorizontal: 6,
     alignItems: 'center',
     marginVertical: 6,
     shadowOffset: {width: 0, height: 2},

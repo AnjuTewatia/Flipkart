@@ -1,5 +1,12 @@
 import React, {useState, useEffect} from 'react';
-import {View, StyleSheet, Modal, Pressable} from 'react-native';
+import {
+  View,
+  StyleSheet,
+  Modal,
+  Pressable,
+  Platform,
+  SafeAreaView,
+} from 'react-native';
 import QRCodeScanner from 'react-native-qrcode-scanner';
 import {WhiteBackButton} from '../Icons';
 import {useAppContext} from './AppContext';
@@ -17,7 +24,14 @@ const Scanner = ({onScan, isOpen, handleClose}) => {
   return (
     <Modal transparent visible={isOpen} onRequestClose={handleClose}>
       <View style={styles.container}>
-        <Pressable style={styles.backButton} onPress={handleClose}>
+        <Pressable
+          style={[
+            styles.backButton,
+            {
+              top: Platform.OS == 'android' ? 15 : 75,
+            },
+          ]}
+          onPress={handleClose}>
           <WhiteBackButton />
         </Pressable>
         <View style={styles.cameraContainer}>
@@ -76,8 +90,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: 10,
-    left: 10,
+    left: 20,
     zIndex: 999,
   },
   topLeftCorner: {

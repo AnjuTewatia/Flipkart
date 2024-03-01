@@ -1,5 +1,5 @@
 import {StyleSheet, View, Image, Pressable, Platform} from 'react-native';
-import React from 'react';
+import React, {useEffect} from 'react';
 import AuthBaseComponent from '../../BaseComponents/AuthBaseComponent';
 import InputField from '../../Components/InputField';
 import Button from '../../Components/Button';
@@ -13,6 +13,7 @@ import {useAppContext} from '../../Components/AppContext';
 import useFetch from '../../utils/useFetch';
 import Toast from 'react-native-toast-message';
 import {saveLocalLoginDetail} from '../../utils/functions';
+import {useIsFocused} from '@react-navigation/native';
 
 const Login = ({navigation}) => {
   return (
@@ -40,6 +41,7 @@ const Content = ({navigation}) => {
   const [loginuser, {response, loading, error}] = useFetch('login', {
     method: 'POST',
   });
+  const isfocused = useIsFocused();
 
   const handleloginUser = async values => {
     const payload = {
@@ -51,10 +53,6 @@ const Content = ({navigation}) => {
     const res = await loginuser(payload);
     const resData = res?.data;
     if (res?.data?.is_verified == 1) {
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
-      });
       setUserData(resData?.token);
       saveLocalLoginDetail(resData?.token);
     } else {
@@ -69,7 +67,9 @@ const Content = ({navigation}) => {
       });
     }
   };
-
+  useEffect(() => {
+    formik.resetForm();
+  }, [isfocused]);
   return (
     <View style={Common.container}>
       <InputField

@@ -41,10 +41,6 @@ const Content = ({navigation}) => {
     const res = await forgotPassword(values);
     const resData = res?.data;
     if (res) {
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
-      });
       navigation.navigate('otpScreen', {
         email: resData?.email,
         uuid: resData?.uuid,

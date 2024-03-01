@@ -1,4 +1,4 @@
-import {StyleSheet, ScrollView, FlatList} from 'react-native';
+import {StyleSheet, ScrollView, FlatList, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import Common from '../../utils/common';
@@ -7,6 +7,7 @@ import RenderStoreItems from '../../Components/RenderStoreItems';
 import useFetch from '../../utils/useFetch';
 import NoFound from '../../Components/NoFound';
 import Shimmer from '../../Components/Shimmer';
+import ConfirmModal from '../../Components/ConfirmModal';
 
 const FavouriteList = ({navigation, route}) => {
   const store_id = route?.params?.item?.id;
@@ -21,14 +22,12 @@ const FavouriteList = ({navigation, route}) => {
 };
 
 const Content = ({navigation, store_id}) => {
-  const {windowWidth} = useAppContext();
   const [data, setData] = useState(null);
-
+  const [deleteid, setDeleteId] = useState(null);
   const [getItems, {response, loading, error}] = useFetch(
     'get-favourite-items-by-store',
     {method: 'POST'},
   );
-  console.log(store_id);
   const handleGetStores = async () => {
     const res = await getItems({
       store_id: store_id,
@@ -42,38 +41,99 @@ const Content = ({navigation, store_id}) => {
     handleGetStores();
   }, []);
 
+  const [modal, setModal] = useState(false);
+
+  const toggleFavorite = id => {
+    console.log(id);
+    const updatedData = data.map(item => {
+      if (item.id === deleteid) {
+        return {
+          ...item,
+          is_favourite: item.is_favourite === 0 ? 1 : 0,
+        };
+      }
+      return item;
+    });
+    const newData = updatedData.filter(item => item.is_favourite !== 0);
+
+    console.log('newdataa', newData);
+    // Update component state or props with the updated data
+    const newUpdatedData = [...newData];
+    setData(newUpdatedData);
+
+    setModal(false); // Assuming you have a setData function to update the state
+    handleAddToFavorite();
+  };
+  const [addtoFavorite] = useFetch('add-to-favourite', {
+    method: 'POST',
+  });
+
+  const handleAddToFavorite = async () => {
+    const res = await addtoFavorite({
+      store_id: store_id,
+      item_id: deleteid,
+      type: 2,
+    });
+    console.log('res ==>', res);
+  };
+
   const RenderItem = ({item}) => {
     return (
       <>
         <RenderStoreItems
           item={item}
           store_id={store_id}
-          onPress={() => console.log('hello')}
+          ondeletePress={() => {
+            setModal(true), setDeleteId(item?.id);
+          }}
         />
       </>
     );
   };
 
   return (
-    <ScrollView style={[Common.container, [styles.favoriteContainer]]}>
-      <>
-        {loading ? (
-          <Shimmer />
-        ) : (
-          <>
-            {data?.items?.length === 0 ? (
-              <NoFound title={'No Favorite item added'} />
-            ) : (
-              <FlatList
-                data={data}
-                keyExtractor={item => item?.id}
-                renderItem={RenderItem}
-              />
-            )}
-          </>
-        )}
-      </>
-    </ScrollView>
+    <>
+      <ScrollView
+        style={[Common.container, [styles.favoriteContainer]]}
+        bounces={false}>
+        <>
+          {loading ? (
+            <Shimmer />
+          ) : (
+            <>
+              {data?.length === 0 ? (
+                <View
+                  style={{
+                    flex: 1,
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                  }}>
+                  <NoFound title={'No Favorite items yet '} />
+                </View>
+              ) : (
+                <FlatList
+                  data={data}
+                  bounces={false}
+                  keyExtractor={item => item?.id}
+                  renderItem={RenderItem}
+                />
+              )}
+            </>
+          )}
+        </>
+      </ScrollView>
+      <ConfirmModal
+        isOpen={modal}
+        // loading={loading}
+        handleClose={() => setModal(false)}
+        title="Delete"
+        description="Are you sure you want to remove this item from favourite?"
+        onYesClick={() => toggleFavorite()}
+        onNoClick={() => setModal(false)}
+        cancelText="No"
+        confirmText="Yes"
+      />
+    </>
   );
 };
 

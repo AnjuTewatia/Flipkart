@@ -167,6 +167,7 @@ const AppProvider = ({children}) => {
         setUserProfile,
         locationpermission,
         goToSettings,
+        getCurrentLocation,
       }}>
       {children}
     </AppContext.Provider>

@@ -34,7 +34,6 @@ const AlcoholBrands = ({navigation}) => {
 };
 const Content = ({navigation}) => {
   const {windowWidth, userData} = useAppContext();
-  console.log('useRdat==>', userData);
   const isFocused = useIsFocused();
 
   const [data, setData] = useState(null);
@@ -53,21 +52,26 @@ const Content = ({navigation}) => {
     method: 'POST',
   });
 
+  const deleteItem = () => {
+    const newData = data.filter(item => item?.id !== deleteId);
+    setData(newData);
+  };
+
   const handleDeleteBrand = async () => {
-    const res = await deletebrand({
-      id: deleteId,
-    });
-    if (res?.status === 200) {
-      setModal(false);
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
+    try {
+      const res = await deletebrand({
+        id: deleteId,
       });
-    }
+      if (res?.status === 200) {
+        deleteItem();
+        setModal(false);
+      }
+    } catch (error) {}
   };
 
   const handleGetBrands = async () => {
     const res = await getbrands();
+
     if (res?.status === 200) {
       setData(res?.data);
     }
@@ -120,8 +124,10 @@ const Content = ({navigation}) => {
         <View style={{marginHorizontal: 15}}>
           <Typography
             type="h3"
-            style={[styles.title, {width: windowWidth - 140}]}>
-            {item?.name}
+            style={[styles.title, {width: windowWidth - 200}]}>
+            {item?.name?.length > 30
+              ? `${item?.name?.slice(0, 30)} ...`
+              : item?.name}
           </Typography>
 
           <View
@@ -149,11 +155,19 @@ const Content = ({navigation}) => {
             {data?.length > 0 ? (
               <FlatList
                 data={data}
+                bounces={false}
                 keyExtractor={item => item?.id}
                 renderItem={RenderBrands}
               />
             ) : (
-              <NoFound title={' No brands added'} />
+              <View
+                style={{
+                  flex: 1,
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <NoFound title={' No brands added'} />
+              </View>
             )}
           </>
         )}

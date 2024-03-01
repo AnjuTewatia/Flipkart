@@ -37,6 +37,7 @@ const Content = ({navigation}) => {
 
   return (
     <ScrollView
+      bounces={false}
       style={[Common.container, styles.container]}
       showsVerticalScrollIndicator={false}>
       <Typography type="h1" style={styles.welcomeText}>

@@ -10,6 +10,7 @@ import {Typography} from '../../Components/Typography';
 import useFetch from '../../utils/useFetch';
 import {useAppContext} from '../../Components/AppContext';
 import Toast from 'react-native-toast-message';
+import {Height} from '../../utils/styleConst';
 
 const SignUp = ({navigation}) => {
   return (
@@ -53,10 +54,6 @@ const Content = ({navigation}) => {
       const res = await registerUser(payload);
       const resData = res?.data;
       if (res) {
-        Toast.show({
-          type: 'success',
-          text1: res?.message,
-        });
         navigation.navigate('otpScreen', {
           email: resData?.email,
           uuid: resData?.uuid,
@@ -69,7 +66,7 @@ const Content = ({navigation}) => {
   };
 
   return (
-    <View style={Common.container}>
+    <View>
       <InputField
         formik={formik}
         maxLength={20}
@@ -113,7 +110,7 @@ const Content = ({navigation}) => {
         onPress={() => formik.handleSubmit()}
       />
       <Pressable
-        style={[styles.login, {width: '80%'}]}
+        style={[styles.login, {width: '80%', marginBottom: 20}]}
         onPress={() => navigation.navigate('login')}>
         <Typography type="xs" style={[styles.login]}>
           Already have an account?{' '}
@@ -129,6 +126,9 @@ const Content = ({navigation}) => {
 export default SignUp;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   login: {
     textAlign: 'center',
     color: '#99999E',

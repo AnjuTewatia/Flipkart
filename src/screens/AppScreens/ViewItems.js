@@ -39,17 +39,35 @@ const ViewItems = ({navigation, route}) => {
         permission = PERMISSIONS.ANDROID.CAMERA;
       }
       const result = await check(permission);
+      console.log(result);
+      // if(result === RESULTS.DENIED){
+      //   const requestResult = await request(permission);
 
-      if (result !== RESULTS.GRANTED) {
-        const requestResult = await request(permission);
-
-        if (requestResult == RESULTS.BLOCKED) {
-          setIsOpen(true);
-          return;
-        } else if (requestResult == RESULTS.GRANTED) {
+      // }
+      switch (result) {
+        case RESULTS.UNAVAILABLE:
+          console.log(
+            'This feature is not available (on this device / in this context)',
+          );
+          break;
+        case RESULTS.DENIED:
+          const requestResult = await request(permission);
+          if (requestResult === 'blocked') {
+            setIsOpen(true);
+          }
+          if (requestResult === RESULTS.GRANTED) {
+            setScannerVisible(true);
+          }
+          break;
+        case RESULTS.LIMITED:
+          console.log('The permission is limited: some actions are possible');
+          break;
+        case RESULTS.GRANTED:
           setScannerVisible(true);
-          return;
-        }
+          break;
+        case RESULTS.BLOCKED:
+          setIsOpen(true);
+          break;
       }
     } catch (err) {
       console.warn(err);
@@ -91,7 +109,7 @@ const Content = ({
   isOpen,
   setIsOpen,
 }) => {
-  const {goToSettings} = useAppContext();
+  const {goToSettings, getCurrentLocation} = useAppContext();
   const [searchvalue, setSearchValue] = useState('');
   const [paginationValue, setPaginationValue] = useState(10);
   const [pageNo, setPageNo] = useState(1);
@@ -106,6 +124,7 @@ const Content = ({
   const [storeListing, {response, loading, error}] = useFetch('get-items', {
     method: 'POST',
   });
+  console.log(store_uuid);
 
   const isFocused = useIsFocused();
   const handleStoreListing = async () => {
@@ -117,7 +136,7 @@ const Content = ({
         page: pageNo,
       });
 
-      setdata(res?.data[0]);
+      setdata(res?.data[0]?.items);
       // setdata(prevData => prevData.concat(res?.data?.data));
       // setTotalRecords(res?.data?.total);
       // setCurrentRecord(res?.data?.to);
@@ -128,7 +147,23 @@ const Content = ({
 
   useEffect(() => {
     handleStoreListing();
+    getCurrentLocation();
   }, [isFocused]);
+
+  const toggleFavorite = id => {
+    const updatedData = data.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          is_favourite: item.is_favourite === 0 ? 1 : 0,
+        };
+      }
+      return item;
+    });
+    const newData = [...updatedData];
+    // Update component state or props with the updated data
+    setdata(newData); // Assuming you have a setData function to update the state
+  };
 
   const RenderItem = ({item}) => {
     return (
@@ -137,7 +172,7 @@ const Content = ({
           item={item}
           store_id={store_id}
           heartIcon
-          onPress={() => console.log('hello')}
+          onPress={() => toggleFavorite(item?.id)}
         />
       </>
     );
@@ -150,7 +185,7 @@ const Content = ({
           <RenderImages source={IMAGES.searchicon} style={styles.searchicon} />
           <TextInput
             style={styles.input}
-            placeholder="Search store by name"
+            placeholder="Search Item by Name"
             placeholderTextColor={'#99999E'}></TextInput>
         </View>
         <>
@@ -158,13 +193,17 @@ const Content = ({
             <Shimmer />
           ) : (
             <>
-              {data?.items?.length === 0 ? (
-                <NoFound title={'No items added'} />
+              {data?.length === 0 ? (
+                <View style={{flex: 1, justifyContent: 'center'}}>
+                  <NoFound title={'No items added'} />
+                </View>
               ) : (
                 <FlatList
-                  data={data?.items}
+                  bounces={false}
+                  data={data}
                   keyExtractor={item => item?.id}
                   renderItem={RenderItem}
+                  showsVerticalScrollIndicator={false}
                 />
               )}
             </>
@@ -191,7 +230,7 @@ const Content = ({
         onYesClick={() => goToSettings()}
         onNoClick={() => setIsOpen(false)}
         cancelText="Cancel"
-        confirmText="Go to Settings."
+        confirmText="Go to Settings"
       />
     </>
   );

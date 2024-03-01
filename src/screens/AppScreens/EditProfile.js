@@ -35,10 +35,6 @@ const Content = ({navigation}) => {
   const handleEditProfile = async values => {
     const res = await editprofile({...values});
     if (res?.status === 200) {
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
-      });
       handlegetProfile();
     }
   };
@@ -67,18 +63,21 @@ const Content = ({navigation}) => {
       <View style={Common.container}>
         <InputField
           formik={formik}
+          style={Common.field}
           label={'Name'}
           name="first_name"
           placeholder="Enter  Name"
         />
         <InputField
           formik={formik}
+          style={Common.field}
           label={'Last Name'}
           name="last_name"
           placeholder="Enter Last Name"
         />
         <InputField
           editable={false}
+          style={Common.field}
           formik={formik}
           label={'Email Address'}
           type="email"

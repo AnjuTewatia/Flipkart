@@ -5,6 +5,7 @@ import {
   Pressable,
   ScrollView,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import React from 'react';
 import {COLORS, Height, WIDTH} from '../utils/styleConst';
@@ -42,7 +43,7 @@ const AppBaseComponent = ({
         animated
         barStyle={'light-content'}
       />
-      <View style={Common.container}>
+      <SafeAreaView style={Common.container}>
         <View style={[styles.safeAreaView]}>
           <View style={styles.header}>
             {backButton && (
@@ -60,7 +61,7 @@ const AppBaseComponent = ({
             )}
           </View>
           <KeyboardAwareScrollView
-            bounces
+            bounces={false}
             keyboardDismissMode="interactive"
             extraHeight={180}
             keyboardShouldPersistTaps="handled"
@@ -76,7 +77,7 @@ const AppBaseComponent = ({
             {renderChild}
           </KeyboardAwareScrollView>
         </View>
-      </View>
+      </SafeAreaView>
     </>
   );
 };
@@ -142,6 +143,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 10,
     width: 30,
     zIndex: 999,
+    left: 10,
   },
   rightButton: {
     position: 'absolute',

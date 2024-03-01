@@ -28,7 +28,7 @@ const InputField = ({
 }) => {
   const isPassword = type === 'password';
   const [showPass, setShowPass] = useState(false);
-
+  const [focus, setFocus] = useState(false);
   const [showDropdown, setShowDropdown] = useState(false); // State to manage dropdown visibility
 
   const handleEyeToggle = e => {
@@ -68,7 +68,14 @@ const InputField = ({
         style={[
           styles.textInput,
           style,
-
+          focus && {
+            borderColor: '#F87E7D',
+            borderWidth: 1,
+            shadowOffset: {width: 0, height: 2},
+            shadowOpacity: 0.3,
+            shadowRadius: 4,
+            elevation: 4, // For Android
+          },
           formik?.errors[name] &&
             formik?.touched[name] && {
               borderWidth: 1,
@@ -81,13 +88,22 @@ const InputField = ({
           {backgroundColor: bgcolor ? bgcolor : '#F5F5F5'},
         ]}>
         {dropdown && (
-          <View style={{position: 'absolute', right: 20}}>
+          <Pressable
+            onPress={() => {
+              dropdown ? handleDropdownToggle() : null;
+            }}
+            style={{position: 'absolute', right: 20}}>
             <DropDownIcon />
-          </View>
+          </Pressable>
         )}
         <TextInput
           editable={!dropdown}
           cursorColor={COLORS.darkGrey}
+          onFocus={() => setFocus(true)}
+          onBlur={() => setFocus(false)}
+          onPressIn={() => {
+            dropdown ? handleDropdownToggle() : null;
+          }}
           placeholderTextColor={COLORS.placeholder}
           onChangeText={formik?.handleChange(name)}
           value={formik?.values[name]}
@@ -103,15 +119,7 @@ const InputField = ({
           </Pressable>
         )}
       </Pressable>
-      {showDropdown && dropdown && (
-        <View style={styles.dropdown}>
-          <FlatList
-            data={options}
-            keyExtractor={item => item?.id}
-            renderItem={RendetItem}
-          />
-        </View>
-      )}
+
       {error ? (
         <Typography style={styles.error} type="error">
           {error}
@@ -123,6 +131,17 @@ const InputField = ({
             {formik?.errors[name] ?? ''}
           </Typography>
         )
+      )}
+      {showDropdown && dropdown && (
+        <View style={styles.dropdown}>
+          <FlatList
+            bounces={false}
+            data={options}
+            keyExtractor={item => item?.id}
+            renderItem={RendetItem}
+            showsVerticalScrollIndicator={false}
+          />
+        </View>
       )}
     </View>
   );
@@ -177,15 +196,15 @@ const styles = StyleSheet.create({
     left: 6,
   },
   dropdown: {
-    position: 'absolute',
-    top: '100%',
+    // position: 'absolute',
+    // top: '100%',
     left: 0,
+    zIndex: 999,
+    minHeightheight: 250,
     right: 0,
-    backgroundColor: '#FFFFFF',
+    backgroundColor: '#fff',
     borderBottomLeftRadius: 8,
     borderBottomRightRadius: 8,
-
-    // elevation: 3,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -193,10 +212,11 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    zIndex: 999,
+    borderRadius: 8,
   },
   option: {
     paddingVertical: 10,
     paddingHorizontal: 16,
+    zIndex: 999,
   },
 });

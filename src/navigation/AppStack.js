@@ -251,6 +251,7 @@ const styles = StyleSheet.create({
   tabBar: {justifyContent: 'center', alignItems: 'center'},
   tabText: {
     alignSelf: 'center',
+    justifyContent: 'center',
     fontSize: 12,
     fontWeight: '700',
   },

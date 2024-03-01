@@ -59,10 +59,6 @@ const Content = ({navigation, qrcode, store_id}) => {
       alcohol_brand_id: brandId,
     });
     if (res?.status === 200) {
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
-      });
       navigation.goBack();
     }
   };
@@ -77,8 +73,10 @@ const Content = ({navigation, qrcode, store_id}) => {
   return (
     <>
       <KeyboardAwareScrollView
+        bounces={false}
+        showsVerticalScrollIndicator={false}
         keyboardDismissMode="interactive"
-        extraHeight={180}
+        // extraHeight={180}
         keyboardShouldPersistTaps="handled"
         style={[Common?.container, styles.container]}>
         <View>
@@ -94,6 +92,7 @@ const Content = ({navigation, qrcode, store_id}) => {
           <InputField
             formik={formik}
             bgcolor={'#fff'}
+            maxLength={20}
             name="name"
             label={'Item Name'}
             placeholder="Enter Item Name"
@@ -115,7 +114,7 @@ const Content = ({navigation, qrcode, store_id}) => {
             keyboardType={'number-pad'}
             name="alcohol_percentage"
             label={'Alcohol %'}
-            placeholder="Enter Alcoho %"
+            placeholder="Enter Alcohol %"
           />
           <InputField
             formik={formik}

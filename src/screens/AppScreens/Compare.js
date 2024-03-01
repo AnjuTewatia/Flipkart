@@ -1,11 +1,4 @@
-import {
-  FlatList,
-  Pressable,
-  StyleSheet,
-  Text,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import {FlatList, Pressable, StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import Common from '../../utils/common';
@@ -13,14 +6,12 @@ import RenderImages from '../../Components/RenderImages';
 import IMAGES from '../../utils/Images';
 import {Typography} from '../../Components/Typography';
 import {useAppContext} from '../../Components/AppContext';
-import ConfirmPrice from '../../Components/ConfirmPriceButton';
-import {Tick} from '../../Icons';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+
 import Button from '../../Components/Button';
 
-import QRCodeScanner from 'react-native-qrcode-scanner';
 import Scanner from '../../Components/Scanner';
 import useFetch from '../../utils/useFetch';
-import RenderStoreListing from '../../Components/RenderStoreListing';
 import RenderStoreItems from '../../Components/RenderStoreItems';
 import ConfirmModal from '../../Components/ConfirmModal';
 import Toast from 'react-native-toast-message';
@@ -41,7 +32,7 @@ const Compare = ({navigation, route}) => {
 };
 
 const Content = ({navigation, title, store}) => {
-  const {windowWidth} = useAppContext();
+  const {windowWidth, goToSettings} = useAppContext();
   const [scannerVisible, setScannerVisible] = useState(false);
   const [scannedData, setScannedData] = useState(null);
   const [editmode, setEditmode] = useState(false);
@@ -50,10 +41,7 @@ const Content = ({navigation, title, store}) => {
   const [replaceid, setReplaceId] = useState('');
 
   const [data, setData] = useState([]);
-  const [getItem, {response, loading, error}] = useFetch(
-    'get-item-by-barcode',
-    {method: 'POST'},
-  );
+  const [getItem, {}] = useFetch('get-item-by-barcode', {method: 'POST'});
 
   const handleGetItems = async code => {
     try {
@@ -67,10 +55,6 @@ const Content = ({navigation, title, store}) => {
         setData(prev => [...prev, res?.data]);
       } else {
         // Handle duplicate item scenario here (optional)
-        Toast.show({
-          type: 'error',
-          text1: 'Item already exists.',
-        });
       }
     } catch (error) {}
   };
@@ -140,6 +124,22 @@ const Content = ({navigation, title, store}) => {
     const newData = [...result]; // Create a copy of the updated array
     setData(newData);
   };
+
+  const toggleFavorite = id => {
+    const updatedData = data.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          is_favourite: item.is_favourite === 0 ? 1 : 0,
+        };
+      }
+      return item;
+    });
+    const newData = [...updatedData];
+    // Update component state or props with the updated data
+    setData(newData); // Assuming you have a setData function to update the state
+  };
+
   const RenderItem = ({item}) => {
     return (
       <>
@@ -152,6 +152,7 @@ const Content = ({navigation, title, store}) => {
           onEditPress={() => {
             replaceItem(item?.id);
           }}
+          onPress={() => toggleFavorite(item?.id)}
         />
         <ConfirmModal
           isOpen={isOpen}
@@ -166,6 +167,47 @@ const Content = ({navigation, title, store}) => {
         />
       </>
     );
+  };
+
+  const [modal, setModal] = useState(false);
+  const requestCameraPermission = async () => {
+    try {
+      let permission;
+      if (Platform.OS === 'ios') {
+        permission = PERMISSIONS.IOS.CAMERA;
+      } else {
+        permission = PERMISSIONS.ANDROID.CAMERA;
+      }
+      const result = await check(permission);
+      console.log(result);
+      // if(result === RESULTS.DENIED){
+      //   const requestResult = await request(permission);
+
+      // }
+      switch (result) {
+        case RESULTS.UNAVAILABLE:
+          console.log(
+            'This feature is not available (on this device / in this context)',
+          );
+          break;
+        case RESULTS.DENIED:
+          // setIsOpen(true);
+          const requestResult = await request(permission);
+
+          break;
+        case RESULTS.LIMITED:
+          console.log('The permission is limited: some actions are possible');
+          break;
+        case RESULTS.GRANTED:
+          setScannerVisible(true);
+          break;
+        case RESULTS.BLOCKED:
+          setModal(true);
+          break;
+      }
+    } catch (err) {
+      console.warn(err);
+    }
   };
 
   return (
@@ -211,7 +253,7 @@ const Content = ({navigation, title, store}) => {
                 (data?.length == 0 && title === 'Calculate') ? (
                   <Pressable
                     style={styles.scanBtn}
-                    onPress={() => setScannerVisible(true)}>
+                    onPress={() => requestCameraPermission()}>
                     <RenderImages
                       source={IMAGES.scanIcon}
                       style={{width: 24, height: 24, marginHorizontal: 5}}
@@ -238,6 +280,18 @@ const Content = ({navigation, title, store}) => {
         onScan={handleScan}
         isOpen={scannerVisible}
         handleClose={() => setScannerVisible(false)}
+      />
+
+      <ConfirmModal
+        isOpen={modal}
+        // loading={loader}
+        handleClose={() => setModal(false)}
+        title="Permission Denied"
+        description="Access was previously denied, Please grant Camera access from the Settings"
+        onYesClick={() => goToSettings()}
+        onNoClick={() => setModal(false)}
+        cancelText="Cancel"
+        confirmText="Go to Settings"
       />
     </>
   );

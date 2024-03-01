@@ -8,7 +8,7 @@ const Provider = () => {
   return (
     <AppProvider>
       <Route />
-      <Toast />
+      <Toast visibilityTime={1000} />
     </AppProvider>
   );
 };

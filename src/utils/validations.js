@@ -11,8 +11,7 @@ export const emailSchema = yup
   .string()
   .trim()
   .required('Email address is required.')
-  .email('Please enter valid email address.')
-  .matches(emailRegExp, 'Please enter valid email id.');
+  .matches(emailRegExp, 'Please enter valid email address.');
 
 export const passwordSchema = name =>
   yup
@@ -102,13 +101,13 @@ export const addItemValidation = yup.object().shape({
     'Item name is required.',
     'Item name should maximum 20 characters.',
   ),
-  brandName: nameSchema('Brand Category is required.'),
+  brandName: yup.string().required('Brand name is required'),
   alcohol_percentage: yup
     .number()
 
     .required('Alcohol percentage is required.')
-    .max(100, 'Percentage must be less than or equal to 100.'),
-  quantity: yup.number().required('Quantity is required').max(9999, '9999'),
+    .max(100, 'Percentage must be less than or equal to 100%.'),
+  quantity: yup.number().required('ml/can is required.').max(9999, '9999'),
   pack_size: yup
     .string()
     .trim()

@@ -1,6 +1,7 @@
 import {
   ActivityIndicator,
   FlatList,
+  Platform,
   StyleSheet,
   TextInput,
   View,
@@ -18,21 +19,60 @@ import Shimmer from '../../Components/Shimmer';
 import NoFound from '../../Components/NoFound';
 import {useIsFocused} from '@react-navigation/native';
 import ConfirmModal from '../../Components/ConfirmModal';
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
 const StoreListing = ({navigation, route}) => {
   const type = route?.params?.type;
   const [isOpen, setIsOpen] = useState(false);
-  const {locationpermission} = useAppContext();
-  const addStore = () => {
-    if (locationpermission === 'blocked') {
-      setIsOpen(true);
-    } else {
-      navigation.navigate('AddStore');
+
+  const requestLocationPermisson = async () => {
+    try {
+      let permission;
+      if (Platform.OS === 'ios') {
+        permission = PERMISSIONS.IOS.LOCATION_WHEN_IN_USE;
+      } else {
+        permission = PERMISSIONS.ANDROID.ACCESS_FINE_LOCATION;
+      }
+      const result = await check(permission);
+
+      // if(result === RESULTS.DENIED){
+      //   const requestResult = await request(permission);
+
+      // }
+      switch (result) {
+        case RESULTS.UNAVAILABLE:
+          console.log(
+            'This feature is not available (on this device / in this context)',
+          );
+          break;
+        case RESULTS.DENIED:
+          // setIsOpen(true);
+          const requestResult = await request(permission);
+          if (requestResult === RESULTS.BLOCKED && Platform.OS === 'android') {
+            setIsOpen(true);
+          }
+          if (requestResult === RESULTS.GRANTED) {
+            navigation.navigate('AddStore');
+          }
+
+          break;
+        case RESULTS.LIMITED:
+          console.log('The permission is limited: some actions are possible');
+          break;
+        case RESULTS.GRANTED:
+          navigation.navigate('AddStore');
+          break;
+        case RESULTS.BLOCKED:
+          setIsOpen(true);
+          break;
+      }
+    } catch (err) {
+      console.warn(err);
     }
   };
   return (
     <AppBaseComponent
-      title={'Store Listing'}
+      title={'Stores Listing'}
       navigation={navigation}
       backButton
       height={'97%'}
@@ -42,7 +82,7 @@ const StoreListing = ({navigation, route}) => {
           <RightHeaderButton
             icon={IMAGES.addIcon}
             title="Store"
-            onPress={addStore}
+            onPress={requestLocationPermisson}
           />
         ) : null
       }
@@ -60,7 +100,7 @@ const Content = ({navigation, type, isOpen, setIsOpen}) => {
   const [currentRecord, setCurrentRecord] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const {checkAndRequestLocationPermission, goToSettings} = useAppContext();
+  const {goToSettings} = useAppContext();
   const isFocused = useIsFocused();
 
   const [storeListing] = useFetch('get-stores', {
@@ -88,6 +128,21 @@ const Content = ({navigation, type, isOpen, setIsOpen}) => {
     setBottomLoader(false);
   };
 
+  const toggleFavorite = id => {
+    console.log(id);
+    const updatedData = data.map(item => {
+      if (item.id === id) {
+        return {
+          ...item,
+          is_favourite: item.is_favourite === 0 ? 1 : 0,
+        };
+      }
+      return item;
+    });
+    const newData = [...updatedData];
+    // Update component state or props with the updated data
+    setdata(newData); // Assuming you have a setData function to update the state
+  };
   const RenderItem = ({item}) => {
     return (
       <>
@@ -95,7 +150,7 @@ const Content = ({navigation, type, isOpen, setIsOpen}) => {
           item={item}
           type={type}
           navigation={navigation}
-          onheartPress={() => console.log('jejej')}
+          onheartPress={() => toggleFavorite(item?.id)}
         />
       </>
     );
@@ -117,7 +172,6 @@ const Content = ({navigation, type, isOpen, setIsOpen}) => {
   };
 
   useEffect(() => {
-    checkAndRequestLocationPermission();
     setLoading(true);
     if (searchvalue) {
       const timer = setTimeout(() => {
@@ -174,7 +228,9 @@ const Content = ({navigation, type, isOpen, setIsOpen}) => {
                 }
               />
             ) : (
-              <NoFound title={'No store found'} />
+              <View style={{flex: 1, justifyContent: 'center'}}>
+                <NoFound title={'No store found'} />
+              </View>
             )}
           </>
         )}
@@ -189,7 +245,7 @@ const Content = ({navigation, type, isOpen, setIsOpen}) => {
         onYesClick={() => goToSettings()}
         onNoClick={() => setIsOpen(false)}
         cancelText="Cancel"
-        confirmText="Go to Settings."
+        confirmText="Go to Settings"
       />
     </>
   );

@@ -8,6 +8,7 @@ import {
   View,
   Pressable,
   ScrollView,
+  Platform,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 import {BackButton} from '../Icons';
@@ -20,6 +21,7 @@ const AuthBaseComponent = ({
   renderChild,
   backButton,
   navigation,
+  email,
 }) => {
   return (
     <>
@@ -38,19 +40,20 @@ const AuthBaseComponent = ({
           backgroundColor="transparent"
           barStyle={'dark-content'}
         />
+        {backButton && (
+          <Pressable
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}>
+            <BackButton />
+          </Pressable>
+        )}
         <KeyboardAwareScrollView
           keyboardDismissMode="interactive"
           extraHeight={180}
+          bounces={false}
+          showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled">
-          <SafeAreaView style={styles.safeAreaView}>
-            {backButton && (
-              <Pressable
-                style={styles.backButton}
-                onPress={() => navigation.goBack()}>
-                <BackButton />
-              </Pressable>
-            )}
-
+          <View style={styles.safeAreaView}>
             <View style={styles.logoView}>
               <Image
                 style={styles.logoimg}
@@ -65,11 +68,15 @@ const AuthBaseComponent = ({
                 {title}
               </Typography>
               <Typography type="sm" style={styles.instructionText}>
-                {instruction}
+                {instruction}{' '}
+                <Typography
+                  style={[styles.instructionText, {fontWeight: '700'}]}>
+                  {email}
+                </Typography>
               </Typography>
             </View>
             <View style={styles.content}>{renderChild}</View>
-          </SafeAreaView>
+          </View>
         </KeyboardAwareScrollView>
         {/* </ImageBackground> */}
       </View>
@@ -131,8 +138,12 @@ const styles = StyleSheet.create({
   },
   backButton: {
     position: 'absolute',
-    top: StatusBar.currentHeight + 15,
-    left: 10,
+    top:
+      Platform.OS === 'ios'
+        ? StatusBar.currentHeight + 35
+        : StatusBar.currentHeight + 15,
+    left: 15,
+    padding: 10,
     zIndex: 999,
     width: 30,
     height: 30,
