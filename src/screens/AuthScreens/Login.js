@@ -26,7 +26,7 @@ const Login = ({navigation}) => {
   );
 };
 const Content = ({navigation}) => {
-  const {setUserData, device_id, fcmToken} = useAppContext();
+  const {setUserData, device_id, fcmToken, getFcmToken} = useAppContext();
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -68,6 +68,7 @@ const Content = ({navigation}) => {
     }
   };
   useEffect(() => {
+    getFcmToken();
     formik.resetForm();
   }, [isfocused]);
   return (

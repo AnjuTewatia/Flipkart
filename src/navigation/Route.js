@@ -1,4 +1,10 @@
-import {SafeAreaView, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  SafeAreaView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {useAppContext} from '../Components/AppContext';
 import AppStack from './AppStack';
@@ -15,10 +21,21 @@ const Route = () => {
       setSplash(false);
     }, 1500);
   }, []);
+  const Linking = {
+    prefixes: ['myapp://'],
+    config: {
+      initialRouteName: 'Home',
+      screens: {
+        Home: 'home',
+
+        Settings: 'settings',
+      },
+    },
+  };
   if (splash) return <Splash />;
   else
     return (
-      <NavigationContainer>
+      <NavigationContainer fallback={<ActivityIndicator animating />}>
         {userData ? <AppStack /> : <AuthStack />}
       </NavigationContainer>
     );

@@ -8,6 +8,7 @@ import useFetch from '../../utils/useFetch';
 import NoFound from '../../Components/NoFound';
 import Shimmer from '../../Components/Shimmer';
 import ConfirmModal from '../../Components/ConfirmModal';
+import {Height} from '../../utils/styleConst';
 
 const FavouriteList = ({navigation, route}) => {
   const store_id = route?.params?.item?.id;
@@ -93,8 +94,8 @@ const Content = ({navigation, store_id}) => {
 
   return (
     <>
-      <ScrollView
-        style={[Common.container, [styles.favoriteContainer]]}
+      <View
+        style={[Common.container, styles.favoriteContainer]}
         bounces={false}>
         <>
           {loading ? (
@@ -108,7 +109,7 @@ const Content = ({navigation, store_id}) => {
                     justifyContent: 'center',
                     alignItems: 'center',
                   }}>
-                  <NoFound title={'No Favorite items yet '} />
+                  <NoFound title={' No favourite items yet'} />
                 </View>
               ) : (
                 <FlatList
@@ -121,7 +122,7 @@ const Content = ({navigation, store_id}) => {
             </>
           )}
         </>
-      </ScrollView>
+      </View>
       <ConfirmModal
         isOpen={modal}
         // loading={loading}

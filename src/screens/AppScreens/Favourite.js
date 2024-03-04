@@ -26,7 +26,7 @@ const Favourites = ({navigation}) => {
       rightButton={
         <RightHeaderButton
           icon={IMAGES.sortby}
-          title="Sortby"
+          title="Sort by"
           onPress={() => setSort(!sort)}
         />
       }
@@ -35,13 +35,15 @@ const Favourites = ({navigation}) => {
 };
 
 const Content = ({navigation, sort, setSort}) => {
+  const {getCurrentLocation, setInitialRegion} = useAppContext();
   const [modal, setModal] = useState(false);
   const [deleteid, setDeleteId] = useState(null);
   const [store_id, setStoreID] = useState(null);
   const [type, setType] = useState('1');
   const [data, setData] = useState([]);
   const isFocused = useIsFocused();
-
+  const [deleteType, setDeletetype] = useState('');
+  const [open, setOpen] = useState(false);
   const [getFavoriteItems, {loading}] = useFetch('get-favourite-list', {
     method: 'POST',
   });
@@ -55,11 +57,13 @@ const Content = ({navigation, sort, setSort}) => {
     setSort(false);
   };
 
-  const toggleFavoriteStore = storeIdToRemove => {
-    const newData = data.filter(item => item?.store?.id !== storeIdToRemove);
+  const toggleFavoriteStore = () => {
+    const newData = data.filter(item => item?.store?.id !== setDeleteId);
 
     setData(newData);
-    setModal(false); // Assuming you have a setModal function to close the modal
+    handleAddToFavorite();
+
+    setOpen(false); // Assuming you have a setModal function to close the modal
   };
   const toggleFavoriteItem = item_id => {
     const newData = data.filter(item => item?.item?.id !== deleteid);
@@ -77,7 +81,7 @@ const Content = ({navigation, sort, setSort}) => {
     const res = await addtoFavorite({
       store_id: store_id,
       item_id: deleteid,
-      type: 2,
+      type: deleteType,
     });
   };
 
@@ -89,17 +93,21 @@ const Content = ({navigation, sort, setSort}) => {
             item={item?.item}
             store_id={item?.store_id}
             ondeletePress={() => {
-              setModal(true),
-                setDeleteId(item?.item?.id),
-                setStoreID(item?.store_id);
+              setModal(true), setDeletetype('2');
+              setDeleteId(item?.item?.id), setStoreID(item?.store_id);
             }}
           />
         ) : item?.store ? (
           <RenderStoreListing
             item={item?.store}
             type={type}
+            deleteIcon
             navigation={navigation}
             onheartPress={() => toggleFavoriteStore(item?.store?.id)}
+            ondeletePress={() => {
+              setOpen(true), setDeletetype('1');
+              setDeleteId(item?.store?.id), setStoreID(item?.store_id);
+            }}
           />
         ) : null}
       </>
@@ -138,9 +146,9 @@ const Content = ({navigation, sort, setSort}) => {
             showsVerticalScrollIndicator={false}
           />
         )}
-        {data?.length === 0 && (
+        {data?.length === 0 && !loading && (
           <View style={{flex: 1}}>
-            <NoFound title={'No favorite item foumd'} />
+            <NoFound title={'No favorite item found'} />
           </View>
         )}
         <View style={{marginBottom: 10}} />
@@ -149,10 +157,21 @@ const Content = ({navigation, sort, setSort}) => {
         isOpen={modal}
         // loading={loading}
         handleClose={() => setModal(false)}
-        title="Delete"
+        title="Remove"
         description="Are you sure you want to remove this item from favourite?"
         onYesClick={() => toggleFavoriteItem()}
         onNoClick={() => setModal(false)}
+        cancelText="No"
+        confirmText="Yes"
+      />
+      <ConfirmModal
+        isOpen={open}
+        // loading={loading}
+        handleClose={() => setOpen(false)}
+        title="Remove"
+        description="Are you sure you want to remove this store from favourite?"
+        onYesClick={() => toggleFavoriteStore()}
+        onNoClick={() => setOpen(false)}
         cancelText="No"
         confirmText="Yes"
       />

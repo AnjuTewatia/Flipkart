@@ -1,4 +1,4 @@
-import {StyleSheet, Switch, Text, View} from 'react-native';
+import {StyleSheet, Switch, View} from 'react-native';
 import React, {useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import Common from '../../utils/common';
@@ -6,6 +6,7 @@ import {Typography} from '../../Components/Typography';
 import {COLORS} from '../../utils/styleConst';
 import {useAppContext} from '../../Components/AppContext';
 import useFetch from '../../utils/useFetch';
+import Toggle from 'react-native-toggle-element';
 import Toast from 'react-native-toast-message';
 
 const ManageNotification = ({navigation}) => {
@@ -34,7 +35,6 @@ const Content = ({navigation}) => {
   const handleNotification = async () => {
     setChecked(notification_status == 0 ? true : false);
     const res = await getnotification();
-    console.log('res ==>', res);
     if (res?.status === 200) {
       setUserProfile(res?.data);
       setNotificationStatus(res?.data?.notification_status);
@@ -52,7 +52,28 @@ const Content = ({navigation}) => {
           <Typography type="h3" style={styles.title}>
             Push Notifications
           </Typography>
-          <Switch
+          <Toggle
+            value={checked}
+            onPress={handleNotification}
+            trackBarStyle={{
+              backgroundColor: checked ? '#F87E7D' : 'gray',
+            }}
+            thumbStyle={{
+              backgroundColor: '#fff',
+            }}
+            trackBar={{
+              borderWidth: 2,
+              width: 48,
+              height: 29,
+              radius: 99,
+            }}
+            thumbButton={{
+              width: 25,
+              height: 25,
+              radius: 25,
+            }}
+          />
+          {/* <Switch
             shouldRasterizeIOS
             thumbColor={COLORS.white}
             ios_backgroundColor={
@@ -64,7 +85,7 @@ const Content = ({navigation}) => {
             }}
             value={checked}
             onValueChange={() => handleNotification()}
-          />
+          /> */}
         </View>
       </View>
     </>

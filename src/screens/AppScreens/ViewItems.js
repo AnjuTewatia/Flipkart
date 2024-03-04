@@ -124,7 +124,6 @@ const Content = ({
   const [storeListing, {response, loading, error}] = useFetch('get-items', {
     method: 'POST',
   });
-  console.log(store_uuid);
 
   const isFocused = useIsFocused();
   const handleStoreListing = async () => {
@@ -147,7 +146,6 @@ const Content = ({
 
   useEffect(() => {
     handleStoreListing();
-    getCurrentLocation();
   }, [isFocused]);
 
   const toggleFavorite = id => {

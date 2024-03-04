@@ -16,7 +16,8 @@ const RenderStoreListing = ({
   type,
   navigation,
   onheartPress,
-  disabled,
+  deleteIcon,
+  ondeletePress,
 }) => {
   const {windowWidth} = useAppContext();
   const [isOpen, setIsOpen] = useState(false);
@@ -76,6 +77,18 @@ const RenderStoreListing = ({
             ? console.log('add store', item)
             : toggleBottomSheet();
         }}>
+        {deleteIcon && (
+          <Pressable
+            style={styles.deleteIcon}
+            onPress={() => {
+              ondeletePress();
+            }}>
+            <RenderImages
+              source={IMAGES.deleteicon}
+              style={{width: 18, height: 18}}
+            />
+          </Pressable>
+        )}
         {type === 'search' && (
           <Pressable style={styles.deleteIcon}>
             <View style={styles.rightarrow}>
@@ -93,7 +106,7 @@ const RenderStoreListing = ({
             />
           </Pressable>
         )}
-        {type !== 'addstore' && (
+        {/* { && (
           <Pressable
             style={styles.EmptyHeart}
             onPress={() => {
@@ -103,7 +116,18 @@ const RenderStoreListing = ({
               {item?.is_favourite === 0 ? <EmptyHeart /> : <FilledHeart />}
             </View>
           </Pressable>
-        )}
+        )} */}
+        {!deleteIcon && type !== 'addstore' ? (
+          <Pressable
+            style={styles.EmptyHeart}
+            onPress={() => {
+              onheartPress(), handleAddToFavorite();
+            }}>
+            <View style={styles.emptyHeart}>
+              {item?.is_favourite === 0 ? <EmptyHeart /> : <FilledHeart />}
+            </View>
+          </Pressable>
+        ) : null}
         <RenderImages
           source={IMAGES.favoriteimg}
           style={{width: 67, height: 67}}
@@ -133,7 +157,7 @@ const RenderStoreListing = ({
             />
             <Typography
               type="h5"
-              style={[styles.text, {width: windowWidth - 250}]}>
+              style={[styles.text, {width: windowWidth - 200}]}>
               {item?.address ?? item?.vicinity}
             </Typography>
           </View>

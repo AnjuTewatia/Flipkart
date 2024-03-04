@@ -41,7 +41,9 @@ const Content = ({navigation, title, store}) => {
   const [replaceid, setReplaceId] = useState('');
 
   const [data, setData] = useState([]);
-  const [getItem, {}] = useFetch('get-item-by-barcode', {method: 'POST'});
+  const [getItem, {loading}] = useFetch('get-item-by-barcode', {
+    method: 'POST',
+  });
 
   const handleGetItems = async code => {
     try {
@@ -54,6 +56,10 @@ const Content = ({navigation, title, store}) => {
         // If not a duplicate, append the new data to the state
         setData(prev => [...prev, res?.data]);
       } else {
+        Toast.show({
+          type: 'error',
+          text1: 'This Item already exist',
+        });
         // Handle duplicate item scenario here (optional)
       }
     } catch (error) {}
@@ -64,7 +70,18 @@ const Content = ({navigation, title, store}) => {
       bar_code: code,
       store_id: store?.id,
     });
-    replaceItemById(res?.data);
+    const isDuplicate = data?.some(item => item?.id === res?.data?.id);
+    if (!isDuplicate) {
+      replaceItemById(res?.data);
+      // If not a duplicate, append the new data to the state
+      // setData(prev => [...prev, res?.data]);
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: 'This Item already exist',
+      });
+      // Handle duplicate item scenario here (optional)
+    }
   };
 
   const handleScan = data => {
@@ -100,6 +117,7 @@ const Content = ({navigation, title, store}) => {
       updatedItems[itemIndex] = newItem;
       setData(updatedItems);
     }
+    setEditmode(false);
   };
 
   const CalculateValue = () => {
@@ -158,8 +176,8 @@ const Content = ({navigation, title, store}) => {
           isOpen={isOpen}
           loading={loader}
           handleClose={() => setIsOpen(false)}
-          title="Delete"
-          description="Are you sure you want to delete this item?"
+          title="Remove"
+          description="Are you sure you want to remove this item?"
           onYesClick={() => deleteItem(item?.id)}
           onNoClick={() => setIsOpen(false)}
           cancelText="No"

@@ -54,6 +54,14 @@ const InputField = ({
     );
   };
 
+  const handleChangeText = value => {
+    // Prevent initial space
+    if (value.length === 1 && value[0] === ' ') {
+      value = ''; // Clear the value if it's only a space
+    }
+    formik?.setFieldValue(name, value);
+  };
+
   return (
     <View style={styles.inputContainer}>
       {label && (
@@ -105,7 +113,7 @@ const InputField = ({
             dropdown ? handleDropdownToggle() : null;
           }}
           placeholderTextColor={COLORS.placeholder}
-          onChangeText={formik?.handleChange(name)}
+          onChangeText={handleChangeText}
           value={formik?.values[name]}
           secureTextEntry={isPassword && !showPass}
           autoCapitalize={type === 'email' ? 'none' : 'sentences'}
@@ -197,10 +205,10 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     // position: 'absolute',
-    // top: '100%',
     left: 0,
+    marginTop: 1,
     zIndex: 999,
-    minHeightheight: 250,
+    maxHeight: 250,
     right: 0,
     backgroundColor: '#fff',
     borderBottomLeftRadius: 8,

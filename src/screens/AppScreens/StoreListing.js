@@ -24,7 +24,6 @@ import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 const StoreListing = ({navigation, route}) => {
   const type = route?.params?.type;
   const [isOpen, setIsOpen] = useState(false);
-
   const requestLocationPermisson = async () => {
     try {
       let permission;
@@ -35,10 +34,6 @@ const StoreListing = ({navigation, route}) => {
       }
       const result = await check(permission);
 
-      // if(result === RESULTS.DENIED){
-      //   const requestResult = await request(permission);
-
-      // }
       switch (result) {
         case RESULTS.UNAVAILABLE:
           console.log(
@@ -100,7 +95,8 @@ const Content = ({navigation, type, isOpen, setIsOpen}) => {
   const [currentRecord, setCurrentRecord] = useState('');
   const [loading, setLoading] = useState(false);
 
-  const {goToSettings} = useAppContext();
+  const {goToSettings, getCurrentLocation, setInitialRegion, initialRegion} =
+    useAppContext();
   const isFocused = useIsFocused();
 
   const [storeListing] = useFetch('get-stores', {
@@ -129,7 +125,6 @@ const Content = ({navigation, type, isOpen, setIsOpen}) => {
   };
 
   const toggleFavorite = id => {
-    console.log(id);
     const updatedData = data.map(item => {
       if (item.id === id) {
         return {
@@ -175,7 +170,6 @@ const Content = ({navigation, type, isOpen, setIsOpen}) => {
     setLoading(true);
     if (searchvalue) {
       const timer = setTimeout(() => {
-        console.log('hello');
         handleStoreListing();
       }, 800);
       return () => clearTimeout(timer);
@@ -198,7 +192,7 @@ const Content = ({navigation, type, isOpen, setIsOpen}) => {
           <RenderImages source={IMAGES.searchicon} style={styles.searchicon} />
           <TextInput
             style={styles.input}
-            placeholder="Search store by name"
+            placeholder="Search Store by Name"
             value={searchvalue}
             onChangeText={handleSearchChange}
             placeholderTextColor={'#99999E'}></TextInput>

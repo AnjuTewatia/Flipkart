@@ -128,7 +128,7 @@ const RenderStoreItems = ({
                 <Typography type="sm" style={[styles.brandname, {}]}>
                   {item?.brand?.name?.length > 8
                     ? `${item?.brand?.name?.slice(0, 10)}..`
-                    : item?.brand?.name ?? 'Static'}
+                    : item?.brand?.name ?? ''}
                 </Typography>
                 <RenderImages
                   source={IMAGES.tagicon}
@@ -300,31 +300,38 @@ const RenderStoreItems = ({
                 flexDirection: 'row',
                 alignItems: 'center',
                 marginVertical: 5,
-                width: '60%',
+                width: '75%',
                 justifyContent: 'space-between',
               }}>
               <Typography type="sm" style={[styles.brandname, {}]}>
                 {item?.brand?.name?.length > 8
-                  ? `${item?.brand?.name?.slice(0, 10)}..`
-                  : item?.brand?.name ?? 'Static'}
+                  ? `${item?.brand?.name?.slice(0, 12)}..`
+                  : item?.brand?.name ?? ''}
               </Typography>
-              <RenderImages
-                source={IMAGES.tagicon}
-                style={{width: 19, height: 19}}
-              />
-              <Typography
-                type="h5"
-                style={[
-                  styles.text,
-                  {
-                    width: '50%',
-                    fontWeight: '800',
-                    color: '#F87E7D',
-                    fontSize: 18,
-                  },
-                ]}>
-                ${parseFloat(item?.price)}
-              </Typography>
+              <View
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  // right: 10,
+                }}>
+                <RenderImages
+                  source={IMAGES.tagicon}
+                  style={{width: 19, height: 19}}
+                />
+                <Typography
+                  type="h5"
+                  style={[
+                    styles.text,
+                    {
+                      width: '50%',
+                      fontWeight: '800',
+                      color: '#F87E7D',
+                      fontSize: 18,
+                    },
+                  ]}>
+                  ${parseFloat(item?.price)}
+                </Typography>
+              </View>
             </View>
           </View>
           <View style={{position: 'absolute', right: 0, bottom: 18}}>

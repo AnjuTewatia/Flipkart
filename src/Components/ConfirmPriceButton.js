@@ -1,5 +1,5 @@
 import {Pressable, StyleSheet, Text} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import LinearGradient from 'react-native-linear-gradient';
 import {useAppContext} from './AppContext';
 import ConfirmPriceModal from './ConfirmPriceModal';
@@ -12,12 +12,8 @@ import ConfirmModal from './ConfirmModal';
 import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
 
 const ConfirmPrice = ({title, style, item, store_id}) => {
-  const {
-    initialRegion,
-    locationpermission,
-    goToSettings,
-    checkAndRequestLocationPermission,
-  } = useAppContext();
+  const {initialRegion, goToSettings, setInitialRegion, getCurrentLocation} =
+    useAppContext();
   const [modal, setModal] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [priceModal, setPriceModal] = useState(false);
@@ -25,11 +21,12 @@ const ConfirmPrice = ({title, style, item, store_id}) => {
   const openModal = async () => {
     setIsOpen(false);
     setTimeout(() => {
+      formik?.resetForm();
       setPriceModal(true);
     }, 100);
   };
 
-  const [confirmPrice, {loading}] = useFetch('confirm-price', {
+  const [confirmPrice, {loading, error}] = useFetch('confirm-price', {
     method: 'POST',
   });
 
@@ -59,6 +56,15 @@ const ConfirmPrice = ({title, style, item, store_id}) => {
           if (requestResult === RESULTS.BLOCKED && Platform.OS === 'android') {
             setModal(true);
           } else if (requestResult === RESULTS.GRANTED) {
+            getCurrentLocation()
+              .then(({latitude, longitude}) => {
+                setInitialRegion({latitude, longitude});
+                // getStore(latitude, longitude);
+              })
+              .catch(error => {
+                // Handle error
+                console.log('Error:', error);
+              });
             setIsOpen(true);
           }
           break;
@@ -66,6 +72,15 @@ const ConfirmPrice = ({title, style, item, store_id}) => {
           console.log('The permission is limited: some actions are possible');
           break;
         case RESULTS.GRANTED:
+          getCurrentLocation()
+            .then(({latitude, longitude}) => {
+              setInitialRegion({latitude, longitude});
+              // getStore(latitude, longitude);
+            })
+            .catch(error => {
+              // Handle error
+              console.log('Error:', error);
+            });
           setIsOpen(true);
 
           // navigation.navigate('AddStore');
@@ -89,14 +104,12 @@ const ConfirmPrice = ({title, style, item, store_id}) => {
         user_latitude: initialRegion?.latitude,
         user_longitude: initialRegion?.longitude,
       });
-      console.log('res ==>', res);
+
       if (res?.status === 200) {
       }
-    } catch (error) {
-    } finally {
-      setIsOpen(false);
-      setPriceModal(false);
-    }
+    } catch (error) {}
+    setIsOpen(false);
+    setPriceModal(false);
   };
   const formik = useFormik({
     initialValues: {
@@ -107,6 +120,7 @@ const ConfirmPrice = ({title, style, item, store_id}) => {
       handleConfirmPrice(values, '2');
     },
   });
+
   return (
     <>
       <Pressable
@@ -136,7 +150,7 @@ const ConfirmPrice = ({title, style, item, store_id}) => {
         loading={loading}
         name={item?.name}
         formik={formik}
-        description="Are you sure you want to delete the item?"
+        // description="Are you sure you want to delete the item?"
         onYesClick={() => formik.handleSubmit()}
         onCrossClick={() => setPriceModal(false)}
         onNoClick={() => setPriceModal(false)}

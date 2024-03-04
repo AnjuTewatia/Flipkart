@@ -32,7 +32,7 @@ const AppStack = () => {
       <Stack.Screen
         component={BottomTabs}
         name="bottomTabs"
-        options={{headerShown: false}}
+        options={{headerShown: false, animation: 'slide_from_left'}}
       />
       <Stack.Screen
         component={ManageNotification}
@@ -114,9 +114,11 @@ const BottomTabs = () => {
           tabBarStyle: {
             position: 'absolute',
             width: '100%',
-            bottom: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
             padding: 10,
-            // minHeight: bottomTabsHeight,
+            paddingBottom: 10,
+            // height: 60,
           },
         }}>
         <Tab.Screen

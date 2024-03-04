@@ -1,7 +1,6 @@
-import React, {ReactNode, useState} from 'react';
+import React, {useState} from 'react';
 import {
   ActivityIndicator,
-  Dimensions,
   Modal,
   Pressable,
   StyleSheet,

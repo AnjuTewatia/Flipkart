@@ -1,4 +1,4 @@
-import {FlatList, StyleSheet, TextInput, View} from 'react-native';
+import {Alert, FlatList, StyleSheet, TextInput, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 
@@ -22,27 +22,33 @@ const AddStore = ({navigation}) => {
 };
 
 const Content = ({navigation}) => {
-  const {initialRegion, getCurrentLocation} = useAppContext();
+  const {getCurrentLocation} = useAppContext();
   const [searchValue, setSearchValue] = useState('');
   const [places, setPlaces] = useState([]);
   const [loading, setLoading] = useState(false);
 
-  const getStore = async () => {
+  const getStore = async (latitude, longitude) => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${initialRegion?.latitude}%2${initialRegion?.longitude}&radius=100&type=liquor_store%7Cbar&key=AIzaSyBYNsU2aU0_SpFhAeQQxKA1744aDM1Gs2I&type=restaurant`,
+        `https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=${latitude},${longitude}&radius=100&type=liquor_store%7Cbar%7Ccafe%7Csupermarket%7Cstore%7Cshopping_mall&key=AIzaSyBK5_ZV8qCWXGmVZo6WOFdRVhntc-Sqg4c`,
       );
       const data = await response.json();
-      // Set the data to the state
+
       setPlaces(data?.results);
     } catch (error) {}
     setLoading(false);
   };
 
   useEffect(() => {
-    getStore();
-    getCurrentLocation();
+    getCurrentLocation()
+      .then(({latitude, longitude}) => {
+        getStore(latitude, longitude);
+      })
+      .catch(error => {
+        // Handle error
+        console.log('Error:', error);
+      });
   }, []);
 
   const RenderItem = ({item}) => {
@@ -75,7 +81,7 @@ const Content = ({navigation}) => {
             style={styles.input}
             value={searchValue}
             onChangeText={text => searchByName(places, text)}
-            placeholder="Search store by name"
+            placeholder="Search Store by Name"
             placeholderTextColor={'#99999E'}></TextInput>
         </View>
         {loading ? (
@@ -87,7 +93,7 @@ const Content = ({navigation}) => {
                 bounces={false}
                 contentContainerStyle={{paddingBottom: 10}}
                 data={places}
-                keyExtractor={item => item?.name}
+                keyExtractor={item => item?.id}
                 showsVerticalScrollIndicator={false}
                 renderItem={RenderItem}
               />

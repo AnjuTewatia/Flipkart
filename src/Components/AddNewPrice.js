@@ -1,4 +1,4 @@
-import React, {ReactNode, useState} from 'react';
+import React, {ReactNode, useEffect, useState} from 'react';
 import {
   ActivityIndicator,
   Dimensions,
@@ -91,26 +91,24 @@ const styles = StyleSheet.create({
     zIndex: 2,
     minHeight: 100,
     width: '80%',
-    backgroundColor: 'rgba(255,255,255,.94)',
+    backgroundColor: 'rgba(255,255,255,.99)',
     borderRadius: 14,
   },
   input: {
     width: '90%',
     alignSelf: 'center',
     marginTop: -10,
-    marginBottom: 10,
-    // shadowOffset: {width: 0, height: 2},
-    // shadowOpacity: 0.3,
-    // shadowRadius: 4,
-    // elevation: 4,
+    marginBottom: 4,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 1.4,
   },
 });
 const AddNewPrice = ({
   loading,
   isOpen,
   handleClose,
-  title,
-  description,
   onYesClick,
   onNoClick,
   onCrossClick,
@@ -142,6 +140,7 @@ const AddNewPrice = ({
             </View>
             <InputField
               bgcolor={'#fff'}
+              maxLength={6}
               style={styles.input}
               keyboardType={'number-pad'}
               formik={formik}
