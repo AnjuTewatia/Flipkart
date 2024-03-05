@@ -57,6 +57,7 @@ const Content = ({navigation}) => {
         label={'Email Address'}
         placeholder="Enter Email Address"
       />
+
       <Button
         title="Send"
         onPress={() => formik.handleSubmit()}
@@ -68,6 +69,10 @@ const Content = ({navigation}) => {
 export default Forgot;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
   sendButton: {
     position: 'absolute',
     bottom: 0,

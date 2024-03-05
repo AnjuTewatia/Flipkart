@@ -12,7 +12,20 @@
           "package_name": "com.softradix.drinkmate"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "1008076396840-ss1de8pfp19v56g2iphiib8e77a1ei40.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.softradix.drinkmate",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "1008076396840-rsl0n9975f4igkvu61idr94qtvcmilnk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBegYK5N-OSdtYSbAh-djxfQYBUorErsws"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1008076396840-rsl0n9975f4igkvu61idr94qtvcmilnk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1008076396840-fj5sjb9hv41ruoij709muo4e6jab4u87.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.softradix.drinkmate"
+              }
+            }
+          ]
         }
       }
     }

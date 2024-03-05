@@ -52,7 +52,7 @@ const ViewItems = ({navigation, route}) => {
           break;
         case RESULTS.DENIED:
           const requestResult = await request(permission);
-          if (requestResult === 'blocked') {
+          if (requestResult === 'blocked' && Platform.OS === 'android') {
             setIsOpen(true);
           }
           if (requestResult === RESULTS.GRANTED) {

@@ -14,6 +14,8 @@ import useFetch from '../../utils/useFetch';
 import Toast from 'react-native-toast-message';
 import {saveLocalLoginDetail} from '../../utils/functions';
 import {useIsFocused} from '@react-navigation/native';
+import Googlelogin from '../../utils/Googlelogin';
+import {appleLogin} from '../../utils/AppleLogin';
 
 const Login = ({navigation}) => {
   return (
@@ -119,15 +121,17 @@ const Content = ({navigation}) => {
         <View style={styles.dashes} />
       </View>
       <View style={styles.socialLogin}>
-        <Pressable style={styles.iconWrapper}>
+        <Pressable style={styles.iconWrapper} onPress={Googlelogin}>
           <RenderImages style={styles.logoImg} source={IMAGES.googleLogo} />
         </Pressable>
         <Pressable style={styles.iconWrapper}>
           <RenderImages style={styles.logoImg} source={IMAGES.facebookLogo} />
         </Pressable>
-        <Pressable style={styles.iconWrapper}>
-          <RenderImages style={styles.logoImg} source={IMAGES.applelogo} />
-        </Pressable>
+        {Platform.OS === 'ios' && (
+          <Pressable style={styles.iconWrapper} onPress={appleLogin}>
+            <RenderImages style={styles.logoImg} source={IMAGES.applelogo} />
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -141,8 +145,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     right: 6,
     alignSelf: 'flex-end',
-    fontWeight: '700',
     marginVertical: 5,
+    fontWeight: '700',
   },
   Signup: {
     textAlign: 'center',

@@ -6,7 +6,9 @@ const RenderImages = ({source, style, ...props}) => {
   // Check if source is a URI or a local image (require method)
   const isUri =
     typeof source === 'string' &&
-    (source.startsWith('http://') || source.startsWith('https://'));
+    (source.startsWith('http://') ||
+      source.startsWith('https://') ||
+      source.startsWith('file://'));
 
   if (isUri) {
     return (

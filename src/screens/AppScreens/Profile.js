@@ -1,13 +1,13 @@
 import {
   StyleSheet,
-  Text,
   View,
   ScrollView,
   Pressable,
   FlatList,
   Platform,
+  Animated,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import {Typography} from '../../Components/Typography';
 import Common from '../../utils/common';
@@ -15,11 +15,12 @@ import RenderImages from '../../Components/RenderImages';
 import IMAGES from '../../utils/Images';
 import {useAppContext} from '../../Components/AppContext';
 import {RightArrow} from '../../Icons';
-import Button from '../../Components/Button';
 import LinearGradient from 'react-native-linear-gradient';
 import ConfirmModal from '../../Components/ConfirmModal';
 import useFetch from '../../utils/useFetch';
-
+import {check, PERMISSIONS, RESULTS, request} from 'react-native-permissions';
+import pickImage from '../../utils/ImagePicker';
+import ActionSheet from 'react-native-actionsheet';
 const Profile = ({navigation}) => {
   return (
     <AppBaseComponent
@@ -31,11 +32,15 @@ const Profile = ({navigation}) => {
 };
 
 const Content = ({navigation}) => {
+  const actionRef = useRef();
+
   const {windowWidth, removeUser, device_id, fcmToken, userProfile} =
     useAppContext();
   const [isOpen, setIsOpen] = useState(false);
   const {first_name, last_name, email, points} = userProfile;
-
+  const [selectedImage, setSelectedImage] = useState(null);
+  const [casenNo, setCaseNo] = useState(null);
+  const Actions = ['View Image', 'Camera', 'Gallery', 'Cancel'];
   const Options = [
     {
       title: 'Earned Points',
@@ -103,7 +108,7 @@ const Content = ({navigation}) => {
     );
   };
 
-  const [logout, {response, loading, error}] = useFetch('logout', {
+  const [logout, {loading}] = useFetch('logout', {
     method: 'POST',
   });
 
@@ -116,6 +121,127 @@ const Content = ({navigation}) => {
     if (res) {
       setIsOpen(false);
       removeUser();
+    }
+  };
+
+  const showActionSheet = () => {
+    actionRef.current.show();
+  };
+
+  const hideActionSheet = () => {
+    actionRef.current.hide();
+  };
+
+  const handleImagePick = async () => {
+    const image = await pickImage(); // Using the pickImage function to pick an image
+    if (image) {
+      setSelectedImage(image.path);
+    }
+  };
+
+  const handleCameraOpen = async () => {
+    const image = await pickImage(true); // Using the pickImage function to open the camera
+    if (image) {
+      setSelectedImage(image.path);
+    }
+  };
+
+  const requestCameraPermission = async () => {
+    try {
+      let permission;
+      if (Platform.OS === 'ios') {
+        permission = PERMISSIONS.IOS.CAMERA;
+      } else {
+        permission = PERMISSIONS.ANDROID.CAMERA;
+      }
+      const result = await check(permission);
+
+      switch (result) {
+        case RESULTS.DENIED:
+          const requestResult = await request(permission);
+          if (requestResult === 'blocked') {
+          }
+          if (requestResult === RESULTS.GRANTED) {
+            handleCameraOpen();
+          }
+          break;
+
+        case RESULTS.GRANTED:
+          handleCameraOpen();
+          break;
+        case RESULTS.BLOCKED:
+          break;
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const requestMediaPermission = async () => {
+    try {
+      let permission;
+      if (Platform.OS === 'ios') {
+        permission = PERMISSIONS.IOS.MEDIA_LIBRARY;
+      } else {
+        permission = PERMISSIONS.ANDROID.READ_MEDIA_IMAGES;
+      }
+      const result = await check(permission);
+
+      switch (result) {
+        case RESULTS.UNAVAILABLE:
+          console.log(
+            'This feature is not available (on this device / in this context)',
+          );
+          break;
+        case RESULTS.DENIED:
+          const requestResult = await request(permission);
+          if (requestResult === 'blocked') {
+          }
+          if (requestResult === RESULTS.GRANTED) {
+            handleImagePick();
+          }
+          break;
+        case RESULTS.LIMITED:
+          console.log('The permission is limited: some actions are possible');
+          break;
+        case RESULTS.GRANTED:
+          handleImagePick();
+
+          break;
+        case RESULTS.BLOCKED:
+          break;
+      }
+    } catch (err) {
+      console.warn(err);
+    }
+  };
+
+  const handleAction = index => {
+    switch (index) {
+      case 0:
+        setCaseNo(0);
+        setTimeout(() => {
+          console.log('View Image');
+        }, 500);
+        // Handle the first action
+        break;
+      case 1:
+        setCaseNo(1);
+        setTimeout(() => {
+          requestCameraPermission();
+        }, 500);
+        // Handle the second action
+        break;
+      case 2:
+        setCaseNo(2);
+        setTimeout(() => {
+          requestMediaPermission();
+        }, 500);
+        // Handle the second action
+        break;
+      // Add more cases for additional actions if needed
+      default:
+        break;
     }
   };
   return (
@@ -132,8 +258,8 @@ const Content = ({navigation}) => {
             style={{width: 20, height: 20}}
           />
         </Pressable>
-        <View style={styles.img}>
-          <Pressable style={styles.cameraIcon}>
+        <Pressable style={styles.img} onPress={showActionSheet}>
+          <Pressable style={styles.cameraIcon} onPress={showActionSheet}>
             <View style={styles.camera}>
               <RenderImages
                 source={IMAGES.cameraIcon}
@@ -142,10 +268,11 @@ const Content = ({navigation}) => {
             </View>
           </Pressable>
           <RenderImages
-            source={IMAGES.profileImg}
-            style={{width: 64, height: 64}}
+            resizeMode="contain"
+            source={selectedImage ?? IMAGES.user}
+            style={{borderRadius: 67, width: 67, height: 67}}
           />
-        </View>
+        </Pressable>
         <View style={{marginHorizontal: 10}}>
           <Typography
             type="h2"
@@ -231,6 +358,15 @@ const Content = ({navigation}) => {
         cancelText="No"
         confirmText="Yes"
       />
+      <ActionSheet
+        ref={actionRef}
+        options={Actions}
+        cancelButtonIndex={3}
+        onPress={handleAction}
+        animated={true}
+        onDismiss={hideActionSheet}
+        useNativeDriver={true}
+      />
     </ScrollView>
   );
 };
@@ -269,7 +405,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   email: {
-    color: '#371841',
+    color: '#6E6F76',
     fontWeight: '600',
     fontSize: 16,
     marginVertical: 10,
@@ -348,20 +484,21 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     height: 103,
     borderRadius: 8,
-    padding: 10,
-    paddingHorizontal: 15,
+    // padding: 10,
+    padding: 15,
     marginVertical: 10,
   },
   subscriptiontitle: {
     color: '#fff',
-    marginVertical: 5,
-    fontWeight: '600',
+    // marginVertical: 5,
+    // fontWeight: '600',
+    fontFamily: 'DMSans-SemiBold',
     fontSize: 20,
   },
   price: {
     color: '#fff',
     marginVertical: 5,
-    fontWeight: '600',
+    fontFamily: 'DMSans-Bold',
     fontSize: 34,
   },
   viewBtn: {
@@ -369,5 +506,17 @@ const styles = StyleSheet.create({
     borderColor: '#fff',
     padding: 10,
     borderRadius: 6,
+  },
+  bottomText: {
+    color: '#000',
+    width: '99%',
+    backgroundColor: '#F5F5F5',
+    height: '90%',
+    textAlign: 'center',
+    alignSelf: 'center',
+    textAlignVertical: 'center',
+    borderRadius: 8,
+    borderWidth: 1,
+    borderColor: '#E6E6E7',
   },
 });

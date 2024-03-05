@@ -36,6 +36,7 @@ const InputField = ({
     setShowPass(!showPass);
   };
   const handleDropdownToggle = () => {
+    setFocus(!focus);
     setShowDropdown(!showDropdown);
   };
 
@@ -109,9 +110,12 @@ const InputField = ({
           cursorColor={COLORS.darkGrey}
           onFocus={() => setFocus(true)}
           onBlur={() => setFocus(false)}
-          onPressIn={() => {
+          onTouchStart={() => {
             dropdown ? handleDropdownToggle() : null;
           }}
+          // onPressIn={() => {
+          //   dropdown ? handleDropdownToggle() : null;
+          // }}
           placeholderTextColor={COLORS.placeholder}
           onChangeText={handleChangeText}
           value={formik?.values[name]}
@@ -168,9 +172,10 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 16,
     color: COLORS.primary,
-    fontWeight: '700',
+    fontWeight: '500',
     marginTop: 6,
     marginBottom: 10,
+    lineHeight: 20,
   },
   textInput: {
     fontSize: 14,
@@ -189,6 +194,9 @@ const styles = StyleSheet.create({
     height: '100%',
     alignSelf: 'center',
     color: COLORS.primary,
+    fontWeight: '400',
+    fontFamily: 'DMSans-Regular',
+    fontSize: 14,
   },
   eyeIcon: {
     position: 'absolute',

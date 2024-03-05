@@ -8,16 +8,20 @@
 
 /* Begin PBXBuildFile section */
 		00E356F31AD99517003FC87E /* DrinkMateTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 00E356F21AD99517003FC87E /* DrinkMateTests.m */; };
+		090CE51453904610BCE75DA1 /* DMSans-ExtraBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 925259544A744733A1FD022D /* DMSans-ExtraBold.ttf */; };
 		13B07FBC1A68108700A75B9A /* AppDelegate.mm in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB01A68108700A75B9A /* AppDelegate.mm */; };
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		13B07FC11A68108700A75B9A /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 13B07FB71A68108700A75B9A /* main.m */; };
+		1C41BA1142EE4FBDBBFB5FE4 /* DMSans-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = C9F113A63B8441C69378BB13 /* DMSans-SemiBold.ttf */; };
 		2CF36EF06C23411E96F19E64 /* CinzelDecorative-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8E306C84ADBF47F2A0539BC4 /* CinzelDecorative-Bold.ttf */; };
 		4E1AD2A8349C737F8A79600C /* Pods_DrinkMate.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 57E5D3DC6E8B7CC40A8056AD /* Pods_DrinkMate.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
-		896A004921B54450BF6048BA /* DMSans_18pt-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 0102262D2A33449E93EDD07D /* DMSans_18pt-Regular.ttf */; };
 		ADDC4B32C6BE468F979C8053 /* CinzelDecorative-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7ED35F4B72FB481693E94471 /* CinzelDecorative-Regular.ttf */; };
+		BB3D1B2C4E904FD7807C6BD3 /* DMSans-Thin copy.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 74684BD4C20B4A99B803B3DC /* DMSans-Thin copy.ttf */; };
 		C8990F9B2B8EFA660049274A /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = C8990F9A2B8EFA660049274A /* GoogleService-Info.plist */; };
 		DCD6BF51DF04BD1757EC985B /* Pods_DrinkMate_DrinkMateTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F279F0387534479EBC4E69E4 /* Pods_DrinkMate_DrinkMateTests.framework */; };
+		F390D3F908424E44A49ABF7C /* DMSans-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = E557C6A71323468FB0C52433 /* DMSans-Bold.ttf */; };
+		FC4AB18538F44FF8AEDA30F1 /* DMSans-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = A72F0B75936A40C8A3DF48BD /* DMSans-Regular.ttf */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -34,7 +38,6 @@
 		00E356EE1AD99517003FC87E /* DrinkMateTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = DrinkMateTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* DrinkMateTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = DrinkMateTests.m; sourceTree = "<group>"; };
-		0102262D2A33449E93EDD07D /* DMSans_18pt-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "DMSans_18pt-Regular.ttf"; path = "../assets/fonts/DMSans_18pt-Regular.ttf"; sourceTree = "<group>"; };
 		13B07F961A680F5B00A75B9A /* DrinkMate.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = DrinkMate.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = DrinkMate/AppDelegate.h; sourceTree = "<group>"; };
 		13B07FB01A68108700A75B9A /* AppDelegate.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; name = AppDelegate.mm; path = DrinkMate/AppDelegate.mm; sourceTree = "<group>"; };
@@ -45,12 +48,17 @@
 		5709B34CF0A7D63546082F79 /* Pods-DrinkMate.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrinkMate.release.xcconfig"; path = "Target Support Files/Pods-DrinkMate/Pods-DrinkMate.release.xcconfig"; sourceTree = "<group>"; };
 		57E5D3DC6E8B7CC40A8056AD /* Pods_DrinkMate.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DrinkMate.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5B7EB9410499542E8C5724F5 /* Pods-DrinkMate-DrinkMateTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrinkMate-DrinkMateTests.debug.xcconfig"; path = "Target Support Files/Pods-DrinkMate-DrinkMateTests/Pods-DrinkMate-DrinkMateTests.debug.xcconfig"; sourceTree = "<group>"; };
+		74684BD4C20B4A99B803B3DC /* DMSans-Thin copy.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "DMSans-Thin copy.ttf"; path = "../assets/fonts/DMSans-Thin copy.ttf"; sourceTree = "<group>"; };
 		7ED35F4B72FB481693E94471 /* CinzelDecorative-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CinzelDecorative-Regular.ttf"; path = "../assets/fonts/CinzelDecorative-Regular.ttf"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = DrinkMate/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		89C6BE57DB24E9ADA2F236DE /* Pods-DrinkMate-DrinkMateTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-DrinkMate-DrinkMateTests.release.xcconfig"; path = "Target Support Files/Pods-DrinkMate-DrinkMateTests/Pods-DrinkMate-DrinkMateTests.release.xcconfig"; sourceTree = "<group>"; };
 		8E306C84ADBF47F2A0539BC4 /* CinzelDecorative-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = 9; includeInIndex = 0; lastKnownFileType = unknown; name = "CinzelDecorative-Bold.ttf"; path = "../assets/fonts/CinzelDecorative-Bold.ttf"; sourceTree = "<group>"; };
+		925259544A744733A1FD022D /* DMSans-ExtraBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "DMSans-ExtraBold.ttf"; path = "../assets/fonts/DMSans-ExtraBold.ttf"; sourceTree = "<group>"; };
+		A72F0B75936A40C8A3DF48BD /* DMSans-Regular.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "DMSans-Regular.ttf"; path = "../assets/fonts/DMSans-Regular.ttf"; sourceTree = "<group>"; };
 		C85E9A842B9096F400C6E500 /* DrinkMate.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; name = DrinkMate.entitlements; path = DrinkMate/DrinkMate.entitlements; sourceTree = "<group>"; };
 		C8990F9A2B8EFA660049274A /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		C9F113A63B8441C69378BB13 /* DMSans-SemiBold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "DMSans-SemiBold.ttf"; path = "../assets/fonts/DMSans-SemiBold.ttf"; sourceTree = "<group>"; };
+		E557C6A71323468FB0C52433 /* DMSans-Bold.ttf */ = {isa = PBXFileReference; explicitFileType = undefined; fileEncoding = undefined; includeInIndex = 0; lastKnownFileType = unknown; name = "DMSans-Bold.ttf"; path = "../assets/fonts/DMSans-Bold.ttf"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		F279F0387534479EBC4E69E4 /* Pods_DrinkMate_DrinkMateTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_DrinkMate_DrinkMateTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -153,8 +161,12 @@
 			isa = PBXGroup;
 			children = (
 				7ED35F4B72FB481693E94471 /* CinzelDecorative-Regular.ttf */,
-				0102262D2A33449E93EDD07D /* DMSans_18pt-Regular.ttf */,
 				8E306C84ADBF47F2A0539BC4 /* CinzelDecorative-Bold.ttf */,
+				C9F113A63B8441C69378BB13 /* DMSans-SemiBold.ttf */,
+				E557C6A71323468FB0C52433 /* DMSans-Bold.ttf */,
+				925259544A744733A1FD022D /* DMSans-ExtraBold.ttf */,
+				A72F0B75936A40C8A3DF48BD /* DMSans-Regular.ttf */,
+				74684BD4C20B4A99B803B3DC /* DMSans-Thin copy.ttf */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -267,9 +279,13 @@
 				81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				ADDC4B32C6BE468F979C8053 /* CinzelDecorative-Regular.ttf in Resources */,
-				896A004921B54450BF6048BA /* DMSans_18pt-Regular.ttf in Resources */,
 				2CF36EF06C23411E96F19E64 /* CinzelDecorative-Bold.ttf in Resources */,
 				C8990F9B2B8EFA660049274A /* GoogleService-Info.plist in Resources */,
+				1C41BA1142EE4FBDBBFB5FE4 /* DMSans-SemiBold.ttf in Resources */,
+				F390D3F908424E44A49ABF7C /* DMSans-Bold.ttf in Resources */,
+				090CE51453904610BCE75DA1 /* DMSans-ExtraBold.ttf in Resources */,
+				FC4AB18538F44FF8AEDA30F1 /* DMSans-Regular.ttf in Resources */,
+				BB3D1B2C4E904FD7807C6BD3 /* DMSans-Thin copy.ttf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

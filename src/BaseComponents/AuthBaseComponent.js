@@ -1,13 +1,10 @@
 import React from 'react';
 import {
   Image,
-  ImageBackground,
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   View,
   Pressable,
-  ScrollView,
   Platform,
 } from 'react-native';
 import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
@@ -78,7 +75,6 @@ const AuthBaseComponent = ({
             <View style={styles.content}>{renderChild}</View>
           </View>
         </KeyboardAwareScrollView>
-        {/* </ImageBackground> */}
       </View>
     </>
   );
@@ -87,9 +83,6 @@ const AuthBaseComponent = ({
 const styles = StyleSheet.create({
   bgContainer: {
     flex: 1,
-    position: 'relative',
-    width: '100%',
-    height: '100%',
   },
   safeAreaView: {
     flex: 1,
@@ -109,7 +102,8 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 36,
     color: COLORS.logoColor,
-    fontWeight: '800',
+    fontFamily: 'DMSans-Bold',
+
     margin: 5,
   },
   formView: {
@@ -118,8 +112,8 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 30,
     color: COLORS.primary,
-    fontWeight: '700',
     margin: 5,
+    fontFamily: 'DMSans-Bold',
   },
   instructionText: {
     fontSize: 16,
@@ -128,6 +122,7 @@ const styles = StyleSheet.create({
     margin: 5,
     color: '#6E6F76',
     width: '90%',
+    fontFamily: 'DMSans-Regular',
   },
   content: {
     justifyContent: 'center',

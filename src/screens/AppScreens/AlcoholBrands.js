@@ -5,7 +5,7 @@ import RightHeaderButton from '../../Components/RightHeaderButton';
 import IMAGES from '../../utils/Images';
 import Common from '../../utils/common';
 import RenderImages from '../../Components/RenderImages';
-import {EmptyHeart} from '../../Icons';
+import {DeleteIcon, EmptyHeart} from '../../Icons';
 import {Typography} from '../../Components/Typography';
 import {useAppContext} from '../../Components/AppContext';
 import useFetch from '../../utils/useFetch';
@@ -90,10 +90,11 @@ const Content = ({navigation}) => {
               setDeleteId(item?.id);
               setModal(true);
             }}>
-            <RenderImages
+            <DeleteIcon />
+            {/* <RenderImages
               source={IMAGES.deleteicon}
               style={{width: 21, height: 21}}
-            />
+            /> */}
           </Pressable>
           <Pressable
             style={styles.icon}

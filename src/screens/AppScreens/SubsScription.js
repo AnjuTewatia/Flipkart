@@ -89,12 +89,15 @@ const Content = ({navigation}) => {
               You can manage your subscription and turn off auto-renewal by
               going to your account settings after purchase.
             </Typography>
+            <Typography />
             <Typography style={styles.substext}>
               Subscription will auto-renew every month/year based on the
               subscription plan you have purchased, through your account unless
               you cancel it 24 hours prior to the end of the current billing
               period.
             </Typography>
+            <Typography />
+
             <Typography style={styles.substext}>
               Any unused portion of a free trial, if offered, will be forfeited
               when you purchase a subscription, where applicable.
@@ -125,7 +128,7 @@ const styles = StyleSheet.create({
     fontSize: 50,
     paddingTop: 20,
     zIndex: 999,
-    fontWeight: '700',
+    fontFamily: 'DMSans-Bold',
     color: '#F87E7D',
   },
   instruction: {

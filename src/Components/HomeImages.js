@@ -126,9 +126,9 @@ const styles = StyleSheet.create({
   },
   instruction: {
     fontSize: 18,
-    fontWeight: '500',
     color: '#fff',
     width: '80%',
+    fontFamily: 'DMSans-SemiBold',
   },
   rowView: {
     marginVertical: 10,
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
   btntitle: {
     marginHorizontal: 8,
     color: '#371841',
-    fontWeight: '600',
+    fontFamily: 'DMSans-SemiBold',
   },
   linearGradient: {
     width: 40,

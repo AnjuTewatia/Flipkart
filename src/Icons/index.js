@@ -152,6 +152,22 @@ export const ColorTick = props => {
     </Svg>
   );
 };
+export const DeleteIcon = props => {
+  return (
+    <Svg
+      width={21}
+      height={21}
+      viewBox="0 0 19 19"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M13.875 4.25h4.375V6H16.5v11.375a.875.875 0 01-.875.875H3.375a.875.875 0 01-.875-.875V6H.75V4.25h4.375V1.625A.875.875 0 016 .75h7a.875.875 0 01.875.875V4.25zm-7 4.375v5.25h1.75v-5.25h-1.75zm3.5 0v5.25h1.75v-5.25h-1.75zM6.875 2.5v1.75h5.25V2.5h-5.25z"
+        fill="#E82C2A"
+      />
+    </Svg>
+  );
+};
 export const CrossIcon = props => {
   return (
     <Svg

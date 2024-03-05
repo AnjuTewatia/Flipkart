@@ -118,6 +118,7 @@ const BottomTabs = () => {
             alignItems: 'center',
             padding: 10,
             paddingBottom: 10,
+
             // height: 60,
           },
         }}>
@@ -133,7 +134,7 @@ const BottomTabs = () => {
                   <View style={styles.tabBar}>
                     <RenderImages
                       source={focused ? IMAGES.activeHome : IMAGES.unActiveHome}
-                      style={{width: 22, height: 22}}
+                      style={styles.icon}
                     />
                     <Typography
                       type="sm"
@@ -165,7 +166,7 @@ const BottomTabs = () => {
                           ? IMAGES.activeNotification
                           : IMAGES.unActiveNotification
                       }
-                      style={{width: 22, height: 22}}
+                      style={styles.icon}
                     />
                     <Typography
                       type="sm"
@@ -173,7 +174,7 @@ const BottomTabs = () => {
                         styles.tabText,
                         {color: focused ? COLORS.gradientText : COLORS.grey},
                       ]}>
-                      Notificatios
+                      Notifications
                     </Typography>
                   </View>
                 </>
@@ -197,7 +198,7 @@ const BottomTabs = () => {
                           ? IMAGES.activeFavorite
                           : IMAGES.unActiveFavorite
                       }
-                      style={{width: 22, height: 22}}
+                      style={styles.icon}
                     />
                     <Typography
                       type="sm"
@@ -227,7 +228,7 @@ const BottomTabs = () => {
                       source={
                         focused ? IMAGES.activeProfile : IMAGES.unActiveProfile
                       }
-                      style={{width: 22, height: 22}}
+                      style={styles.icon}
                     />
                     <Typography
                       type="sm"
@@ -255,6 +256,7 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
     justifyContent: 'center',
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: 'DMSans-SemiBold',
   },
+  icon: {width: 20, height: 20},
 });

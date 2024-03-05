@@ -15,15 +15,13 @@ const Home = ({navigation}) => {
       title={'Home'}
       renderChild={Content({navigation})}
       topPadding={0}
+      height={'97%'}
     />
   );
 };
-
 const Content = ({navigation}) => {
   const {setUserProfile} = useAppContext();
-
   const [getProfile] = useFetch('profile', {mehtod: 'GET'});
-
   const handlegetProfile = async () => {
     const res = await getProfile();
     if (res?.status === 200) {
@@ -89,11 +87,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     marginTop: 12,
     color: '#371841',
-    fontWeight: '700',
     marginBottom: 6,
+    fontFamily: 'DMSans-SemiBold',
   },
   LogoText: {
     color: '#8C2457',
-    fontWeight: Platform.OS === 'android' ? '900' : '700',
+    fontFamily: 'DMSans-Bold',
   },
 });

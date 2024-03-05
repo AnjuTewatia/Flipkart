@@ -26,6 +26,7 @@ const cameraIcon = require('../assets/icons/cameraicon.png');
 const scanIcon = require('../assets/icons/scan.png');
 const addIcon = require('../assets/icons/add.png');
 const sortby = require('../assets/icons/sortby.png');
+const user = require('../assets/icons/user.png');
 
 const notificationimg = require('../assets/appImages/notification.png');
 const favoriteimg = require('../assets/appImages/favorite.png');
@@ -80,6 +81,7 @@ const IMAGES = {
   logout,
   subPlanbg,
   subs,
+  user,
 };
 
 export default IMAGES;

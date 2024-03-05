@@ -211,7 +211,12 @@ const Content = ({navigation, title, store}) => {
         case RESULTS.DENIED:
           // setIsOpen(true);
           const requestResult = await request(permission);
-
+          if (requestResult === 'blocked' && Platform.OS === 'android') {
+            setIsOpen(true);
+          }
+          if (requestResult === RESULTS.GRANTED) {
+            setScannerVisible(true);
+          }
           break;
         case RESULTS.LIMITED:
           console.log('The permission is limited: some actions are possible');

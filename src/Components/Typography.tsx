@@ -23,7 +23,7 @@ export const Typography: React.FC<IProps> = ({
   children,
   ...rest
 }) => {
-  const fontFamily = 'DMSans-Thin';
+  const fontFamily = 'DMSans-Regular';
   const styles = StyleSheet.create({
     h1: {
       fontSize: 30,

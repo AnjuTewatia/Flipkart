@@ -38,10 +38,10 @@ const Content = ({navigation}) => {
     if (res?.status === 200) {
       setUserProfile(res?.data);
       setNotificationStatus(res?.data?.notification_status);
-      Toast.show({
-        type: 'success',
-        text1: res?.message,
-      });
+      // Toast.show({
+      //   type: 'success',
+      //   text1: res?.message,
+      // });
     }
   };
 

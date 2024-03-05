@@ -118,9 +118,10 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 20,
     color: COLORS.white,
-    fontWeight: '700',
+    // fontWeight: '700',
     margin: 5,
     textAlign: 'center',
+    fontFamily: 'DMSans-Bold',
   },
   instructiontext: {
     fontSize: 16,
