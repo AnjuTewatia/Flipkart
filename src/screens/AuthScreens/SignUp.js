@@ -1,44 +1,46 @@
-import {Platform, Pressable, StyleSheet, View} from 'react-native';
+import { Platform, Pressable, StyleSheet, View } from 'react-native';
 import React from 'react';
 import Common from '../../utils/common';
 import AuthBaseComponent from '../../BaseComponents/AuthBaseComponent';
 import InputField from '../../Components/InputField';
 import Button from '../../Components/Button';
-import {useFormik} from 'formik';
-import {signUpValidationScheme} from '../../utils/validations';
-import {Typography} from '../../Components/Typography';
+import { useFormik } from 'formik';
+import { signUpValidationScheme } from '../../utils/validations';
+import { Typography } from '../../Components/Typography';
 import useFetch from '../../utils/useFetch';
-import {useAppContext} from '../../Components/AppContext';
+import { useAppContext } from '../../Components/AppContext';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Toast from 'react-native-toast-message';
-import {Height} from '../../utils/styleConst';
 
-const SignUp = ({navigation}) => {
+
+const SignUp = ({ navigation }) => {
   return (
     <AuthBaseComponent
       title={'Sign Up'}
       instruction={'Please enter the below details to create an account.'}
       navigation={navigation}
-      renderChild={Content({navigation})}
+      renderChild={Content({ navigation })}
     />
   );
 };
-const Content = ({navigation}) => {
-  const {device_id, fcmToken} = useAppContext();
+const Content = ({ navigation }) => {
+  const { device_id, fcmToken,setUserData,setUserProfile } = useAppContext();
 
-  const [registerUser, {response, loading, error}] = useFetch('register', {
+  const [registerUser, { response, loading, error }] = useFetch('user/register', {
     method: 'POST',
   });
 
   const formik = useFormik({
     initialValues: {
-      first_name: '',
-      last_name: '',
+      name: '',
       email: '',
+      phoneNumber: '',
       password: '',
       confirmPassword: '',
     },
     validationSchema: signUpValidationScheme,
     onSubmit: values => {
+      // console.log(values);
       handleRegister(values);
     },
   });
@@ -46,22 +48,31 @@ const Content = ({navigation}) => {
   const handleRegister = async values => {
     const payload = {
       ...values,
-      device_type: Platform.OS,
-      device_id: device_id,
-      device_token: fcmToken,
+      role: 'user'
     };
     try {
       const res = await registerUser(payload);
-      const resData = res?.data;
+// console.log('res ==>', res)
+// console.log('res data==>', res?.data)
       if (res) {
-        navigation.navigate('otpScreen', {
-          email: resData?.email,
-          uuid: resData?.uuid,
-          type: 'register',
+        Toast.show({
+          type: 'success',
+          text1: res?.msg,
+        });
+        setUserData(res?.token)
+        setUserProfile(res?.user);
+        AsyncStorage.setItem('login_user', JSON.stringify(res?.token));
+      
+        AsyncStorage.setItem('userProfile', JSON.stringify(res?.user));
+      }
+      else{
+        Toast.show({
+          type: 'error',
+          text1: res?.msg,
         });
       }
     } catch (error) {
-      console.log('cathc', error);
+      // console.log('catch', error);
     }
   };
 
@@ -71,24 +82,25 @@ const Content = ({navigation}) => {
         formik={formik}
         maxLength={20}
         type="name"
-        name="first_name"
+        name="name"
         label={'First Name'}
         placeholder="Enter Name"
       />
-      <InputField
-        formik={formik}
-        maxLength={20}
-        type="surname"
-        name="last_name"
-        label={'Last name'}
-        placeholder="Enter Last Name"
-      />
+
       <InputField
         formik={formik}
         type="email"
         name="email"
         label={'Email Address'}
         placeholder="Enter Email Address"
+      />
+      <InputField
+        formik={formik}
+        maxLength={10}
+        name="phoneNumber"
+        label={'Phone Number'}
+        placeholder="Enter Phone Number"
+        keyboardType='decimal-pad'
       />
       <InputField
         formik={formik}
@@ -110,11 +122,11 @@ const Content = ({navigation}) => {
         onPress={() => formik.handleSubmit()}
       />
       <Pressable
-        style={[styles.login, {width: '80%', marginBottom: 20}]}
+        style={[styles.login, { width: '80%', marginBottom: 20 }]}
         onPress={() => navigation.navigate('login')}>
         <Typography type="xs" style={[styles.login]}>
           Already have an account?{' '}
-          <Typography style={{color: '#F87E7D', fontWeight: '700'}}>
+          <Typography style={{ color: '#F87E7D', fontWeight: '700' }}>
             Log In
           </Typography>
         </Typography>

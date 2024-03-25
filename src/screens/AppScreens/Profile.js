@@ -37,40 +37,19 @@ const Content = ({navigation}) => {
   const {windowWidth, removeUser, device_id, fcmToken, userProfile} =
     useAppContext();
   const [isOpen, setIsOpen] = useState(false);
-  const {first_name, last_name, email, points} = userProfile;
+  console.log('userProfile ==>', userProfile);
+  const {name, email} = userProfile;
   const [selectedImage, setSelectedImage] = useState(null);
   const [casenNo, setCaseNo] = useState(null);
   const Actions = ['View Image', 'Camera', 'Gallery', 'Cancel'];
   const Options = [
-    {
-      title: 'Earned Points',
-      desc: points,
-      image: IMAGES.earnedPoints,
-      onPress: () => {
-        console.log('HHJHJ');
-      },
-    },
-    {
-      title: 'Manage Notifications',
-      image: IMAGES.bell,
-      rightarrow: true,
-      onPress: () => {
-        navigation.navigate('manageNotification');
-      },
-    },
-    {
-      title: 'Change Password',
-      image: IMAGES.changePassword,
-      rightarrow: true,
-      onPress: () => {
-        navigation.navigate('changePassword');
-      },
-    },
+  
+
     {
       title: 'Delete Account',
       image: IMAGES.profiledelete,
       onPress: () => {
-        console.log('HHJHJ');
+        setDeleteAcc(true);
       },
     },
   ];
@@ -108,20 +87,31 @@ const Content = ({navigation}) => {
     );
   };
 
-  const [logout, {loading}] = useFetch('logout', {
-    method: 'POST',
+  const [logout, {loading}] = useFetch(`user/${userProfile?._id}`, {
+    method: 'DELETE',
   });
 
-  const handlelogout = async () => {
-    const res = await logout({
-      device_id: device_id,
-      device_token: fcmToken,
-      device_type: Platform.OS,
-    });
+  const [deleteacc, setDeleteAcc] = useState(false)
+  const handleDelete = async () => {
+    const res = await logout();
     if (res) {
-      setIsOpen(false);
-      removeUser();
+      setDeleteAcc(false);
+    removeUser();
     }
+  };
+
+  
+  const handlelogout = async () => {
+    setIsOpen(false);
+    removeUser();
+    // const res = await logout({
+    //   device_id: device_id,
+    //   device_token: fcmToken,
+    //   device_type: Platform.OS,
+    // });
+    // if (res) {
+    
+    // }
   };
 
   const showActionSheet = () => {
@@ -277,7 +267,7 @@ const Content = ({navigation}) => {
           <Typography
             type="h2"
             style={[styles.name, {width: windowWidth - 170}]}>
-            {first_name} {last_name}
+            {name}
           </Typography>
           <Typography
             type="h4"
@@ -287,41 +277,9 @@ const Content = ({navigation}) => {
         </View>
       </View>
 
-      <LinearGradient
-        colors={['#8C2457', '#F87E7D']}
-        start={{x: 0, y: 0}}
-        end={{x: 1, y: 0}}
-        style={[styles.linearGradient]}>
-        <Typography type="h2" style={styles.subscriptiontitle}>
-          Subscription Plan
-        </Typography>
-        <View
-          style={{
-            flexDirection: 'row',
-            width: '100%',
-            justifyContent: 'space-between',
-            alignItems: 'center',
-          }}>
-          <Typography type="h2" style={styles.price}>
-            $9.99{' '}
-            <Typography type="h4" style={{color: '#fff'}}>
-              {' '}
-              / month.
-            </Typography>
-          </Typography>
-          <Pressable
-            style={styles.viewBtn}
-            onPress={() => navigation.navigate('SubScription')}>
-            <Typography type="h6" style={{color: '#fff'}}>
-              View Details
-            </Typography>
-          </Pressable>
-        </View>
-      </LinearGradient>
+   
       <View style={styles.OtherOption}>
-        <Typography type="label" style={{fontWeight: '700', gap: 24}}>
-          Other Options
-        </Typography>
+   
         <FlatList
           bounces={false}
           data={Options}
@@ -355,6 +313,17 @@ const Content = ({navigation}) => {
         description="Are you sure you want to logout your account?"
         onYesClick={() => handlelogout()}
         onNoClick={() => setIsOpen(false)}
+        cancelText="No"
+        confirmText="Yes"
+      />
+       <ConfirmModal
+        isOpen={deleteacc}
+        loading={loading}
+        handleClose={() => setDeleteAcc(false)}
+        title="Delete Account"
+        description="Are you sure you want to delete your account?"
+        onYesClick={() => handleDelete()}
+        onNoClick={() => setDeleteAcc(false)}
         cancelText="No"
         confirmText="Yes"
       />

@@ -1,4 +1,4 @@
-import {StyleSheet, ScrollView, FlatList, View, Pressable} from 'react-native';
+import {StyleSheet, ScrollView, FlatList, View, Pressable,Image,Text} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AppBaseComponent from '../../BaseComponents/AppBaseComponent';
 import Common from '../../utils/common';
@@ -14,6 +14,8 @@ import {Typography} from '../../Components/Typography';
 import {ColorTick} from '../../Icons';
 import ConfirmModal from '../../Components/ConfirmModal';
 import {useIsFocused} from '@react-navigation/native';
+import { BASE_URL } from '../../utils/baseUrl';
+import Button from '../../Components/Button';
 
 const Favourites = ({navigation}) => {
   const [sort, setSort] = useState(false);
@@ -35,88 +37,66 @@ const Favourites = ({navigation}) => {
 };
 
 const Content = ({navigation, sort, setSort}) => {
-  const {getCurrentLocation, setInitialRegion} = useAppContext();
+  const {getCurrentLocation, setInitialRegion,userData} = useAppContext();
   const [modal, setModal] = useState(false);
-  const [deleteid, setDeleteId] = useState(null);
-  const [store_id, setStoreID] = useState(null);
+const [loading, setLoading] = useState(false)
   const [type, setType] = useState('1');
   const [data, setData] = useState([]);
   const isFocused = useIsFocused();
   const [deleteType, setDeletetype] = useState('');
   const [open, setOpen] = useState(false);
-  const [getFavoriteItems, {loading}] = useFetch('get-favourite-list', {
-    method: 'POST',
-  });
-  const handleGetFavourites = async () => {
+ 
+  const fetchdata = async () => {
+    setLoading(true)
     try {
-      const res = await getFavoriteItems({type: type});
-      if (res?.status === 200) {
-        setData(res?.data);
-      }
-    } catch (error) {}
-    setSort(false);
-  };
+        const res = await fetch(`${BASE_URL}cart`, {
+            headers: {
+                token: userData
+            }
+        })
+        const resdata = await res.json()
+        console.log('resDaa', resdata.cart);
+        setData(resdata?.cart)
 
-  const toggleFavoriteStore = () => {
-    const newData = data.filter(item => item?.store?.id !== setDeleteId);
+    } catch (error) {
 
-    setData(newData);
-    handleAddToFavorite();
-
-    setOpen(false); // Assuming you have a setModal function to close the modal
-  };
-  const toggleFavoriteItem = item_id => {
-    const newData = data.filter(item => item?.item?.id !== deleteid);
-
-    setData(newData);
-    handleAddToFavorite();
-    setModal(false);
-  };
-
-  const [addtoFavorite] = useFetch('add-to-favourite', {
-    method: 'POST',
-  });
-
-  const handleAddToFavorite = async () => {
-    const res = await addtoFavorite({
-      store_id: store_id,
-      item_id: deleteid,
-      type: deleteType,
-    });
-  };
+    }
+setLoading(false)
+}
 
   const RenderItem = ({item}) => {
     return (
       <>
-        {item?.item ? (
-          <RenderStoreItems
-            item={item?.item}
-            store_id={item?.store_id}
-            ondeletePress={() => {
-              setModal(true), setDeletetype('2');
-              setDeleteId(item?.item?.id), setStoreID(item?.store_id);
-            }}
-          />
-        ) : item?.store ? (
-          <RenderStoreListing
-            item={item?.store}
-            type={type}
-            deleteIcon
-            navigation={navigation}
-            onheartPress={() => toggleFavoriteStore(item?.store?.id)}
-            ondeletePress={() => {
-              setOpen(true), setDeletetype('1');
-              setDeleteId(item?.store?.id), setStoreID(item?.store_id);
-            }}
-          />
-        ) : null}
+      <View>
+      <Image
+                        source={{ uri: item?.image1 }}
+                        style={{
+                            width: 300,
+                            height: 200,
+                            marginBottom: 10,
+                        }}
+                    />
+                    <Text>{item?.title}</Text>
+                    <Text>{item?.price}</Text>
+      </View>
       </>
     );
   };
-
+  const calculateTotalPrice = () => {
+    let totalPrice = 0;
+    data.forEach(item => {
+      if (item?.price) {
+        totalPrice += item.price;
+      }
+    });
+    
+    return totalPrice.toFixed(2);
+  };
+  const totalPrice = calculateTotalPrice();
   useEffect(() => {
-    handleGetFavourites();
-  }, [type, isFocused]);
+   fetchdata()
+  }, [isFocused]);
+
   return (
     <>
       {sort && (
@@ -132,11 +112,12 @@ const Content = ({navigation, sort, setSort}) => {
         </View>
       )}
       <View
-        style={[Common.container, [styles.favoriteContainer]]}
+        style={[Common.container, styles.favoriteContainer]}
         showsVerticalScrollIndicator={false}>
         {loading ? (
           <Shimmer />
         ) : (
+        
           <FlatList
             data={data}
             bounces={false}
@@ -148,11 +129,18 @@ const Content = ({navigation, sort, setSort}) => {
         )}
         {data?.length === 0 && !loading && (
           <View style={{flex: 1}}>
-            <NoFound title={'No favorite item found'} />
+            <NoFound title={'No Cart item found'} />
           </View>
         )}
         <View style={{marginBottom: 10}} />
       </View>
+    {data?.length> 1 &&  <View style={{ position: 'absolute', bottom: 0, alignSelf:"center" }}>
+                    <Button
+                        title={`Total : ${totalPrice}`}
+                        // onPress={Addtocart}
+                    // loading={loading}
+                    />
+                </View>}
       <ConfirmModal
         isOpen={modal}
         // loading={loading}
@@ -185,6 +173,7 @@ const styles = StyleSheet.create({
   favoriteContainer: {
     flex: 1,
     marginTop: 10,
+    justifyContent:"center"
   },
   favoriteView: {
     width: '99%',

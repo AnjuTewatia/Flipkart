@@ -1,34 +1,35 @@
-import {StyleSheet, View, Image, Pressable, Platform} from 'react-native';
-import React, {useEffect} from 'react';
+import { StyleSheet, View, Image, Pressable, Platform } from 'react-native';
+import React, { useEffect } from 'react';
 import AuthBaseComponent from '../../BaseComponents/AuthBaseComponent';
 import InputField from '../../Components/InputField';
 import Button from '../../Components/Button';
-import {Typography} from '../../Components/Typography';
-import {useFormik} from 'formik';
-import {loginValidationScheme} from '../../utils/validations';
+import { Typography } from '../../Components/Typography';
+import { useFormik } from 'formik';
+import { loginValidationScheme } from '../../utils/validations';
 import IMAGES from '../../utils/Images';
 import RenderImages from '../../Components/RenderImages';
 import Common from '../../utils/common';
-import {useAppContext} from '../../Components/AppContext';
+import { useAppContext } from '../../Components/AppContext';
 import useFetch from '../../utils/useFetch';
 import Toast from 'react-native-toast-message';
-import {saveLocalLoginDetail} from '../../utils/functions';
-import {useIsFocused} from '@react-navigation/native';
+import { saveLocalLoginDetail } from '../../utils/functions';
+import { useIsFocused } from '@react-navigation/native';
 import Googlelogin from '../../utils/Googlelogin';
-import {appleLogin} from '../../utils/AppleLogin';
+import { appleLogin } from '../../utils/AppleLogin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
   return (
     <AuthBaseComponent
       title="Log In"
       instruction={'Please fill below details to continue.'}
       navigation={navigation}
-      renderChild={Content({navigation})}
+      renderChild={Content({ navigation })}
     />
   );
 };
-const Content = ({navigation}) => {
-  const {setUserData, device_id, fcmToken, getFcmToken} = useAppContext();
+const Content = ({ navigation }) => {
+  const { setUserData, device_id, fcmToken, getFcmToken,setUserProfile } = useAppContext();
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -40,7 +41,7 @@ const Content = ({navigation}) => {
     },
   });
 
-  const [loginuser, {response, loading, error}] = useFetch('login', {
+  const [loginuser, { response, loading, error }] = useFetch('user/login', {
     method: 'POST',
   });
   const isfocused = useIsFocused();
@@ -48,25 +49,26 @@ const Content = ({navigation}) => {
   const handleloginUser = async values => {
     const payload = {
       ...values,
-      device_type: Platform.OS,
-      device_id: device_id,
-      device_token: fcmToken,
+      role: 'user'
     };
     const res = await loginuser(payload);
-    const resData = res?.data;
-    if (res?.data?.is_verified == 1) {
-      setUserData(resData?.token);
-      saveLocalLoginDetail(resData?.token);
-    } else {
+
+    if (res) {
       Toast.show({
-        type: 'info',
+        type: 'success',
         text1: res?.message,
       });
-      navigation.navigate('otpScreen', {
-        email: resData?.email,
-        uuid: resData?.uuid,
-        type: 'login',
+      setUserData(res?.token);
+      setUserProfile(res?.user);
+      AsyncStorage.setItem('login_user', JSON.stringify(res?.token));
+ 
+      AsyncStorage.setItem('userProfile', JSON.stringify(res?.user));
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: res?.message,
       });
+      
     }
   };
   useEffect(() => {
@@ -89,13 +91,13 @@ const Content = ({navigation}) => {
         name="password"
         placeholder="Enter Password"
       />
-      <Pressable
-        style={[styles.forgotText, {width: '50%'}]}
+      {/* <Pressable
+        style={[styles.forgotText, { width: '50%' }]}
         onPress={() => navigation.navigate('forgot')}>
         <Typography type="xs" style={styles.forgotText}>
           Forgot Password
         </Typography>
-      </Pressable>
+      </Pressable> */}
       <Button
         title="Log In"
         onPress={() => formik.handleSubmit()}
@@ -103,11 +105,11 @@ const Content = ({navigation}) => {
       />
 
       <Pressable
-        style={[styles.Signup, {width: '60%'}]}
+        style={[styles.Signup, { width: '60%' }]}
         onPress={() => navigation.navigate('signUp')}>
         <Typography type="xs" style={[styles.Signup]}>
           New User ?{' '}
-          <Typography style={{color: '#F87E7D', fontWeight: '700'}}>
+          <Typography style={{ color: '#F87E7D', fontWeight: '700' }}>
             Create Account
           </Typography>
         </Typography>
@@ -187,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 45,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowColor: '#CFAFF3',
     shadowRadius: 4,

@@ -100,7 +100,7 @@ const RenderStoreListing = ({
           <Pressable style={styles.addicon} onPress={() => setIsOpen(true)}>
             <RightHeaderButton
               icon={null}
-              title={'+  Store'}
+              title={'+ Cart'}
               color={'#fff'}
               onPress={() => setIsOpen(true)}
             />
@@ -129,16 +129,15 @@ const RenderStoreListing = ({
           </Pressable>
         ) : null}
         <RenderImages
-          source={IMAGES.favoriteimg}
+          source={item?.image1}
           style={{width: 67, height: 67}}
         />
         <View style={{marginHorizontal: 15}}>
           <Typography
             type="h3"
+            numberOfLines={1}
             style={[styles.title, {width: windowWidth - 200}]}>
-            {item?.name?.length > 30
-              ? `${item?.name?.slice(0, 30)}...`
-              : item?.name}
+           {item?.title}
           </Typography>
           <View
             style={{
@@ -146,19 +145,11 @@ const RenderStoreListing = ({
               alignItems: 'flex-start',
               justifyContent: 'flex-start',
             }}>
-            <RenderImages
-              source={IMAGES.locationicon}
-              style={{
-                width: 15,
-                height: 19,
-
-                alignSelf: 'center',
-              }}
-            />
+    
             <Typography
               type="h5"
               style={[styles.text, {width: windowWidth - 200}]}>
-              {item?.address ?? item?.vicinity}
+               ₹ {item?.price}
             </Typography>
           </View>
         </View>
@@ -175,13 +166,13 @@ const RenderStoreListing = ({
         cancelText="No"
         confirmText="Yes"
       />
-      <BottomSheet
+      {/* <BottomSheet
         item={item}
         navigation={navigation}
         isVisible={bottomSheetVisible}
         onClose={toggleBottomSheet}
         onRequestClose={toggleBottomSheet}
-      />
+      /> */}
     </>
   );
 };

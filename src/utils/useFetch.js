@@ -17,14 +17,14 @@ const useFetch = (url, config) => {
   });
 
   const newurl = `${url}`;
-
+console.log(userData);
   const loadQuery = async (data, rest) => {
     setLoading(true);
     const userToken = userData;
     const headers = !userToken
       ? {}
       : {
-          Authorization: `Bearer ${userToken}`,
+          Authorization: `${userToken}`,
           'Content-Type': 'application/json',
         };
 
@@ -37,7 +37,8 @@ const useFetch = (url, config) => {
         ...rest,
       })
         .then(response => {
-          if (response.data.status === 200) {
+          console.log(response);
+          if (response?.data?.status === 200) {
             setError(undefined);
             setResponse(response.data);
             resolve(response.data);
@@ -54,8 +55,8 @@ const useFetch = (url, config) => {
           }
         })
         .catch(e => {
-          const resData = e.response.data;
-          console.log('error ==>', resData);
+          const resData = e;
+          console.log('error ==>', e);
           if (resData?.status === 400) {
             setError(e?.response);
             Toast.show({
@@ -66,7 +67,6 @@ const useFetch = (url, config) => {
             clearUser();
           } else if (resData.code === 101) {
             setApiMsg(resData);
-            setDeactivatedModal(true);
           } else {
             setResponse(null);
             setError(e.response);

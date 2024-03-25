@@ -2,6 +2,8 @@ import * as yup from 'yup';
 
 const emailRegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 const nameRegex = /^[a-zA-Z\-']+$/;
+const phoneNumberPattern = /^\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}$/;
+
 const PassRegx =
   /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()\-_=+{};:,<.>])(?=.*[a-zA-Z]).{8,}$/;
 
@@ -13,6 +15,12 @@ export const emailSchema = yup
   .trim()
   .required('Email address is required.')
   .matches(emailRegExp, 'Please enter valid email address.');
+
+  export const phoneNumberScema = yup
+  .string()
+  .trim()
+  .required('Phone Number is required.')
+  .matches(phoneNumberPattern, 'Please enter valid phone number.');
 
 export const passwordSchema = name =>
   yup
@@ -46,15 +54,12 @@ export const confirmPasswordSchema = reference =>
     .required('Confirm password is required.');
 
 export const signUpValidationScheme = yup.object().shape({
-  first_name: nameSchema(
-    'First name is required.',
-    'First name should maximum 20 characters.',
-  ),
-  last_name: nameSchema(
-    'Last name is required.',
-    'Last name should maximum 20 characters.',
+  name: nameSchema(
+    'Name is required.',
+    'Name should maximum 20 characters.',
   ),
   email: emailSchema,
+  phoneNumber: phoneNumberScema,
   password: passwordSchema(),
   confirmPassword: confirmPasswordSchema('password'),
 });
