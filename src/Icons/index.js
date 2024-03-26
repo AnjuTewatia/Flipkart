@@ -1,5 +1,5 @@
 import React from 'react';
-import {Svg, Path} from 'react-native-svg';
+import {Svg, Path, Circle, Mask, G} from 'react-native-svg';
 
 export const EyeOpenIcon = props => {
   return (
@@ -38,6 +38,22 @@ export const BackButton = props => {
     </Svg>
   );
 };
+export const WhiteBackButton = props => {
+  return (
+    <Svg
+      width={12}
+      height={20}
+      viewBox="0 0 12 20"
+      fill="none"
+      // xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M0 9.961c0 .393.146.73.46 1.022l8.738 8.558c.247.247.561.382.932.382.741 0 1.336-.584 1.336-1.337 0-.37-.157-.696-.404-.954l-7.873-7.67 7.873-7.671c.247-.258.404-.595.404-.955C11.466.584 10.871 0 10.13 0c-.37 0-.685.135-.932.382L.46 8.928c-.314.303-.46.64-.46 1.033z"
+        fill="#ffffff"
+      />
+    </Svg>
+  );
+};
 
 export const ArrowIcon = props => {
   return (
@@ -52,6 +68,199 @@ export const ArrowIcon = props => {
         d="M8.05 6.36l-5.656 5.658L.98 10.603l5.657-5.656-4.95-4.95H13V11.31L8.05 6.36z"
         fill="#fff"
       />
+    </Svg>
+  );
+};
+export const RightArrow = props => {
+  return (
+    <Svg
+      width={12}
+      height={12}
+      viewBox="0 0 12 12"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M6 5.334V.667l5.333 5.334L6 11.334V6.667H.667V5.334H6z"
+        fill="#8C2457"
+      />
+    </Svg>
+  );
+};
+export const EmptyHeart = props => {
+  return (
+    <Svg
+      width={20}
+      height={19}
+      viewBox="0 0 20 19"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M8.887 16.66h-.001C6.3 14.316 4.196 12.403 2.73 10.61 1.27 8.826.5 7.221.5 5.5c0-2.813 2.196-5 5-5 1.589 0 3.122.742 4.12 1.906l.38.442.38-.442C11.377 1.242 12.91.5 14.5.5c2.805 0 5 2.187 5 5 0 1.72-.771 3.326-2.23 5.111-1.466 1.792-3.571 3.705-6.156 6.049h0L10 17.674 8.887 16.66z"
+        stroke="#99999E"
+      />
+    </Svg>
+  );
+};
+
+export const FilledHeart = props => {
+  return (
+    <Svg
+      width={20}
+      height={19}
+      viewBox="0 0 20 19"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M10 18.35l-1.45-1.32C3.4 12.36 0 9.27 0 5.5 0 2.41 2.42 0 5.5 0 7.24 0 8.91.81 10 2.08 11.09.81 12.76 0 14.5 0 17.58 0 20 2.41 20 5.5c0 3.77-3.4 6.86-8.55 11.53L10 18.35z"
+        fill="#E82C2A"
+      />
+    </Svg>
+  );
+};
+export const Tick = props => {
+  return (
+    <Svg
+      width={16}
+      height={16}
+      viewBox="0 0 16 16"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M6.667 10.115l6.128-6.129.943.943L6.667 12 2.424 7.758l.943-.943 3.3 3.3z"
+        fill="#fff"
+      />
+    </Svg>
+  );
+};
+export const ColorTick = props => {
+  return (
+    <Svg
+      width={14}
+      height={10}
+      viewBox="0 0 14 10"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M5.5 7.38L12.394.483l1.061 1.06L5.5 9.5.727 4.727l1.06-1.06L5.5 7.379z"
+        fill="#F87E7D"
+      />
+    </Svg>
+  );
+};
+export const DeleteIcon = props => {
+  return (
+    <Svg
+      width={21}
+      height={21}
+      viewBox="0 0 19 19"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        d="M13.875 4.25h4.375V6H16.5v11.375a.875.875 0 01-.875.875H3.375a.875.875 0 01-.875-.875V6H.75V4.25h4.375V1.625A.875.875 0 016 .75h7a.875.875 0 01.875.875V4.25zm-7 4.375v5.25h1.75v-5.25h-1.75zm3.5 0v5.25h1.75v-5.25h-1.75zM6.875 2.5v1.75h5.25V2.5h-5.25z"
+        fill="#E82C2A"
+      />
+    </Svg>
+  );
+};
+export const CrossIcon = props => {
+  return (
+    <Svg
+      width={23}
+      height={23}
+      viewBox="0 0 23 23"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Circle cx={11.5} cy={11.5} r={11.5} fill="#E6E6E7" />
+      <Path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M15.83 7.993a.583.583 0 00-.823-.823L11.5 10.678 7.993 7.17a.582.582 0 10-.823.823l3.508 3.507-3.508 3.507a.582.582 0 10.823.822l3.507-3.507 3.507 3.508a.581.581 0 10.822-.823L12.322 11.5l3.507-3.507z"
+        fill="#371841"
+      />
+    </Svg>
+  );
+};
+export const DropDownIcon = props => {
+  return (
+    <Svg
+      width={10}
+      height={12}
+      viewBox="0 0 8 4"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path d="M4 4L0 0h8L4 4z" fill="#6E6F76" />
+    </Svg>
+  );
+};
+
+export const LocationMarker = props => {
+  return (
+    <Svg
+      width={54}
+      height={79}
+      viewBox="0 0 54 79"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}>
+      <Path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M27 79c14.912 0 27-12.088 27-27S41.912 25 27 25 0 37.088 0 52s12.088 27 27 27z"
+        fill="#F87E7D"
+        fillOpacity={0.18}
+      />
+      <Path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M27 71c10.493 0 19-8.507 19-19s-8.507-19-19-19S8 41.507 8 52s8.507 19 19 19z"
+        fill="#F87E7D"
+        fillOpacity={0.2}
+      />
+      <Path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M27.073 34.773c-8.069 0-14.41-6.215-14.41-14.122 0-7.908 6.34-14.122 14.41-14.122 8.069 0 14.41 6.214 14.41 14.122 0 7.907-6.342 14.122-14.41 14.122"
+        fill="#fff"
+      />
+      <Path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M27.073 31.839c-6.393 0-11.418-4.924-11.418-11.188 0-6.265 5.025-11.19 11.418-11.19 6.392 0 11.417 4.925 11.417 11.19 0 6.264-5.025 11.188-11.418 11.188m0-31.839C15.482 0 6 9.292 6 20.65c0 15.488 21.072 38.352 21.072 38.352S48.144 36.138 48.144 20.65C48.144 9.293 38.662 0 27.072 0"
+        fill="#F52D56"
+      />
+      <Mask
+        id="a"
+        style={{
+          maskType: 'luminance',
+        }}
+        maskUnits="userSpaceOnUse"
+        x={6}
+        y={0}
+        width={22}
+        height={60}>
+        <Path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M6 .018h21.072V59.02H6V.018z"
+          fill="#fff"
+        />
+      </Mask>
+      <G mask="url(#a)">
+        <Path
+          fillRule="evenodd"
+          clipRule="evenodd"
+          d="M27.072 31.857c-6.393 0-11.417-4.923-11.417-11.188 0-6.265 5.024-11.189 11.417-11.189S38.49 14.404 38.49 20.67c0 6.264-5.024 11.187-11.417 11.187m0-31.839C15.482.018 6 9.311 6 20.67 6 36.157 27.072 59.02 27.072 59.02s21.071-22.863 21.071-38.351c0-11.358-9.481-20.65-21.072-20.65"
+          fill="#FC4974"
+        />
+      </G>
     </Svg>
   );
 };

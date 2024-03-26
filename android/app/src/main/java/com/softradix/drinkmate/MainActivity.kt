@@ -1,4 +1,4 @@
-package com.drinkmate
+package com.softradix.drinkmate
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate

@@ -1,15 +1,21 @@
-import { ImageBackground, StyleSheet, Text, View } from 'react-native'
-import React from 'react'
+import {ImageBackground, StatusBar, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
 
 const Splash = () => {
   return (
-    <ImageBackground source={require('../../assets/authImages/Splash.png')}
-    style={{height:'100%', width:'100%'}}
-    >
-    </ImageBackground>
-  )
-}
+    <>
+      <StatusBar
+        translucent
+        backgroundColor="transparent"
+        barStyle={'dark-content'}
+      />
+      <ImageBackground
+        source={require('../../assets/authImages/Splash.png')}
+        style={{height: '100%', width: '100%'}}></ImageBackground>
+    </>
+  );
+};
 
-export default Splash
+export default Splash;
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({});

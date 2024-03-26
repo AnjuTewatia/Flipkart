@@ -6,6 +6,8 @@ import InputField from '../../Components/InputField';
 import {useFormik} from 'formik';
 import Button from '../../Components/Button';
 import {forgotEmailScheme} from '../../utils/validations';
+import useFetch from '../../utils/useFetch';
+import Toast from 'react-native-toast-message';
 
 const Forgot = ({navigation}) => {
   return (
@@ -28,11 +30,26 @@ const Content = ({navigation}) => {
     },
     validationSchema: forgotEmailScheme,
     onSubmit: values => {
-      navigation.navigate('otpScreen', {email: values?.email});
+      handleForgotPassword(values);
     },
   });
+  const [forgotPassword, {response, loading, error}] = useFetch(
+    'forgot-password',
+    {method: 'POST'},
+  );
+  const handleForgotPassword = async values => {
+    const res = await forgotPassword(values);
+    const resData = res?.data;
+    if (res) {
+      navigation.navigate('otpScreen', {
+        email: resData?.email,
+        uuid: resData?.uuid,
+        type: 'forgot',
+      });
+    }
+  };
   return (
-    <View style={Common.container}>
+    <View style={[Common.container, styles.container]}>
       <InputField
         formik={formik}
         type="email"
@@ -40,17 +57,31 @@ const Content = ({navigation}) => {
         label={'Email Address'}
         placeholder="Enter Email Address"
       />
-      <Button title="Send" onPress={() => formik.handleSubmit()} />
+
+      <Button
+        title="Send"
+        onPress={() => formik.handleSubmit()}
+        loading={loading}
+      />
     </View>
   );
 };
 export default Forgot;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#000',
+  },
   sendButton: {
     position: 'absolute',
     bottom: 0,
     width: '100%',
     alignSelf: 'center',
+  },
+  container: {
+    flex: 1,
+    width: '100%',
+    height: '100%',
   },
 });

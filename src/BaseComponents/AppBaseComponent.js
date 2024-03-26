@@ -5,24 +5,29 @@ import {
   Pressable,
   ScrollView,
   Platform,
+  SafeAreaView,
 } from 'react-native';
 import React from 'react';
 import {COLORS, Height, WIDTH} from '../utils/styleConst';
 import {Typography} from '../Components/Typography';
-import {BackButton} from '../Icons';
+import {WhiteBackButton} from '../Icons';
 import Common from '../utils/common';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
+import {log} from 'react-native-reanimated';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
 
 const AppBaseComponent = ({
   title,
   renderChild,
-  topPaddingZero,
   backButton,
   navigation,
+  rightButton,
+  height,
+  topPadding,
+  paddingHorizontal,
 }) => {
   const insets = useSafeAreaInsets();
   const statusBarHeight = insets.top;
-
   return (
     <>
       {Platform.OS === 'ios' && (
@@ -36,30 +41,43 @@ const AppBaseComponent = ({
       <StatusBar
         backgroundColor={'#371841'}
         animated
-        barStyle={'light-content'}></StatusBar>
-      <View style={Common.container}>
+        barStyle={'light-content'}
+      />
+      <SafeAreaView style={Common.container}>
         <View style={[styles.safeAreaView]}>
-          {backButton && (
-            <Pressable
-              style={styles.backButton}
-              onPress={() => navigation.goBack()}>
-              <BackButton />
-            </Pressable>
-          )}
-
           <View style={styles.header}>
+            {backButton && (
+              <Pressable
+                style={styles.backButton}
+                onPress={() => navigation.goBack()}>
+                <WhiteBackButton />
+              </Pressable>
+            )}
             <Typography type="h2" style={styles.titleText}>
               {title}
             </Typography>
+            {rightButton && (
+              <View style={styles.rightButton}>{rightButton}</View>
+            )}
           </View>
-          <View bounces showsVerticalScrollIndicator={false}>
-            <View
-              style={[styles.content, {paddingTop: topPaddingZero ? 0 : 0}]}>
-              {renderChild}
-            </View>
-          </View>
+          <KeyboardAwareScrollView
+            bounces={false}
+            keyboardDismissMode="interactive"
+            extraHeight={180}
+            keyboardShouldPersistTaps="handled"
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={[
+              styles.content,
+              {
+                paddingTop: topPadding ?? 10,
+                height: height ? height : '95%',
+                paddingHorizontal: paddingHorizontal ?? 10,
+              },
+            ]}>
+            {renderChild}
+          </KeyboardAwareScrollView>
         </View>
-      </View>
+      </SafeAreaView>
     </>
   );
 };
@@ -94,14 +112,16 @@ const styles = StyleSheet.create({
   header: {
     paddingHorizontal: 10,
     backgroundColor: '#371841',
-    height: 44,
+    height: 50,
+    justifyContent: 'center',
   },
   titleText: {
     fontSize: 20,
     color: COLORS.white,
-    fontWeight: '700',
+    // fontWeight: '700',
     margin: 5,
     textAlign: 'center',
+    fontFamily: 'DMSans-Bold',
   },
   instructiontext: {
     fontSize: 16,
@@ -114,19 +134,23 @@ const styles = StyleSheet.create({
   content: {
     display: 'flex',
     alignItems: 'flex-start',
-    height: Height,
     width: WIDTH,
-    paddingHorizontal: 18,
-    paddingBottom: 5,
-    backgroundColor: '#F5F5F5',
+    // : 10,
+    // paddingBottom: 5,
+    // backgroundColor: '#fff',
   },
   backButton: {
-    top: 10,
-    left: 15,
+    position: 'absolute',
+    marginHorizontal: 10,
     width: 30,
-    height: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
+    zIndex: 999,
+    left: 10,
+  },
+  rightButton: {
+    position: 'absolute',
+    marginHorizontal: 10,
+    right: 0,
+    // zIndex: -999,
   },
 });
 export default AppBaseComponent;

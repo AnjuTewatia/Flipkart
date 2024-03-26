@@ -1,36 +1,76 @@
 import {StyleSheet, Text, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, version} from 'react';
 import AuthBaseComponent from '../../BaseComponents/AuthBaseComponent';
 import Common from '../../utils/common';
 import OtpCommonPage from '../../Components/OtpCommonPage';
 import Button from '../../Components/Button';
+import useFetch from '../../utils/useFetch';
+import Toast from 'react-native-toast-message';
+import {saveLocalLoginDetail} from '../../utils/functions';
+import {useAppContext} from '../../Components/AppContext';
 
-const OtpScreen = ({navigation}) => {
+const OtpScreen = ({navigation, route}) => {
+  const data = route?.params;
   return (
     <AuthBaseComponent
       title={'OTP Verification'}
-      instruction={
-        'Please enter one time password (OTP) that is sent to info08@gmail.com'
-      }
+      instruction={`Please enter one time password (OTP) that is sent to`}
+      email={data?.email}
       navigation={navigation}
       backButton
-      renderChild={Content({navigation})}
+      renderChild={Content({navigation, data})}
     />
   );
 };
 
-const Content = ({navigation}) => {
+const Content = ({navigation, data}) => {
   const [value, setValue] = useState('');
   const [optTimer, setOptTimer] = useState(59);
-  const handleResend = async () => {
-    setOptTimer(59);
-  };
-
+  const {setUserData} = useAppContext();
   const handleSubmit = async () => {
     if (value.length > 3) {
-      console.log('hfhfh');
+      handleVerifyOtp(value);
     } else {
-      console.log('error');
+      Toast.show({
+        type: 'info',
+        text1: 'OTP is required',
+      });
+    }
+  };
+
+  const [verfiyOtp, {response: res, loading: loader, error: err}] = useFetch(
+    'verify-otp',
+    {
+      method: 'POST',
+    },
+  );
+
+  const handleVerifyOtp = async value => {
+    const res = await verfiyOtp({
+      uuid: data?.uuid,
+      otp: value,
+    });
+    const resData = res?.user;
+    console.log(resData);
+    if (res) {
+      if (data?.type === 'forgot') {
+        navigation.navigate('resetPassword', {uuid: data?.uuid});
+      } else {
+        setUserData(resData?.token);
+        saveLocalLoginDetail(resData?.token);
+      }
+    }
+  };
+
+  const [resendOtp, {response, loading, error}] = useFetch('resend-otp', {
+    method: 'POST',
+  });
+
+  const handleResend = async () => {
+    setOptTimer(59);
+
+    const res = await resendOtp({uuid: data?.uuid});
+    if (res) {
     }
   };
   return (
@@ -40,12 +80,10 @@ const Content = ({navigation}) => {
         setValue={setValue}
         setOptTimer={setOptTimer}
         optTimer={optTimer}
-        // handleSubmit={handleSubmit}
-        // email={email}
-        // loading={loading}
+        email={data?.email}
         resendOtp={handleResend}
       />
-      <Button title={'Submit'} onPress={handleSubmit} />
+      <Button title={'Submit'} onPress={handleSubmit} loading={loader} />
     </View>
   );
 };

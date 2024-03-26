@@ -1,26 +1,35 @@
-import {StyleSheet, View, Image, Pressable} from 'react-native';
-import React from 'react';
+import { StyleSheet, View, Image, Pressable, Platform } from 'react-native';
+import React, { useEffect } from 'react';
 import AuthBaseComponent from '../../BaseComponents/AuthBaseComponent';
 import InputField from '../../Components/InputField';
 import Button from '../../Components/Button';
-import {Typography} from '../../Components/Typography';
-import {useFormik} from 'formik';
-import {loginValidationScheme} from '../../utils/validations';
+import { Typography } from '../../Components/Typography';
+import { useFormik } from 'formik';
+import { loginValidationScheme } from '../../utils/validations';
 import IMAGES from '../../utils/Images';
 import RenderImages from '../../Components/RenderImages';
 import Common from '../../utils/common';
+import { useAppContext } from '../../Components/AppContext';
+import useFetch from '../../utils/useFetch';
+import Toast from 'react-native-toast-message';
+import { saveLocalLoginDetail } from '../../utils/functions';
+import { useIsFocused } from '@react-navigation/native';
+import Googlelogin from '../../utils/Googlelogin';
+import { appleLogin } from '../../utils/AppleLogin';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Login = ({navigation}) => {
+const Login = ({ navigation }) => {
   return (
     <AuthBaseComponent
       title="Log In"
       instruction={'Please fill below details to continue.'}
       navigation={navigation}
-      renderChild={Content({navigation})}
+      renderChild={Content({ navigation })}
     />
   );
 };
-const Content = ({navigation}) => {
+const Content = ({ navigation }) => {
+  const { setUserData, device_id, fcmToken, getFcmToken,setUserProfile } = useAppContext();
   const formik = useFormik({
     initialValues: {
       email: '',
@@ -28,10 +37,44 @@ const Content = ({navigation}) => {
     },
     validationSchema: loginValidationScheme,
     onSubmit: values => {
-      console.log(values);
+      handleloginUser(values);
     },
   });
 
+  const [loginuser, { response, loading, error }] = useFetch('user/login', {
+    method: 'POST',
+  });
+  const isfocused = useIsFocused();
+
+  const handleloginUser = async values => {
+    const payload = {
+      ...values,
+      role: 'user'
+    };
+    const res = await loginuser(payload);
+
+    if (res) {
+      Toast.show({
+        type: 'success',
+        text1: res?.message,
+      });
+      setUserData(res?.token);
+      setUserProfile(res?.user);
+      AsyncStorage.setItem('login_user', JSON.stringify(res?.token));
+ 
+      AsyncStorage.setItem('userProfile', JSON.stringify(res?.user));
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: res?.message,
+      });
+      
+    }
+  };
+  useEffect(() => {
+    getFcmToken();
+    formik.resetForm();
+  }, [isfocused]);
   return (
     <View style={Common.container}>
       <InputField
@@ -48,22 +91,25 @@ const Content = ({navigation}) => {
         name="password"
         placeholder="Enter Password"
       />
-      <Pressable
-        style={[styles.forgotText, {width: '50%'}]}
+      {/* <Pressable
+        style={[styles.forgotText, { width: '50%' }]}
         onPress={() => navigation.navigate('forgot')}>
         <Typography type="xs" style={styles.forgotText}>
           Forgot Password
         </Typography>
-      </Pressable>
-
-      <Button title="Log In" onPress={() => formik.handleSubmit()} />
+      </Pressable> */}
+      <Button
+        title="Log In"
+        onPress={() => formik.handleSubmit()}
+        loading={loading}
+      />
 
       <Pressable
-        style={[styles.Signup, {width: '60%'}]}
+        style={[styles.Signup, { width: '60%' }]}
         onPress={() => navigation.navigate('signUp')}>
         <Typography type="xs" style={[styles.Signup]}>
           New User ?{' '}
-          <Typography style={{color: '#F87E7D', fontWeight: '700'}}>
+          <Typography style={{ color: '#F87E7D', fontWeight: '700' }}>
             Create Account
           </Typography>
         </Typography>
@@ -77,15 +123,17 @@ const Content = ({navigation}) => {
         <View style={styles.dashes} />
       </View>
       <View style={styles.socialLogin}>
-        <Pressable style={styles.iconWrapper}>
+        <Pressable style={styles.iconWrapper} onPress={Googlelogin}>
           <RenderImages style={styles.logoImg} source={IMAGES.googleLogo} />
         </Pressable>
         <Pressable style={styles.iconWrapper}>
           <RenderImages style={styles.logoImg} source={IMAGES.facebookLogo} />
         </Pressable>
-        <Pressable style={styles.iconWrapper}>
-          <RenderImages style={styles.logoImg} source={IMAGES.applelogo} />
-        </Pressable>
+        {Platform.OS === 'ios' && (
+          <Pressable style={styles.iconWrapper} onPress={appleLogin}>
+            <RenderImages style={styles.logoImg} source={IMAGES.applelogo} />
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -99,8 +147,8 @@ const styles = StyleSheet.create({
     fontSize: 14,
     right: 6,
     alignSelf: 'flex-end',
-    fontWeight: '700',
     marginVertical: 5,
+    fontWeight: '700',
   },
   Signup: {
     textAlign: 'center',
@@ -141,7 +189,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
     borderRadius: 45,
-    shadowOffset: {width: 0, height: 2},
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.3,
     shadowColor: '#CFAFF3',
     shadowRadius: 4,

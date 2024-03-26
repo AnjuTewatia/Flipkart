@@ -10,8 +10,24 @@
       "sha1": "c7c4f19fcfb7cc34ded9341ecc6d1c72ee272dbf"
     },
     {
-      "path": "assets/fonts/DMSans_18pt-Regular.ttf",
-      "sha1": "cbadb75c260d17b837793c16d77a4e5048e948e2"
+      "path": "assets/fonts/DMSans-Bold.ttf",
+      "sha1": "5987ba6a8b8c8cc7f755431eca614ea7f5de1b96"
+    },
+    {
+      "path": "assets/fonts/DMSans-ExtraBold.ttf",
+      "sha1": "aa2e6e4a205e0ef5905506b1468ac020259f0bd4"
+    },
+    {
+      "path": "assets/fonts/DMSans-Regular.ttf",
+      "sha1": "ac9a042a40e49e8cdbfe0e64e84d9b1c5724e98d"
+    },
+    {
+      "path": "assets/fonts/DMSans-SemiBold.ttf",
+      "sha1": "c2c26e18339912a10d796aee9a19ce1aff5177e4"
+    },
+    {
+      "path": "assets/fonts/DMSans-Thin copy.ttf",
+      "sha1": "b2a7f12606cc99225f0d890d97a7e7c099fdaa03"
     }
   ]
 }

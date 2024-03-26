@@ -2,8 +2,8 @@ import {Dimensions} from 'react-native';
 
 export const headerHeight = 68;
 export const bottomTabsHeight = 45;
-export const WIDTH = Dimensions.get('window').width;
-export const Height = Dimensions.get('window').height;
+export const WIDTH = Dimensions.get('screen').width;
+export const Height = Dimensions.get('screen').height;
 
 export const COLORS = {
   primary: '#000',

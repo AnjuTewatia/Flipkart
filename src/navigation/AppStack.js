@@ -6,20 +6,32 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Notification from '../screens/AppScreens/Notification';
 import Favourites from '../screens/AppScreens/Favourite';
 import Profile from '../screens/AppScreens/Profile';
+
 import {Typography} from '../Components/Typography';
-import {HomeActive} from '../Icons';
 import RenderImages from '../Components/RenderImages';
 import IMAGES from '../utils/Images';
 import {COLORS} from '../utils/styleConst';
+import EditProfile from '../screens/AppScreens/EditProfile';
+import Details from '../screens/AppScreens/Detrails';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const AppStack = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator screenOptions={{animation: 'slide_from_right'}}>
       <Stack.Screen
         component={BottomTabs}
         name="bottomTabs"
+        options={{headerShown: false, animation: 'slide_from_left'}}
+      />
+       <Stack.Screen
+        component={Details}
+        name="Details"
+        options={{headerShown: false}}
+      />
+       <Stack.Screen
+        component={EditProfile}
+        name="editProfile"
         options={{headerShown: false}}
       />
     </Stack.Navigator>
@@ -37,9 +49,11 @@ const BottomTabs = () => {
           tabBarStyle: {
             position: 'absolute',
             width: '100%',
-            bottom: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
             padding: 10,
-            // minHeight: bottomTabsHeight,
+            paddingBottom: 10,
+
           },
         }}>
         <Tab.Screen
@@ -54,7 +68,7 @@ const BottomTabs = () => {
                   <View style={styles.tabBar}>
                     <RenderImages
                       source={focused ? IMAGES.activeHome : IMAGES.unActiveHome}
-                      style={{width: 22, height: 22}}
+                      style={styles.icon}
                     />
                     <Typography
                       type="sm"
@@ -86,7 +100,7 @@ const BottomTabs = () => {
                           ? IMAGES.activeNotification
                           : IMAGES.unActiveNotification
                       }
-                      style={{width: 22, height: 22}}
+                      style={styles.icon}
                     />
                     <Typography
                       type="sm"
@@ -94,7 +108,7 @@ const BottomTabs = () => {
                         styles.tabText,
                         {color: focused ? COLORS.gradientText : COLORS.grey},
                       ]}>
-                      Notificatios
+                      Notifications
                     </Typography>
                   </View>
                 </>
@@ -118,7 +132,7 @@ const BottomTabs = () => {
                           ? IMAGES.activeFavorite
                           : IMAGES.unActiveFavorite
                       }
-                      style={{width: 22, height: 22}}
+                      style={styles.icon}
                     />
                     <Typography
                       type="sm"
@@ -148,7 +162,7 @@ const BottomTabs = () => {
                       source={
                         focused ? IMAGES.activeProfile : IMAGES.unActiveProfile
                       }
-                      style={{width: 22, height: 22}}
+                      style={styles.icon}
                     />
                     <Typography
                       type="sm"
@@ -174,7 +188,9 @@ const styles = StyleSheet.create({
   tabBar: {justifyContent: 'center', alignItems: 'center'},
   tabText: {
     alignSelf: 'center',
+    justifyContent: 'center',
     fontSize: 12,
-    fontWeight: '700',
+    fontFamily: 'DMSans-SemiBold',
   },
+  icon: {width: 20, height: 20},
 });

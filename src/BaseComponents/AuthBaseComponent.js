@@ -1,37 +1,42 @@
+import React from 'react';
 import {
   Image,
-  ImageBackground,
-  SafeAreaView,
   StatusBar,
   StyleSheet,
   View,
-  PixelRatio,
   Pressable,
-  ScrollView,
+  Platform,
 } from 'react-native';
-import React from 'react';
+import {KeyboardAwareScrollView} from 'react-native-keyboard-aware-scroll-view';
+import {BackButton} from '../Icons';
 import {COLORS, Height, WIDTH} from '../utils/styleConst';
 import {Typography} from '../Components/Typography';
-import {BackButton} from '../Icons';
+
 const AuthBaseComponent = ({
   title,
   instruction,
   renderChild,
-  topPaddingZero,
   backButton,
   navigation,
+  email,
 }) => {
   return (
-    <ImageBackground
-      resizeMode="cover"
-      style={styles.bgContainer}
-      source={require('../assets/authImages/authbg.png')}>
-      <StatusBar
-        animated
-        translucent={false}
-        // hidden
-        barStyle={'default'}></StatusBar>
-      <SafeAreaView style={[styles.safeAreaView]}>
+    <>
+      <Image
+        style={{
+          position: 'absolute',
+          width: WIDTH,
+          height: Height,
+        }}
+        resizeMode="cover"
+        source={require('../assets/authImages/authbg.png')}
+      />
+      <View style={styles.bgContainer}>
+        <StatusBar
+          translucent
+          backgroundColor="transparent"
+          barStyle={'dark-content'}
+        />
         {backButton && (
           <Pressable
             style={styles.backButton}
@@ -39,52 +44,55 @@ const AuthBaseComponent = ({
             <BackButton />
           </Pressable>
         )}
-
-        <ScrollView
-          keyboardShouldPersistTaps="handled"
-          bounces
-          showsVerticalScrollIndicator={false}>
-          <View style={styles.logoView}>
-            <Image
-              style={styles.logoimg}
-              source={require('../assets/authImages/Logo.png')}
-            />
-            <Typography type="h1" style={styles.logoText}>
-              DrinkMate
-            </Typography>
+        <KeyboardAwareScrollView
+          keyboardDismissMode="interactive"
+          extraHeight={180}
+          bounces={false}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled">
+          <View style={styles.safeAreaView}>
+            <View style={styles.logoView}>
+              <Image
+                style={styles.logoimg}
+                source={require('../assets/authImages/Logo.png')}
+              />
+              <Typography type="h1" style={styles.logoText}>
+                DrinkMate
+              </Typography>
+            </View>
+            <View style={styles.formView}>
+              <Typography type="h2" style={styles.titleText}>
+                {title}
+              </Typography>
+              <Typography type="sm" style={styles.instructionText}>
+                {instruction}{' '}
+                <Typography
+                  style={[styles.instructionText, {fontWeight: '700'}]}>
+                  {email}
+                </Typography>
+              </Typography>
+            </View>
+            <View style={styles.content}>{renderChild}</View>
           </View>
-          <View style={styles.formView}>
-            <Typography type="h2" style={styles.titleText}>
-              {title}
-            </Typography>
-            <Typography type="sm" style={styles.instructiontext}>
-              {instruction}
-            </Typography>
-          </View>
-          <View style={[styles.content, {paddingTop: topPaddingZero ? 0 : 0}]}>
-            {renderChild}
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </ImageBackground>
+        </KeyboardAwareScrollView>
+      </View>
+    </>
   );
 };
 
 const styles = StyleSheet.create({
   bgContainer: {
-    flexGrow: 1,
-    width: '100%',
-    height: Height,
-    paddingTop: 0,
-    // position: 'relative',
+    flex: 1,
   },
-  safeAreaView: {},
+  safeAreaView: {
+    flex: 1,
+  },
   logoView: {
     justifyContent: 'center',
-    alignSelf: 'center',
     alignItems: 'center',
     flexDirection: 'row',
     marginVertical: 30,
+    marginTop: 60,
   },
   logoimg: {
     width: 47,
@@ -94,7 +102,8 @@ const styles = StyleSheet.create({
   logoText: {
     fontSize: 36,
     color: COLORS.logoColor,
-    fontWeight: '800',
+    fontFamily: 'DMSans-Bold',
+
     margin: 5,
   },
   formView: {
@@ -103,34 +112,39 @@ const styles = StyleSheet.create({
   titleText: {
     fontSize: 30,
     color: COLORS.primary,
-    fontWeight: '700',
     margin: 5,
+    fontFamily: 'DMSans-Bold',
   },
-  instructiontext: {
+  instructionText: {
     fontSize: 16,
     color: COLORS.primary,
     fontWeight: '400',
     margin: 5,
     color: '#6E6F76',
     width: '90%',
+    fontFamily: 'DMSans-Regular',
   },
   content: {
-    display: 'flex',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    height: '90%',
-    width: WIDTH,
     paddingHorizontal: 18,
     marginVertical: 10,
     paddingBottom: 5,
   },
   backButton: {
-    top: 10,
+    position: 'absolute',
+    top:
+      Platform.OS === 'ios'
+        ? StatusBar.currentHeight + 35
+        : StatusBar.currentHeight + 15,
     left: 15,
+    padding: 10,
+    zIndex: 999,
     width: 30,
     height: 30,
     alignItems: 'center',
     justifyContent: 'center',
   },
 });
+
 export default AuthBaseComponent;

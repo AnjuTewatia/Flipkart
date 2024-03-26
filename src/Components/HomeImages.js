@@ -14,9 +14,9 @@ import RenderImages from './RenderImages';
 import LinearGradient from 'react-native-linear-gradient';
 import {ArrowIcon} from '../Icons';
 
-const HomeImages = ({image, title, instruction, onPress, btnImg}) => {
+const HomeImages = ({image, title, instruction, onPress, btnImg, btn}) => {
   return (
-    <View style={styles.imgWrapper}>
+    <Pressable style={styles.imgWrapper} onPress={onPress}>
       <ImageBackground resizeMode="contain" source={image} style={styles.bgImg}>
         <View style={styles.wrapper}>
           <Typography type="h1" style={styles.titleText}>
@@ -35,10 +35,9 @@ const HomeImages = ({image, title, instruction, onPress, btnImg}) => {
           <ButtonComponent image={btnImg} title={title} onPress={onPress} />
         </View>
       </ImageBackground>
-    </View>
+    </Pressable>
   );
 };
-
 const ButtonComponent = ({image, title, onPress}) => {
   return (
     <Pressable style={styles.btnContainer} onPress={onPress}>
@@ -60,6 +59,43 @@ const ButtonComponent = ({image, title, onPress}) => {
 
 export default HomeImages;
 
+export const BrandImage = ({image, title, instruction, onPress}) => {
+  return (
+    <>
+      <Pressable style={[styles.brandwrapper]} onPress={onPress}>
+        <ImageBackground
+          resizeMode="contain"
+          source={image}
+          style={styles.bgImg}>
+          <View style={styles.wrapper}>
+            <Typography type="h1" style={styles.titleText}>
+              {title}
+            </Typography>
+            <Typography type="h3" style={styles.instruction}>
+              {instruction}
+            </Typography>
+
+            <View style={styles.rowView}>
+              <View style={[styles.borderView, {width: '25%'}]} />
+              <View style={[styles.borderView, {width: '15%'}]} />
+              <View style={[styles.borderView, {width: '8%'}]} />
+            </View>
+            <View>
+              <LinearGradient
+                colors={['rgba(255,255,255,0.1)', 'rgba(255,255,255,0.1)']}
+                start={{x: 0, y: 0}}
+                end={{x: 1, y: 0}}
+                style={[styles.linearGradient, {marginTop: -40}]}>
+                <ArrowIcon />
+              </LinearGradient>
+            </View>
+          </View>
+        </ImageBackground>
+      </Pressable>
+    </>
+  );
+};
+
 const styles = StyleSheet.create({
   imgWrapper: {
     height: Height / 3,
@@ -74,13 +110,13 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   bgImg: {
-    height: '100%',
-    width: '100%',
+    // height: '100%',
+    // width: '100%',
   },
   titleText: {
     marginTop: 8,
     fontSize: 18,
-    fontWeight: '700',
+    // fontWeight: '700',
     color: '#fff',
     fontFamily: 'CinzelDecorative-Bold',
   },
@@ -90,9 +126,9 @@ const styles = StyleSheet.create({
   },
   instruction: {
     fontSize: 18,
-    fontWeight: '500',
     color: '#fff',
     width: '80%',
+    fontFamily: 'DMSans-SemiBold',
   },
   rowView: {
     marginVertical: 10,
@@ -123,7 +159,7 @@ const styles = StyleSheet.create({
   btntitle: {
     marginHorizontal: 8,
     color: '#371841',
-    fontWeight: '600',
+    fontFamily: 'DMSans-SemiBold',
   },
   linearGradient: {
     width: 40,
@@ -133,5 +169,18 @@ const styles = StyleSheet.create({
     right: 3,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  brandwrapper: {
+    height: 160,
+    justifyContent: 'center',
+    width: '100%',
+    marginVertical: Platform.OS === 'android' ? 8 : 2,
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.3,
+    shadowColor: '#CFAFF3',
+    shadowRadius: 4,
+    elevation: 4, // For Android
+    borderRadius: 10,
+    marginBottom: 20,
   },
 });

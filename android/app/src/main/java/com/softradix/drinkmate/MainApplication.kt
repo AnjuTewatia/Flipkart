@@ -1,4 +1,4 @@
-package com.drinkmate
+package com.softradix.drinkmate
 
 import android.app.Application
 import com.facebook.react.PackageList
