@@ -41,7 +41,7 @@ const Content = ({ navigation }) => {
   useEffect(() => {
     handleProducts()
   }, [])
-
+console.log('HEllo');
   const RenderItem = ({ item }) => {
     return (
       <>
